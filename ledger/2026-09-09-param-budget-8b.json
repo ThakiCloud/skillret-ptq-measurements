@@ -1,0 +1,370 @@
+{
+  "model": "ThakiCloud/SKILLRET-Embedding-8B",
+  "revision": "main",
+  "vocab_size": 151665,
+  "vocab_pruned": false,
+  "emb_rank": null,
+  "group_size": 128,
+  "target_mb": 100.0,
+  "params": {
+    "embedding": 621219840,
+    "attention": 1509958656,
+    "ffn": 5435817984,
+    "norm": 299008
+  },
+  "params_total": 7567295488,
+  "scenarios": {
+    "BF16 (원본)": {
+      "embedding": {
+        "params": 621219840,
+        "bits": 16.0,
+        "packed_bytes": 1242439680.0,
+        "scale_bytes": 0.0,
+        "bytes": 1242439680.0,
+        "mb": 1242.43968
+      },
+      "attention": {
+        "params": 1509958656,
+        "bits": 16.0,
+        "packed_bytes": 3019917312.0,
+        "scale_bytes": 0.0,
+        "bytes": 3019917312.0,
+        "mb": 3019.917312
+      },
+      "ffn": {
+        "params": 5435817984,
+        "bits": 16.0,
+        "packed_bytes": 10871635968.0,
+        "scale_bytes": 0.0,
+        "bytes": 10871635968.0,
+        "mb": 10871.635968
+      },
+      "norm": {
+        "params": 299008,
+        "bits": 16.0,
+        "packed_bytes": 598016.0,
+        "scale_bytes": 0.0,
+        "bytes": 598016.0,
+        "mb": 0.598016
+      },
+      "_total": {
+        "params": 7567295488,
+        "bytes": 15134590976.0,
+        "mb": 15134.590976
+      }
+    },
+    "INT8 전체": {
+      "embedding": {
+        "params": 621219840,
+        "bits": 8.0,
+        "packed_bytes": 621219840.0,
+        "scale_bytes": 9706560.0,
+        "bytes": 630926400.0,
+        "mb": 630.9264
+      },
+      "attention": {
+        "params": 1509958656,
+        "bits": 8.0,
+        "packed_bytes": 1509958656.0,
+        "scale_bytes": 23593104.0,
+        "bytes": 1533551760.0,
+        "mb": 1533.55176
+      },
+      "ffn": {
+        "params": 5435817984,
+        "bits": 8.0,
+        "packed_bytes": 5435817984.0,
+        "scale_bytes": 84934656.0,
+        "bytes": 5520752640.0,
+        "mb": 5520.75264
+      },
+      "norm": {
+        "params": 299008,
+        "bits": 16.0,
+        "packed_bytes": 598016.0,
+        "scale_bytes": 0.0,
+        "bytes": 598016.0,
+        "mb": 0.598016
+      },
+      "_total": {
+        "params": 7567295488,
+        "bytes": 7685828816.0,
+        "mb": 7685.828816
+      }
+    },
+    "INT4 전체 (실 CPU kernel 하한)": {
+      "embedding": {
+        "params": 621219840,
+        "bits": 4.0,
+        "packed_bytes": 310609920.0,
+        "scale_bytes": 9706560.0,
+        "bytes": 320316480.0,
+        "mb": 320.31648
+      },
+      "attention": {
+        "params": 1509958656,
+        "bits": 4.0,
+        "packed_bytes": 754979328.0,
+        "scale_bytes": 23593104.0,
+        "bytes": 778572432.0,
+        "mb": 778.572432
+      },
+      "ffn": {
+        "params": 5435817984,
+        "bits": 4.0,
+        "packed_bytes": 2717908992.0,
+        "scale_bytes": 84934656.0,
+        "bytes": 2802843648.0,
+        "mb": 2802.843648
+      },
+      "norm": {
+        "params": 299008,
+        "bits": 16.0,
+        "packed_bytes": 598016.0,
+        "scale_bytes": 0.0,
+        "bytes": 598016.0,
+        "mb": 0.598016
+      },
+      "_total": {
+        "params": 7567295488,
+        "bytes": 3902330576.0,
+        "mb": 3902.330576
+      }
+    },
+    "INT2 전체": {
+      "embedding": {
+        "params": 621219840,
+        "bits": 2.0,
+        "packed_bytes": 155304960.0,
+        "scale_bytes": 9706560.0,
+        "bytes": 165011520.0,
+        "mb": 165.01152
+      },
+      "attention": {
+        "params": 1509958656,
+        "bits": 2.0,
+        "packed_bytes": 377489664.0,
+        "scale_bytes": 23593104.0,
+        "bytes": 401082768.0,
+        "mb": 401.082768
+      },
+      "ffn": {
+        "params": 5435817984,
+        "bits": 2.0,
+        "packed_bytes": 1358954496.0,
+        "scale_bytes": 84934656.0,
+        "bytes": 1443889152.0,
+        "mb": 1443.889152
+      },
+      "norm": {
+        "params": 299008,
+        "bits": 16.0,
+        "packed_bytes": 598016.0,
+        "scale_bytes": 0.0,
+        "bytes": 598016.0,
+        "mb": 0.598016
+      },
+      "_total": {
+        "params": 7567295488,
+        "bytes": 2010581456.0,
+        "mb": 2010.581456
+      }
+    },
+    "ternary 1.58b 전체 (이론치, 파일 아님)": {
+      "embedding": {
+        "params": 621219840,
+        "bits": 1.58,
+        "packed_bytes": 122690918.4,
+        "scale_bytes": 9706560.0,
+        "bytes": 132397478.4,
+        "mb": 132.3974784
+      },
+      "attention": {
+        "params": 1509958656,
+        "bits": 1.58,
+        "packed_bytes": 298216834.56,
+        "scale_bytes": 23593104.0,
+        "bytes": 321809938.56,
+        "mb": 321.80993856
+      },
+      "ffn": {
+        "params": 5435817984,
+        "bits": 1.58,
+        "packed_bytes": 1073574051.84,
+        "scale_bytes": 84934656.0,
+        "bytes": 1158508707.8400002,
+        "mb": 1158.5087078400002
+      },
+      "norm": {
+        "params": 299008,
+        "bits": 16.0,
+        "packed_bytes": 598016.0,
+        "scale_bytes": 0.0,
+        "bytes": 598016.0,
+        "mb": 0.598016
+      },
+      "_total": {
+        "params": 7567295488,
+        "bytes": 1613314140.8000002,
+        "mb": 1613.3141408000001
+      }
+    },
+    "bitnet.cpp I2_S 전체 (실 파일 2.25b)": {
+      "embedding": {
+        "params": 621219840,
+        "bits": 2.25,
+        "packed_bytes": 174718080.0,
+        "scale_bytes": 9706560.0,
+        "bytes": 184424640.0,
+        "mb": 184.42464
+      },
+      "attention": {
+        "params": 1509958656,
+        "bits": 2.25,
+        "packed_bytes": 424675872.0,
+        "scale_bytes": 23593104.0,
+        "bytes": 448268976.0,
+        "mb": 448.268976
+      },
+      "ffn": {
+        "params": 5435817984,
+        "bits": 2.25,
+        "packed_bytes": 1528823808.0,
+        "scale_bytes": 84934656.0,
+        "bytes": 1613758464.0,
+        "mb": 1613.758464
+      },
+      "norm": {
+        "params": 299008,
+        "bits": 16.0,
+        "packed_bytes": 598016.0,
+        "scale_bytes": 0.0,
+        "bytes": 598016.0,
+        "mb": 0.598016
+      },
+      "_total": {
+        "params": 7567295488,
+        "bytes": 2247050096.0,
+        "mb": 2247.050096
+      }
+    },
+    "PRD 6.2 예시: 대부분 W2 + emb INT4": {
+      "embedding": {
+        "params": 621219840,
+        "bits": 4.0,
+        "packed_bytes": 310609920.0,
+        "scale_bytes": 9706560.0,
+        "bytes": 320316480.0,
+        "mb": 320.31648
+      },
+      "attention": {
+        "params": 1509958656,
+        "bits": 2.0,
+        "packed_bytes": 377489664.0,
+        "scale_bytes": 23593104.0,
+        "bytes": 401082768.0,
+        "mb": 401.082768
+      },
+      "ffn": {
+        "params": 5435817984,
+        "bits": 2.0,
+        "packed_bytes": 1358954496.0,
+        "scale_bytes": 84934656.0,
+        "bytes": 1443889152.0,
+        "mb": 1443.889152
+      },
+      "norm": {
+        "params": 299008,
+        "bits": 16.0,
+        "packed_bytes": 598016.0,
+        "scale_bytes": 0.0,
+        "bytes": 598016.0,
+        "mb": 0.598016
+      },
+      "_total": {
+        "params": 7567295488,
+        "bytes": 2165886416.0,
+        "mb": 2165.886416
+      }
+    },
+    "I2_S 백본 + emb INT4": {
+      "embedding": {
+        "params": 621219840,
+        "bits": 4.0,
+        "packed_bytes": 310609920.0,
+        "scale_bytes": 9706560.0,
+        "bytes": 320316480.0,
+        "mb": 320.31648
+      },
+      "attention": {
+        "params": 1509958656,
+        "bits": 2.25,
+        "packed_bytes": 424675872.0,
+        "scale_bytes": 23593104.0,
+        "bytes": 448268976.0,
+        "mb": 448.268976
+      },
+      "ffn": {
+        "params": 5435817984,
+        "bits": 2.25,
+        "packed_bytes": 1528823808.0,
+        "scale_bytes": 84934656.0,
+        "bytes": 1613758464.0,
+        "mb": 1613.758464
+      },
+      "norm": {
+        "params": 299008,
+        "bits": 16.0,
+        "packed_bytes": 598016.0,
+        "scale_bytes": 0.0,
+        "bytes": 598016.0,
+        "mb": 0.598016
+      },
+      "_total": {
+        "params": 7567295488,
+        "bytes": 2382941936.0,
+        "mb": 2382.941936
+      }
+    },
+    "I2_S 백본 + emb F16 (bitnet 기본 변환)": {
+      "embedding": {
+        "params": 621219840,
+        "bits": 16.0,
+        "packed_bytes": 1242439680.0,
+        "scale_bytes": 0.0,
+        "bytes": 1242439680.0,
+        "mb": 1242.43968
+      },
+      "attention": {
+        "params": 1509958656,
+        "bits": 2.25,
+        "packed_bytes": 424675872.0,
+        "scale_bytes": 23593104.0,
+        "bytes": 448268976.0,
+        "mb": 448.268976
+      },
+      "ffn": {
+        "params": 5435817984,
+        "bits": 2.25,
+        "packed_bytes": 1528823808.0,
+        "scale_bytes": 84934656.0,
+        "bytes": 1613758464.0,
+        "mb": 1613.758464
+      },
+      "norm": {
+        "params": 299008,
+        "bits": 16.0,
+        "packed_bytes": 598016.0,
+        "scale_bytes": 0.0,
+        "bytes": 598016.0,
+        "mb": 0.598016
+      },
+      "_total": {
+        "params": 7567295488,
+        "bytes": 3305065136.0,
+        "mb": 3305.065136
+      }
+    }
+  },
+  "avg_bits_for_target": 0.10571808663592125
+}

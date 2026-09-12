@@ -1,0 +1,26 @@
+{
+  "model": "<home>/models/skillret-kd07-ep9",
+  "arm": "int4/g16 가중치(연산은 fp32 — int 커널 속도 아님)",
+  "device": "cpu",
+  "threads": 1,
+  "peak_rss_mb": 1057.7,
+  "torch": "2.12.0",
+  "rows": [
+    {
+      "case": "쿼리 1건(짧은 문장)",
+      "n": 1,
+      "threads": 1,
+      "p50_ms": 8.1,
+      "p95_ms": 8.5,
+      "per_item_ms": 8.11
+    },
+    {
+      "case": "쿼리 32건 배치",
+      "n": 32,
+      "threads": 1,
+      "p50_ms": 364.5,
+      "p95_ms": 366.7,
+      "per_item_ms": 11.39
+    }
+  ]
+}

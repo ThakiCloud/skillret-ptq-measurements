@@ -1,0 +1,40 @@
+{
+  "n_queries": 4392,
+  "n_docs": 6006,
+  "note": "학습0(zero-shot)",
+  "rows": [
+    {
+      "model": "Snowflake/snowflake-arctic-embed-m",
+      "params": 109482240,
+      "int3g16_mb": 68.43,
+      "pool": "cls",
+      "query_prefix": "arctic",
+      "ndcg@10": 58.67349063383087,
+      "se": 0.5595724479144766,
+      "encode_sec": 154.0,
+      "dim": 768
+    },
+    {
+      "model": "Snowflake/snowflake-arctic-embed-s",
+      "params": 33360000,
+      "int3g16_mb": 20.85,
+      "pool": "cls",
+      "query_prefix": "arctic",
+      "ndcg@10": 52.37951625090803,
+      "se": 0.5762183175563893,
+      "encode_sec": 58.0,
+      "dim": 384
+    },
+    {
+      "model": "Snowflake/snowflake-arctic-embed-xs",
+      "params": 22713216,
+      "int3g16_mb": 14.2,
+      "pool": "cls",
+      "query_prefix": "arctic",
+      "ndcg@10": 50.06522875226774,
+      "se": 0.5784044164517691,
+      "encode_sec": 50.1,
+      "dim": 384
+    }
+  ]
+}

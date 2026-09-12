@@ -1,0 +1,632 @@
+{
+  "_comment": "이 논문이 무엇을 주장해도 되는지의 정본. claims_gate.py 가 읽는다. 이 파일 자신도 게이트 대상이다.",
+  "deliverable": "paper/main.tex",
+  "evidence_root": "ledger/",
+  "claims": {
+    "C-NO-MODULE-SENS-I4": {
+      "status": "CLAIM",
+      "statement": "INT4/g16 에서 부위별 단독 양자화 손실이 어느 모델·코퍼스에서도 최대 1.01점이다. ⛔ '표준오차 안'이 아니다 — 45셀 중 10셀의 95% CI 가 0을 제외한다(3개는 양수).",
+      "numbers": {
+        "max_abs_delta_pp": 1.01,
+        "module_cells": 45,
+        "ci_excludes_zero": 10,
+        "positive_among_those": 3
+      },
+      "inference_unit": "질의(per-query ΔNDCG). 코퍼스별 n=300·323·4,392",
+      "evidence": "ledger/control/2026-09-11-paired-ci-int4.json",
+      "must_not_say": "⛔ '표준오차보다 작다' 또는 '통계적으로 0과 구분되지 않는다'로 쓰지 마라 — 질의 4,392개에서는 0.2점도 해상된다. 주장은 유의성이 아니라 **크기**다.",
+      "operating_point": "INT4, group 16, weight-only · 질의 단위 페어드 부트스트랩 10,000회"
+    },
+    "C-RECON-PREDICTS-WITHIN": {
+      "status": "CLAIM",
+      "statement": "재구성 오차는 균일 양자화 손상을 5개 중 4개에서 잘 예측하고(r=0.87~0.92, pooled 0.86), E5 는 예외(0.56)다. 부위 선택 손상은 전반적으로 약하게 예측한다(r=0.35~0.70, pooled 0.51).",
+      "numbers": {
+        "uniform_per_model": {
+          "bgem3": 0.897,
+          "e5": 0.555,
+          "gemma": 0.91,
+          "qwen": 0.865,
+          "skillret06": 0.92
+        },
+        "module_per_model": {
+          "bgem3": 0.352,
+          "e5": 0.583,
+          "gemma": 0.678,
+          "qwen": 0.698,
+          "skillret06": 0.594
+        },
+        "pooled_uniform": 0.856,
+        "pooled_module": 0.51
+      },
+      "operating_point": "붕괴 팔(손실>50%) 및 철회 팔 제외 · 균일 n=27 / 부위별 n=40",
+      "inference_unit": "양자화 팔(arm). n=5~7(균일) · 8(부위별) per model. 질의 단위 아님",
+      "evidence": "ledger/control/2026-09-11-recon-vs-rank-4models.json",
+      "must_not_say": "⛔ 축을 안 밝히고 '잘 예측한다'고 쓰지 마라. 그리고 균일 축도 '일관되게'라고 쓰지 마라 — E5 가 0.56 으로 벗어나고 이유를 모른다."
+    },
+    "C-CROSS-ARCH-DIVERGE": {
+      "status": "CLAIM",
+      "statement": "거의 같은 재구성 오차에서 INT2 결과가 모델 간 3배 다르다(qwen 98.7% 손실 vs gemma 34.3%).",
+      "numbers": {
+        "qwen_recon": 0.3292,
+        "gemma_recon": 0.3373,
+        "qwen_loss_pct": 98.71,
+        "gemma_loss_pct": 34.34
+      },
+      "inference_unit": "코퍼스 3개 평균 · 질의 단위 페어드 검정 미실시",
+      "evidence": "ledger/control/2026-09-11-recon-vs-rank.json",
+      "must_not_say": "어떤 구조적 성질이 원인인지는 측정 안 했다 — 원인을 지목하지 마라.",
+      "operating_point": "INT2, group 16, asymmetric"
+    },
+    "C-FINETUNE-NULL": {
+      "status": "CLAIM",
+      "statement": "과제 파인튜닝은 양자화 내성을 최대 1.8pp 움직이며, INT3 하락과 INT2 붕괴는 원본 체크포인트에 이미 있다.",
+      "numbers": {
+        "max_delta_pp": 1.8,
+        "base_int3_pct": 91.5,
+        "base_int2_pct": 1.6
+      },
+      "inference_unit": "OOD 코퍼스 2개(SciFact·NFCorpus) 평균. SkillRet 은 in-domain 교란이라 제외",
+      "evidence": "ledger/control/2026-09-11-finetune-paired-control.json",
+      "must_not_say": "SkillRet 코퍼스 수치로 이 비교를 하지 마라 — 파인튜닝 모델에만 in-domain 이다.",
+      "operating_point": "SciFact+NFCorpus 평균 · 양쪽 OOD"
+    },
+    "C-GENERALIZATION-BASIS": {
+      "status": "CLAIM_AS_RANGE",
+      "statement": "교차 아키텍처 주장의 근거는 계열 4개(Qwen3·Gemma3·XLM-R·BERT). 체크포인트는 5개지만 하나는 같은 계열의 paired control.",
+      "numbers": {
+        "families": 4,
+        "checkpoints": 5
+      },
+      "inference_unit": "해당 없음 — 개수 주장",
+      "evidence": "https://huggingface.co/ThakiCloud/SKILLRET-Embedding-0.6B (base_model: Qwen/Qwen3-Embedding-0.6B, 2026-09-11 확인)",
+      "must_not_say": "'five architecture families' 또는 Qwen 과 SKILLRET 을 독립 증거 둘로 세는 서술.",
+      "operating_point": "해당 없음 — 개수 주장"
+    },
+    "C-FFN-SENS-AT-INT3": {
+      "status": "CLAIM",
+      "statement": "파인튜닝은 FFN 민감도를 만들지 않는다 — 원본 Qwen 이 이미 int3/g16 에서 FFN -1.86, 파인튜닝본은 -1.50 으로 오히려 작다.",
+      "numbers": {
+        "base_ffn_int3g16": -1.86,
+        "ft_ffn_int3g16": -1.5
+      },
+      "operating_point": "INT3/g16, 코퍼스 3개 평균",
+      "inference_unit": "코퍼스 3개 평균",
+      "evidence": "ledger/control/2026-09-11-module-sensitivity-4models.json",
+      "must_not_say": "SkillRet 코퍼스 단독 수치로 이 비교를 하지 마라 — in-domain 교란이다."
+    },
+    "C-SYM-VS-ASYM": {
+      "status": "PENDING",
+      "statement": "대칭 대비 비대칭의 이득 — 재측정 중(fp16 스케일 언더플로 수정 후).",
+      "numbers": {},
+      "operating_point": "INT4, group 16",
+      "inference_unit": "미정",
+      "evidence": "진행 중 (srsweepb)",
+      "must_not_say": "수정 전 수치(BGE-M3 1.8%)를 인용하지 마라 — NaN 산물이다."
+    },
+    "C-MODULE-ORDER-INVERTS": {
+      "status": "CLAIM",
+      "statement": "INT3/g16 에서 부위 민감도 순위가 모델 간 뒤집힌다 — 3개 모델은 FFN 최다 민감, BGE-M3 는 FFN 무손실(-0.01)·어텐션 병목(-2.46).",
+      "numbers": {
+        "qwen_ffn": -1.86,
+        "skillret_ffn": -1.5,
+        "gemma_ffn": -0.74,
+        "bgem3_ffn": -0.01,
+        "bgem3_attn": -2.46
+      },
+      "operating_point": "INT3, group 16, weight-only, 코퍼스 3개 평균",
+      "inference_unit": "코퍼스 3개 평균 · 질의 단위 페어드 검정 미실시",
+      "evidence": "ledger/control/2026-09-11-module-sensitivity-4models.json",
+      "must_not_say": "INT4 에서 이 순위를 말하지 마라 — INT4 에서는 전 부위가 SE 안이다."
+    },
+    "C-INTERACTION-GAP": {
+      "status": "CLAIM",
+      "statement": "부위 간 상호작용이 모든 모델에서 크고, 크기도 부호도 전이되지 않는다. INT3/g16 잔차 I: Qwen -2.35 · SkillRet -1.91 · BGE-M3 -0.80 · Gemma -0.35 · E5 +0.32.",
+      "numbers": {
+        "I_int3g16": {
+          "qwen": -2.35,
+          "skillret06": -1.91,
+          "bgem3": -0.8,
+          "gemma": -0.35,
+          "e5": 0.32
+        }
+      },
+      "operating_point": "INT3/g16 (세 부위 단독 팔이 모두 있는 유일한 동작점) · 코퍼스 3개 평균",
+      "inference_unit": "코퍼스 3개 평균",
+      "evidence": "ledger/control/2026-09-11-module-sensitivity-4models.json",
+      "must_not_say": "⛔ 'Σparts 를 1.8~7.6배 과소평가'로 쓰지 마라 — E5 는 반대(과대평가)이고, INT3/g32 에는 어텐션 단독 팔이 없어 그 동작점의 Σparts 는 세 부위의 합이 아니다."
+    },
+    "C-BOUNDARY-MARGIN": {
+      "status": "CLAIM_AS_RANGE",
+      "statement": "경계 마진이 작을수록 10위 뒤집힘이 많다 — 방향은 성립(상관 중앙값 -0.64)하나 기울기가 얕다. 1~9분위 내부 폭(25pp)이 1분위↔10분위 차(21pp)와 맞먹는다.",
+      "numbers": {
+        "rho_median": -0.64,
+        "spread_d1_d9_pp": 25.0,
+        "gap_d1_d10_pp": 21.2
+      },
+      "operating_point": "현재 gemma 3코퍼스 + qwen 일부 — 스윕 진행 중",
+      "inference_unit": "질의(십분위당 n=32~439). 셀 단위 집계는 코퍼스 가중평균",
+      "evidence": "ledger/control/2026-09-11-rank-preservation.json",
+      "must_not_say": "⛔ '마진이 뒤집힘을 예측한다'로만 적지 마라 — 기울기가 얕아 마진 가중이 최상위 분위 밖에서는 균일 가중과 거의 같아진다. 그리고 아직 전 모델 데이터가 아니다."
+    },
+    "C-TURNOVER": {
+      "status": "CLAIM",
+      "statement": "INT4 에서 퇴출 문서의 97.6~97.9%가 비정답이고 정답만 겹침이 0.937~1.000, ΔRecall 은 1점 안이다. ⛔ 코퍼스 편차가 크다 — 정답 퇴출 비율 0%(SciFact)~15.1%(NFCorpus).",
+      "numbers": {
+        "relevant_only_overlap_int4": [
+          0.937,
+          1.0
+        ],
+        "delta_recall_int4_abs_max": 0.83,
+        "relevant_evicted_share_int4": {
+          "scifact": 0.0,
+          "skillret": 1.7,
+          "nfcorpus": 15.1
+        },
+        "aggregation": {
+          "micro_int4_pct": 2.22,
+          "macro_int4_pct": 5.17,
+          "micro_int2_pct": 9.83,
+          "macro_int2_pct": 13.41
+        }
+      },
+      "operating_point": "INT4/g16 · 5모델 × 3코퍼스 · qrels 기반 집계",
+      "inference_unit": "문서(퇴출 건수) 및 질의(recall). 코퍼스 합산",
+      "evidence": "ledger/sweep/turn-*.json",
+      "must_not_say": "⛔ 가장 깨끗한 코퍼스(SciFact 0%)만 인용하지 마라 — 효과를 부풀린다. ⛔ '퇴출중 정답 비율'을 생존/붕괴 판별자로 쓰지 마라 — 어려운 코퍼스에서 구분력을 잃는다(NFCorpus INT2: gemma 22.2% vs qwen 26.1% 인데 겹침은 0.500 vs 0.011). 정답 잔존을 써라. ⛔ 집계 방식을 안 밝히고 97.8% 만 쓰지 마라 — micro 다. macro 는 94.8% 다."
+    },
+    "C-INT2-CONTINUUM": {
+      "status": "CLAIM",
+      "statement": "INT2 보존은 이진이 아니라 연속이다 — 65.7 · 41.9 · 1.7 · 1.3 · 1.8%, E5 가 중간.",
+      "numbers": {
+        "retention_pct": {
+          "gemma": 65.7,
+          "e5": 41.9,
+          "skillret06": 1.7,
+          "bgem3": 1.8,
+          "qwen": 1.3
+        },
+        "rel_overlap_scifact_int2": {
+          "gemma": 0.764,
+          "e5": 0.53,
+          "bgem3": 0.0,
+          "qwen": 0.0
+        }
+      },
+      "operating_point": "INT2/g16 · 코퍼스 3개 평균(보존) · SciFact(겹침)",
+      "inference_unit": "코퍼스 평균",
+      "evidence": "ledger/sweep/turn-*.json",
+      "must_not_say": "⛔ '2/5 생존, 3/5 붕괴'로 쓰지 마라 — E5 가 중간이다. ⛔ 보존과 정답잔존의 상관 r=1.000 을 결과로 인용하지 마라 — n=4 이고 두 값이 거의 같은 것을 잰다."
+    }
+  },
+  "withdrawn": [
+    {
+      "id": "W-FFN-BOTTLENECK-AT-INT4",
+      "pattern": "(?i)(?:(?:FFN|feed-?forward(?:\\s+block)?)[^.\\n]{0,60}(?:bottleneck|most sensitive|가장 민감)[^.\\n]{0,60}(?:INT4|W4|int4)|(?:INT4|W4|int4)[^.\\n]{0,60}(?:FFN|feed-?forward(?:\\s+block)?)[^.\\n]{0,60}(?:bottleneck|most sensitive|가장 민감)|(?:FFN|feed-?forward(?:\\s+block)?)[^.\\n]{0,60}(?:INT4|W4|int4)[^.\\n]{0,60}(?:bottleneck|most sensitive|가장 민감)|(?:INT4|W4|int4)[^.\\n]{0,40}(?:FFN|feed-?forward(?:\\s+block)?)[^.\\n]{0,30}(?:-6\\.66|6\\.66\\s*pp))",
+      "why": "2026-09-11 보고서가 원본 민감도 실험을 int4 로 적었으나 실제 동작점은 int3/g32 였다. INT4/g16 에서는 세 부위 전부 SE 안이다.",
+      "replacement": "동작점을 명시하라: 'at INT3/g32 the FFN was the most sensitive module'. INT4 에서는 민감도 차이가 없다고 적어라.",
+      "must_catch": [
+        "the FFN is the bottleneck at INT4",
+        "at int4 the feed-forward block is most sensitive",
+        "at INT4 the FFN is the bottleneck",
+        "the feed-forward block at W4 is most sensitive"
+      ],
+      "must_pass": [
+        "module effects at INT4 are too small to allocate against",
+        "at INT3/g32 the FFN was the most sensitive module",
+        "INT4 costs 0.12 points",
+        "module effects at INT4/g16 are too small to allocate against",
+        "at INT3/g32 the FFN was the most sensitive module, costing 6.66 points"
+      ]
+    },
+    {
+      "id": "W-OVERCOUNT-FAMILIES",
+      "pattern": "(?i)(?:five[^.\\n]{0,25}(?:architecture|architectural)\\s+famil|five\\s+(?:independent|distinct)\\s+(?:model|embedder|architecture)|(?:Qwen3-?Embedding|Qwen)[^.\\n]{0,60}(?:and|plus)[^.\\n]{0,40}Skill-?Ret[^.\\n]{0,60}(?:two|2)\\s+(?:independent|distinct|separate))",
+      "why": "체크포인트는 5개지만 계열은 4개다(Qwen3·Gemma3·XLM-R·BERT). Qwen3-Embedding 과 SKILLRET 은 파인튜닝 관계라 독립 증거가 아니다. ⚠️ 2026-09-11 E5 합류로 '4계열'은 이제 참이다 — 금지 대상은 5로 세는 것이다.",
+      "replacement": "'five checkpoints drawn from four architecture families'",
+      "must_catch": [
+        "five architecture families",
+        "five independent models",
+        "five distinct embedders",
+        "Qwen3-Embedding and SkillRet as two independent architectures"
+      ],
+      "must_pass": [
+        "five checkpoints drawn from four architecture families",
+        "Four architecture families, five checkpoints",
+        "Generalization rests on the four families",
+        "four families is a small basis for a claim about embedders in general"
+      ]
+    },
+    {
+      "id": "W-QUANT-BEATS-FP16",
+      "pattern": "(?i)(?:^|[.!?]\\s)(?:(?!spurious|manufactur\\w*|retract\\w*|falsely|appear\\w*|artifact|mismatch|briefly believed|we withdrew)[^.\\n])*(?:quantiz\\w+[^.\\n]{0,40}(?:beats|outperform\\w*|better than)[^.\\n]{0,20}(?:fp16|full[- ]precision)|\\+4\\.45\\s*pp)",
+      "why": "학습/평가 접두어 불일치 위에서 잰 허상. 계약을 고치면 전 에포크에서 fp16 아래다.",
+      "replacement": "그 결과는 철회됐다. 인용하려면 '접두어 불일치가 만든 가짜 결과'로만 적어라.",
+      "must_catch": [
+        "quantization beats fp16",
+        "the quantized arm outperforms full-precision",
+        "+4.45 pp",
+        "Quantization beats fp16 on this benchmark."
+      ],
+      "must_pass": [
+        "quantization noise partially undid the mismatch",
+        "the quantized arm scored above the full-precision arm",
+        "14.45 percent",
+        "prefix mismatch manufactured a spurious result that quantization outperforms full precision.",
+        "so the quantized arm scored above the full-precision arm, and the apparent gain grew",
+        "We retracted that result."
+      ]
+    },
+    {
+      "id": "W-BGEM3-SYM-COLLAPSE",
+      "pattern": "(?i)(?:BGE-?M3[^.\\n]{0,80}(?:collapse|fail|die|무너)[^.\\n]{0,40}(?:sym|symmetric|대칭)|(?:sym|symmetric|대칭)[^.\\n]{0,60}BGE-?M3[^.\\n]{0,40}(?:collapse|1\\.8\\s*%))",
+      "why": "대칭 양자화기의 fp16 스케일 언더플로가 만든 NaN 이다. 전부-0 그룹(token_type_embeddings)에서 scale→0 → g/0 → nan. 모델 성질이 아니라 내 구현 결함이다.",
+      "replacement": "수정본으로 재측정한 값을 쓰라. 재측정 전에는 이 축을 언급하지 마라.",
+      "must_catch": [
+        "BGE-M3 collapses under symmetric INT4",
+        "symmetric quantization makes BGE-M3 collapse to 1.8%"
+      ],
+      "must_pass": [
+        "symmetric quantization costs the other models under two points",
+        "the symmetric arm is being re-measured after a scale-underflow fix"
+      ]
+    },
+    {
+      "id": "W-RECON-R09-UNQUALIFIED",
+      "pattern": "(?i)(?:reconstruction error[^.\\n]{0,80}(?:r\\s*=\\s*0\\.9\\d*|0\\.91\\d?|0\\.92\\d?|0\\.93\\d?)[^.\\n]{0,40}(?:within[- ]model|per[- ]model|within a model)|(?:within[- ]model|per[- ]model|within a model)[^.\\n]{0,40}reconstruction error[^.\\n]{0,80}(?:r\\s*=\\s*0\\.9\\d*|0\\.91\\d?|0\\.92\\d?|0\\.93\\d?)|reconstruction error[^.\\n]{0,40}(?:within[- ]model|per[- ]model|within a model)[^.\\n]{0,80}(?:r\\s*=\\s*0\\.9\\d*|0\\.91\\d?|0\\.92\\d?|0\\.93\\d?))",
+      "why": "2모델·10팔 판에서 나온 0.917 은 균일 비트 사다리가 지배하는 좁은 집합의 값이다. 부위별 절제 팔을 넣으면 0.687 로 떨어지고, 부위별만 보면 0.538 이다.",
+      "replacement": "축을 나눠서 적어라 — 균일 0.89 / 부위별 0.54.",
+      "must_catch": [
+        "reconstruction error correlates at r=0.917 within a model",
+        "within-model reconstruction error reaches 0.93",
+        "per-model reconstruction error correlates at 0.92"
+      ],
+      "must_pass": [
+        "reconstruction error tracks NDCG loss at $r=0.86$ to $0.91$",
+        "pooling to 0.54 against 0.89 for the uniform arms"
+      ]
+    },
+    {
+      "id": "W-SIGMA-PARTS-RATIO",
+      "pattern": "(?i)(?:1\\.8\\s*(?:to|~|-|–)\\s*7\\.6|under-?(?:predict|estimate)\\w*[^.\\n]{0,50}(?:1\\.8|7\\.6)[^.\\n]{0,20}(?:times|×|x\\b))",
+      "why": "Σparts 에 어텐션이 빠진 동작점(INT3/g32)에서 계산한 비율이고, E5 는 부호가 반대라 '항상 과소평가'가 성립하지 않는다. 리뷰 지적으로 발견.",
+      "replacement": "잔차 I = joint - Σparts 를 쓰고, 부호가 모델마다 다르다고 적어라.",
+      "must_catch": [
+        "per-module costs under-predict the joint cost by 1.8 to 7.6 times",
+        "underestimates the joint loss by 1.8x to 7.6x"
+      ],
+      "must_pass": [
+        "the interaction residual $I$",
+        "neither its magnitude nor its sign transfers",
+        "1.83 for Qwen in the earlier ratio form is withdrawn"
+      ]
+    },
+    {
+      "id": "W-WITHIN-001",
+      "pattern": "(?i)within\\s*\\$?0\\.01\\$?[^.\\n]{0,40}reconstruction error|reconstruction error[^.\\n]{0,40}within\\s*\\$?0\\.01",
+      "why": "INT2 재구성 오차 span 은 0.0227 이다(0.3146~0.3373). 'within 0.01' 은 어느 넷을 골라도 성립하지 않는다.",
+      "replacement": "'clustered between 0.315 and 0.337' 로 적어라",
+      "must_catch": [
+        "four checkpoints sit within $0.01$ of each other in reconstruction error"
+      ],
+      "must_pass": [
+        "reconstruction error is tightly clustered between $0.315$ and $0.337$"
+      ]
+    },
+    {
+      "id": "W-FACTOR-THREE",
+      "pattern": "(?i)factor of three[^.\\n]{0,40}retained|retained[^.\\n]{0,40}factor of three",
+      "why": "보존율은 1.29%~65.66% 로 51배 차이다. 3배는 손실(34% vs 98%)을 보존이라 잘못 옮긴 값이다.",
+      "replacement": "'from roughly 1% to 66% in retained retrieval quality'",
+      "must_catch": [
+        "architectures diverge by a factor of three in retained retrieval quality"
+      ],
+      "must_pass": [
+        "diverge from roughly 1\\% to 66\\% in retained retrieval quality"
+      ]
+    },
+    {
+      "id": "W-INT4-FREE",
+      "pattern": "(?i)W8 and W4 are free|INT4 is free(?! ''\\))",
+      "why": "본문은 NDCG-neutral but not ranking-invariant 로 고쳤는데 캡션에 free 가 남아 논문 스스로와 충돌했다.",
+      "replacement": "'approximately NDCG-neutral'",
+      "must_catch": [
+        "W8 and W4 are free for every model"
+      ],
+      "must_pass": [
+        "W8 and W4 are approximately NDCG-neutral for every model",
+        "This is where we stop calling INT4 ``free''"
+      ]
+    },
+    {
+      "id": "W-INT4-AT-MOST-ONE-POINT",
+      "pattern": "(?i)at most\\s+1\\.0\\s+(?:NDCG\\s+)?points?\\b(?!\\s+in\\s+(?:the\\s+)?two-corpus)",
+      "why": "2026-09-12 리뷰 4R. 셀 단위 실측 최대는 BGE-M3 attention on SciFact 의 -1.010 이다. 1.0 은 반올림으로 실측을 넘긴다. ⚠️ 2026-09-12: 최초 패턴이 너무 넓어 paired control 의 정당한 '1.0 point in two-corpus averages' 까지 잡았다 — 단일부위 문맥으로 좁혔다.",
+      "replacement": "'at most 1.01 points' 로 적고, 집계 단위(개별 model-corpus pair 인지 3코퍼스 평균인지)를 함께 밝혀라.",
+      "must_catch": [
+        "costs at most 1.0 point in any model",
+        "the effect is at most 1.0 NDCG point"
+      ],
+      "must_pass": [
+        "costs at most 1.01 points in any model",
+        "at most 1.01 NDCG points on any pair",
+        "at most 0.59 in the averages",
+        "moves quantization tolerance by at most 1.0 point in two-corpus averages",
+        "fine-tuning moves quantization tolerance by at most 1.0 point in the two-corpus averages"
+      ]
+    },
+    {
+      "id": "W-JOINT-EQUALS-PARTS-AT-INT4",
+      "pattern": "(?i)so does quantizing all of them",
+      "why": "2026-09-12 리뷰 4R. 결합 양자화는 -1.63 (BGE-M3, SciFact) 까지 간다. 부위 최대(1.01)와 같지 않다.",
+      "replacement": "결합은 더 비쌀 수 있다고 적고 1.63 을 명시하라 — 비가산 상호작용 결과와 연결된다.",
+      "must_catch": [
+        "costs at most 1.01 points, and so does quantizing all of them"
+      ],
+      "must_pass": [
+        "Quantizing all three jointly can cost somewhat more, reaching 1.63 points"
+      ]
+    },
+    {
+      "id": "W-NO-SENSITIVITY-AT-ALL-INT4",
+      "pattern": "(?i)(nothing is sensitive in any model|no module-level sensitivity to allocate against at all|no sensitivity differential for one to exploit)",
+      "why": "2026-09-12 리뷰 4R. BH 보정 뒤에도 45칸 중 6칸이 0을 제외한다. 없는 게 아니라 작다.",
+      "replacement": "'too small to allocate against' · 'no large or consistently ordered differential' 로 강도를 낮춰라.",
+      "must_catch": [
+        "At INT4 nothing is sensitive in any model",
+        "there is no module-level sensitivity to allocate against at all"
+      ],
+      "must_pass": [
+        "isolated-module effects stay small",
+        "no large or consistently ordered sensitivity differential",
+        "too small to allocate against"
+      ]
+    },
+    {
+      "id": "W-TERNARY-COLLAPSES-EVERYWHERE",
+      "pattern": "(?i)ternary collapses everywhere",
+      "why": "2026-09-12 리뷰 4R. 5개 중 4개의 ternary/대칭 팔은 대칭 양자화기 결함으로 철회됐고 재측정하지 않았다. 유효한 ternary 는 E5 하나다.",
+      "replacement": "E5 한 팔만 보고한다고 밝히고, 나머지 넷은 측정 후 철회됐다고 적어라. n=1 로 everywhere 를 주장하지 마라.",
+      "must_catch": [
+        "Ternary collapses everywhere."
+      ],
+      "must_pass": [
+        "Ternary is reported for E5 only",
+        "One surviving ternary arm is not evidence about the other four"
+      ]
+    },
+    {
+      "id": "W-TEACHER-EIGHTEENTH-NO-DENOM",
+      "pattern": "(?i)one eighteenth the size",
+      "why": "2026-09-12 리뷰 4R. 분모 없이 '18배'는 검산에서 깨진다. ⛔ 2026-09-13 정정: 당시 여기 적힌 68.6MB·1152MB 자체가 틀린 값이었다 — 68.6 은 size_mb() 산술 예측(실측 68.350080MB)이고 1152 는 du -sm(MiB) 이었다. 실측 BF16 아티팩트는 1,191,586,416 바이트 = 1191.6MB 이고 비는 17.4배다.",
+      "replacement": "분모를 명시하라: 교사의 1191.6 MB BF16 저장 아티팩트 기준. 크기는 artifacts.csv 의 size_bytes 에서만 가져온다.",
+      "must_catch": [
+        "at roughly one eighteenth the size"
+      ],
+      "must_pass": [
+        "the teacher's 1191.6 MB BF16 storage artifact"
+      ]
+    },
+    {
+      "id": "W-PAIRED-1POINT8",
+      "pattern": "(?i)tolerance by at most 1\\.8 points",
+      "why": "2026-09-12 리뷰 5R. 원장 실측: 2코퍼스 평균 최대 1.0pp, 균일팔 셀 최대 2.28pp. 1.8 은 어느 집계 수준에도 없다.",
+      "replacement": "'1.0 point in two-corpus averages, 2.28 points on any individual arm' 로 적고 집계 수준을 밝혀라.",
+      "must_catch": [
+        "moves quantization tolerance by at most 1.8 points"
+      ],
+      "must_pass": [
+        "at most 1.0 point in the two-corpus averages",
+        "2.28 points on any individual model--corpus arm"
+      ]
+    },
+    {
+      "id": "W-TERNARY-COLLAPSES-FOR-ALL",
+      "pattern": "(?i)ternary collapses for all",
+      "why": "2026-09-12 리뷰 5R. Figure 1 은 ternary 를 아예 그리지 않고, 5개 팔 중 4개는 철회됐다.",
+      "replacement": "그림에 없는 팔을 캡션에서 말하지 마라. 철회 사실을 적어라.",
+      "must_catch": [
+        "Ternary collapses for all."
+      ],
+      "must_pass": [
+        "Ternary is not plotted here"
+      ]
+    },
+    {
+      "id": "W-INT4-NEUTRAL-UNQUALIFIED",
+      "pattern": "(?i)At INT4 quantization is NDCG-neutral",
+      "why": "2026-09-12 리뷰 5R. W4/g128 에서 E5 93.1%·SkillRet 96.5% 다. 중립인 것은 INT4/g16 이다.",
+      "replacement": "동작점을 붙여라: 'At INT4/g16 quantization is NDCG-neutral'.",
+      "must_catch": [
+        "At INT4 quantization is NDCG-neutral"
+      ],
+      "must_pass": [
+        "At INT4/g16 quantization is NDCG-neutral",
+        "at INT4 with group size 16"
+      ]
+    },
+    {
+      "id": "W-TEACHER-34X-NO-FILE",
+      "pattern": "(?i)one thirty-fourth against FP32",
+      "why": "2026-09-12 리뷰 5R. FP32 아티팩트 파일이 디스크에 없다. 논문 자신의 원칙(size claim is arithmetic until a file of that size exists)에 어긋난다.",
+      "replacement": "실존 파일(1191.6MB BF16, 1,191,586,416 바이트)에 대한 배수만 주장하라.",
+      "must_catch": [
+        "about one thirty-fourth against FP32 weights"
+      ],
+      "must_pass": [
+        "a size claim is arithmetic until a file of that size exists"
+      ]
+    },
+    {
+      "id": "W-OVERLAP-094-TO-100",
+      "pattern": "relevant-only overlap stays at 0\\.94--1\\.00",
+      "why": "2026-09-12 리뷰 5R. 모델평균은 0.944~0.970, 셀은 0.899~1.000. 0.94--1.00 은 두 수준 어디에도 맞지 않고 최악 셀(0.899)을 가린다.",
+      "replacement": "집계 수준을 밝혀라 — 모델평균 0.944--0.970, 셀 0.899--1.000.",
+      "must_catch": [
+        "relevant-only overlap stays at 0.94--1.00"
+      ],
+      "must_pass": [
+        "0.944--0.970",
+        "0.899--1.000 across individual model--corpus cells"
+      ]
+    },
+    {
+      "id": "W-RECALL-DOES-NOT-FALL",
+      "pattern": "(?i)recall@10 does not fall|Recall@10 moves by under a point\\.(?!\\s)",
+      "why": "2026-09-12 리뷰 7R. INT4/g16 ΔRecall 은 모델평균 최대 |0.90| 이지만 셀에서는 −2.17(BGE-M3)까지 간다. '떨어지지 않는다'는 거짓이고, '1점 미만'도 집계 수준을 안 밝히면 틀린다.",
+      "replacement": "집계 수준을 밝혀라 — 모델평균 1점 미만, 셀 최대 2.17.",
+      "must_catch": [
+        "entirely non-relevant, recall@10 does not fall, and"
+      ],
+      "must_pass": [
+        "Recall@10 moves by under a point in the per-model averages, and by at most 2.17 points",
+        "recall@10 moves by less than a point on average across corpora"
+      ]
+    },
+    {
+      "id": "W-INTERACTION-LARGE-EVERYWHERE",
+      "pattern": "\\$I\\$ is large in every model",
+      "why": "2026-09-12 리뷰 7R. INT4/g16 의 I 는 −0.15~+0.24 로 작다. '모든 모델에서 크다'는 INT3 에서만 참이다.",
+      "replacement": "동작점을 붙여라 — INT4/g16 에서는 작고, INT3 에서 실질적이다.",
+      "must_catch": [
+        "$I$ is large in every model and changes sign"
+      ],
+      "must_pass": [
+        "At INT4/g16 $I$ is small",
+        "at INT3 it is substantial in every"
+      ]
+    },
+    {
+      "id": "W-STUDENT-SCIFACT-70",
+      "pattern": "on SciFact\\s+against 70 to 78",
+      "why": "2026-09-12 리뷰 7R. Table 9 에 BGE-M3(64.37)를 복원한 뒤 남은 stale 범위. 실제 하한은 64 다.",
+      "replacement": "'against 64 to 78' — Table 9 의 네 일반모델 실측 범위.",
+      "must_catch": [
+        "50.73 on SciFact against 70 to 78"
+      ],
+      "must_pass": [
+        "against 64 to 78"
+      ]
+    }
+  ],
+  "global_must_pass": [
+    "We quantize four checkpoints drawn from three architecture families",
+    "At INT4 the largest single-module effect is 1.01 points on any model-corpus pair",
+    "the INT3 decline and INT2 collapse are both already present in the base checkpoint"
+  ],
+  "inference_unit_rule": {
+    "rule": "NDCG 값의 SE 는 질의 단위(per-query) 재표집으로 낸다. 재구성 오차 상관의 n 은 양자화 팔 수이며 질의 수가 아니다 — 혼동하면 n 이 4392 로 부풀려진다.",
+    "why": "점추정은 단위가 틀려도 안 움직인다. 숫자 대조로는 안 보인다.",
+    "audited_paths": [
+      "scripts/quant_sweep.py:ndcg10",
+      "scripts/recon_vs_rank.py:corr",
+      "paper/make_tables.py"
+    ]
+  },
+  "corrections_log": [
+    {
+      "date": "2026-09-11",
+      "what": "보고서가 부위별 민감도 실험을 int4 로 표기 — 실제는 int3/g32",
+      "who": "coordinator(나)",
+      "how_found": "4모델 스윕에서 int4 절제가 전부 SE 안으로 나와 원본 원장을 열어봄"
+    },
+    {
+      "date": "2026-09-11",
+      "what": "Qwen3-Embedding 과 SKILLRET 을 별개 모델처럼 보이게 구성",
+      "who": "외부 리뷰 지적",
+      "how_found": "HF 모델카드 base_model 필드 직접 확인"
+    },
+    {
+      "date": "2026-09-11",
+      "what": "대칭 양자화기 fp16 스케일 언더플로 → 전부-0 그룹 NaN. BGE-M3 '대칭 붕괴'가 가짜 발견이 될 뻔했다.",
+      "who": "coordinator(나) — 내가 쓴 _sym_quant_",
+      "how_found": "97pp 차이가 너무 커서 재구성 오차를 직접 쟀더니 nan 이 나왔다"
+    },
+    {
+      "date": "2026-09-11",
+      "what": "재구성 오차 상관 0.917 을 '모델 내 예측력'으로 일반화. 실제로는 균일 사다리 축의 값이고, 배분기가 쓰는 부위 축은 0.54 다.",
+      "who": "coordinator(나)",
+      "how_found": "4모델·17팔로 넓혔더니 pooled 가 0.917→0.687 로 떨어져 팔 종류별로 분해함"
+    },
+    {
+      "date": "2026-09-11",
+      "what": "매니페스트가 'four architecture families' 를 금지하고 있었는데 E5 합류로 그 문장이 참이 됐다. 정본이 참을 막는 상태였다.",
+      "who": "coordinator(나)",
+      "how_found": "최종 PDF 를 픽셀로 읽다가 3쪽의 'Three architecture families, four checkpoints' 가 낡은 걸 발견"
+    },
+    {
+      "date": "2026-09-11",
+      "what": "초록이 'INT4 부위별 손실이 표준오차 안'이라고 했으나 페어드 부트스트랩에서 45셀 중 10셀이 0을 제외. 유의성이 아니라 크기로 재서술.",
+      "who": "외부 리뷰 지적 → 내가 측정",
+      "how_found": "리뷰가 'SE 보다 작다면서 SE 가 어디 있나'를 물었고, 재보니 주장이 틀렸다"
+    },
+    {
+      "date": "2026-09-11",
+      "what": "E5 의 균일 축 상관 0.56 을 '이유 모를 예외'로 적었으나, 붕괴 팔 제외가 변동폭을 없앤 artifact. 포함 시 0.97, CI [-0.24,+1.00].",
+      "who": "외부 리뷰 지적 → 내가 측정",
+      "how_found": "리뷰가 붕괴 팔 제외의 robustness 를 물어 CI 와 Spearman 을 같이 쟀다"
+    },
+    {
+      "date": "2026-09-11",
+      "what": "Σparts 비율 1.8~7.6배 — 어텐션 누락 동작점에서 계산했고 E5 는 부호가 반대.",
+      "who": "외부 리뷰 지적",
+      "how_found": "리뷰어가 표 숫자로 6.73/(0.51+3.17)=1.83 을 직접 계산했다"
+    },
+    {
+      "date": "2026-09-12",
+      "round": "review-4 (mechanical consistency)",
+      "applied": [
+        "1.0→1.01 (셀 단위 실측)",
+        "결합≠부위합 (1.63)",
+        "INT4 절대표현 3곳 완화",
+        "ternary n=1 정직화",
+        "교사 크기 분모 명시 (실측 1191.6MB BF16 = 1,191,586,416 바이트)",
+        "concentration→gold-set protection",
+        "Table 9 에 교사+BGE 추가",
+        "citation 5건 추가 (원출처 검증)",
+        "BitNet 저자 정정",
+        "bootstrap p-value 산출법 명시"
+      ],
+      "rejected": [
+        "리뷰어가 -1.01/-1.63 을 Table 4 값으로 인용 — Table 4 는 3코퍼스 평균(-0.59/-0.67)이고 그 값들은 셀 단위다. 지적은 유효하나 위치는 틀렸다.",
+        "리뷰어의 SkillRet 서지 (저자 순서 Cho 우선, 17,810 skills, 4,997 queries) — arXiv 원문은 Kang 우선, 16,129 skills, 4,392 queries. 원문 값을 채택했다."
+      ]
+    },
+    {
+      "date": "2026-09-12",
+      "round": "review-5 (pre-submission mechanical)",
+      "applied": [
+        "Fig1 캡션 g128 단서 + ternary 문장 삭제",
+        "INT4→INT4/g16 전역 통일(13곳)",
+        "교사 행 BF16 각주 + 34배 삭제",
+        "paired 1.8→평균1.0/셀2.28 + 평균의 상쇄 명시",
+        "§4.1 fourth→명시적 모델명",
+        "churn 13–22%(셀 11.6–25.2)",
+        "overlap 0.944–0.970(셀 0.899–1.000)",
+        "Table7 E5 부재 사유 명시",
+        "Okajima 풀네임+부제",
+        "초록에 INT3 구간 복원"
+      ],
+      "rejected": [
+        "리뷰어의 SkillRet 서지 정정(Cho 우선) — v1 기준이다. v3(현재)는 Kang 우선이며 우리 인용이 맞다. 대신 판본을 note 에 박았다.",
+        "리뷰어의 이메일 .co.kr 권고 — 사용자가 .com 을 확인했다(둘 다 수신, .com 선호)."
+      ],
+      "discovered": [
+        "⛔ v3 에서 저자들이 4,997→4,392 로 고쳐 우리 §Corpora 의 '벤치마크 논문이 더 큰 split 을 기술한다' 문단이 현재 판본 기준 거짓이 됐다. 판본별로 다시 썼다.",
+        "paired control 의 '항상 robustness 방향' 은 평균에서만 참 — 셀에서는 SciFact +2.28 / NFCorpus −2.08 로 상쇄된다."
+      ]
+    },
+    {
+      "date": "2026-09-12",
+      "round": "review-7 (final text consistency)",
+      "applied": [
+        "SciFact 70→64 (BGE 복원의 하류 stale)",
+        "Recall 주장 2곳 집계수준 명시(평균<1, 셀 2.17)",
+        "Table3 캡션 I 를 INT3 로 한정",
+        "결론 휴리스틱 논리 정리",
+        "BH 문단 1.0→1.01 동일값 명시"
+      ],
+      "note": "리뷰어 권고는 'Recall moves by less than one point' 였으나 그것도 셀에서는 거짓이라(−2.17) 집계 수준을 명시하는 쪽으로 더 강하게 고쳤다."
+    }
+  ],
+  "operating_point_rule": "⛔ 모든 claim 은 operating_point 를 채운다. 비어 있으면 인용 불가. 2026-09-11: 값(−6.66pp)은 맞고 조건(int4 vs 실제 int3/g32)만 틀린 오류가 보고서·슬랙·docx 로 나갔고, 다른 실험이 모순을 낼 때까지 살아남았다. 값만 보는 검사는 이걸 못 잡는다."
+}

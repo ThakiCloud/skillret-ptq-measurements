@@ -1,0 +1,57 @@
+{
+  "date": "2026-09-10",
+  "subject": "두 질문에 대한 답 — 정적도 잘 되고, epoch 은 7에서 꺾인다",
+  "scale": "스모크(717쌍 학습 · 83쌍 홀드아웃 · 161스킬 격리). 절대값이 아니라 비교용",
+  "q1_static_works": {
+    "question": "LUT 성능이 왜 이렇게 나쁜가 — 광고쪽에서는 되는데",
+    "answer": "정적의 한계가 아니라 내 증류 파이프라인 고장. 공개 정적 검색모델을 그대로 쓰면 잘 된다",
+    "evidence": {
+      "potion_retrieval_32m_zeroshot": {
+        "holdout_recall@10": 69.88,
+        "our_test_ndcg@10": 47.31,
+        "size_int8_mb": 32.3
+      },
+      "potion_finetuned_5ep": {
+        "holdout_recall@10": 71.08
+      },
+      "our_own_distill_lut": {
+        "holdout_recall@10": 3.61,
+        "note": "20 epoch 학습 후"
+      }
+    },
+    "conclusion": "공개 가중치 그대로가 내 20 epoch 학습본을 19배 이긴다. 자체 증류를 고치는 대신 공개 정적 검색모델에서 출발하는 게 옳다"
+  },
+  "q2_epochs": {
+    "question": "22M 을 2 epoch 만 한 이유가 있나 — 더 하면 좋아지지 않나",
+    "answer": "이유 없었다. 스모크 설정을 그대로 쓴 것이고, 더 하니 실제로 올랐다",
+    "curve": {
+      "0ep": 63.86,
+      "2ep": 75.9,
+      "5ep": 81.93,
+      "6ep": 83.13,
+      "7ep": 84.34,
+      "8ep": 83.13,
+      "9ep": 84.34
+    },
+    "conclusion": "7 epoch 에서 84.34 로 평평해진다. 2 epoch 은 곡선의 중간이었다. 다만 8ep 에서 83.13 으로 떨어졌다 되돌아오므로 7~9 는 노이즈 범위 — 7 을 쓴다",
+    "warning": "광고쪽 실측: epoch 20 은 리프 +4.21pp 를 벌면서 일반 분류를 -0.98pp 유의하게 깎았다(암기). 무작정 늘리면 안 된다"
+  },
+  "current_standings": {
+    "transformer_22m_7ep": {
+      "holdout_recall@10": 84.34,
+      "size_int8_mb": 22.7,
+      "latency_p50_ms": 9.12
+    },
+    "potion_static_finetuned": {
+      "holdout_recall@10": 71.08,
+      "size_int8_mb": 32.3,
+      "latency_p50_ms": 0.32
+    },
+    "gap": "트랜스포머가 13.3%p 앞서고, 정적이 28배 빠르다"
+  },
+  "unverified": [
+    "전체 스플릿(4,392쿼리) 미측정 — 스모크 규모 수치다",
+    "potion 을 더 오래/큰 배치로 학습하면 더 오를 수 있다(5ep 에서 아직 상승 중이었다)",
+    "우리 자체 증류가 왜 고장났는지는 조사 진행 중"
+  ]
+}

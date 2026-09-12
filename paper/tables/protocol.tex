@@ -1,0 +1,16 @@
+\begin{table}[t]\centering\small
+\caption{Full-precision (FP32 weights) NDCG@10 for every model and corpus. These are the
+baselines every retention figure in this paper is relative to; absolute values differ across
+models partly because SkillRet is in-domain for the finetuned checkpoint only.}
+\label{tab:protocol}
+\begin{tabular}{lrrr}
+\toprule
+Model & NFCorpus & SciFact & SkillRet \\
+\midrule
+Qwen3-Emb-0.6B & 35.40 & 70.32 & 57.48 \\
+SkillRet-0.6B (finetuned) & 33.86 & 69.43 & 78.48 \\
+EmbeddingGemma-300M & 38.75 & 78.32 & 60.44 \\
+BGE-M3 & 31.57 & 64.37 & 56.25 \\
+E5-base-v2 & 35.52 & 71.05 & 51.72 \\
+\bottomrule
+\end{tabular}\end{table}

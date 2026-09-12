@@ -1,0 +1,29 @@
+{
+  "label": "onnx-fp32-arm-m4pro",
+  "onnx": "/tmp/sronnx/model.onnx",
+  "artifact_mb": 3.955794,
+  "seq_len": 512,
+  "threads": "default",
+  "n_measured": 60,
+  "warmup": 5,
+  "latency_ms": {
+    "p50": 649.7960838023573,
+    "p95": 984.3084579333663,
+    "p99": 1141.1910830065608,
+    "mean": 685.3840027741777,
+    "min": 516.4141249842942,
+    "max": 1141.1910830065608
+  },
+  "throughput_qps": 1.4590296749381944,
+  "model_load_sec": 3.71,
+  "peak_rss_mb": 2726.8,
+  "cpu": {
+    "platform": "darwin",
+    "model": "Apple M4 Pro",
+    "cores": 12,
+    "FEAT_I8MM": true,
+    "FEAT_BF16": true,
+    "FEAT_DotProd": true
+  },
+  "timestamp": "2026-09-10T15:37:35+0900"
+}

@@ -1,0 +1,436 @@
+{
+  "experiment": "int2-module-isolation",
+  "date": "2026-09-12",
+  "node": "bm-b200-jz00wp9d",
+  "image": "<registry>/ai-platform/pytorch:2.9.0-cuda13.0-cudnn9-devel",
+  "gpu": 1,
+  "why": "절벽(INT2) 구간에서 부위별 격리를 한 번도 재지 않았다. 어휘/토크나이저가 붕괴 원인이라는 가설의 직접 검정 — 어휘가 결정하는 텐서(임베딩 테이블)만 INT2 로 내려 붕괴가 재현되는지 본다.",
+  "protocol": {
+    "quantization": "group-wise affine (asymmetric) min-max, group=16, fp16 scale/zero",
+    "eval": "NDCG@10, FP32 arithmetic, 3 corpora",
+    "module_split": "part_of(): embedding / attention / ffn"
+  },
+  "cells": {
+    "gemma": [
+      {
+        "model": "gemma",
+        "corpus": "beir:scifact",
+        "fp16_ndcg@10": 78.32,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 54.23,
+            "retained_pct": 69.24
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 77.43,
+            "retained_pct": 98.86
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 73.14,
+            "retained_pct": 93.39
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 71.53,
+            "retained_pct": 91.33
+          }
+        ]
+      },
+      {
+        "model": "gemma",
+        "corpus": "skillret:public-test",
+        "fp16_ndcg@10": 60.44,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 37.86,
+            "retained_pct": 62.64
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 60.3,
+            "retained_pct": 99.77
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 55.33,
+            "retained_pct": 91.55
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 53.77,
+            "retained_pct": 88.96
+          }
+        ]
+      },
+      {
+        "model": "gemma",
+        "corpus": "beir:nfcorpus",
+        "fp16_ndcg@10": 38.75,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 25.23,
+            "retained_pct": 65.11
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 37.42,
+            "retained_pct": 96.57
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 35.29,
+            "retained_pct": 91.07
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 33.95,
+            "retained_pct": 87.61
+          }
+        ]
+      }
+    ],
+    "skillret06": [
+      {
+        "model": "skillret06",
+        "corpus": "beir:scifact",
+        "fp16_ndcg@10": 69.53,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 0.27,
+            "retained_pct": 0.39
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 68.65,
+            "retained_pct": 98.73
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 58.54,
+            "retained_pct": 84.19
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 9.6,
+            "retained_pct": 13.81
+          }
+        ]
+      },
+      {
+        "model": "skillret06",
+        "corpus": "beir:nfcorpus",
+        "fp16_ndcg@10": 33.82,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 1.42,
+            "retained_pct": 4.2
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 33.72,
+            "retained_pct": 99.7
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 23.4,
+            "retained_pct": 69.19
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 3.86,
+            "retained_pct": 11.41
+          }
+        ]
+      },
+      {
+        "model": "skillret06",
+        "corpus": "skillret:public-test",
+        "fp16_ndcg@10": 78.46,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 0.3,
+            "retained_pct": 0.38
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 79.01,
+            "retained_pct": 100.7
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 55.48,
+            "retained_pct": 70.71
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 3.48,
+            "retained_pct": 4.44
+          }
+        ]
+      }
+    ],
+    "e5": [
+      {
+        "model": "e5",
+        "corpus": "beir:scifact",
+        "fp16_ndcg@10": 71.05,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 35.27,
+            "retained_pct": 49.64
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 70.75,
+            "retained_pct": 99.58
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 61.78,
+            "retained_pct": 86.95
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 67.12,
+            "retained_pct": 94.47
+          }
+        ]
+      },
+      {
+        "model": "e5",
+        "corpus": "skillret:public-test",
+        "fp16_ndcg@10": 51.72,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 27.6,
+            "retained_pct": 53.36
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 49.44,
+            "retained_pct": 95.59
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 40.54,
+            "retained_pct": 78.38
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 42.06,
+            "retained_pct": 81.32
+          }
+        ]
+      },
+      {
+        "model": "e5",
+        "corpus": "beir:nfcorpus",
+        "fp16_ndcg@10": 35.52,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 8.04,
+            "retained_pct": 22.64
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 35.13,
+            "retained_pct": 98.9
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 29.41,
+            "retained_pct": 82.8
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 27.74,
+            "retained_pct": 78.1
+          }
+        ]
+      }
+    ],
+    "qwen": [
+      {
+        "model": "qwen",
+        "corpus": "beir:scifact",
+        "fp16_ndcg@10": 70.04,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 0.0,
+            "retained_pct": 0.0
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 69.31,
+            "retained_pct": 98.96
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 57.36,
+            "retained_pct": 81.9
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 10.86,
+            "retained_pct": 15.51
+          }
+        ]
+      },
+      {
+        "model": "qwen",
+        "corpus": "skillret:public-test",
+        "fp16_ndcg@10": 57.43,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 0.32,
+            "retained_pct": 0.56
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 57.15,
+            "retained_pct": 99.51
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 39.88,
+            "retained_pct": 69.44
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 3.02,
+            "retained_pct": 5.26
+          }
+        ]
+      },
+      {
+        "model": "qwen",
+        "corpus": "beir:nfcorpus",
+        "fp16_ndcg@10": 35.4,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 1.12,
+            "retained_pct": 3.16
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 34.99,
+            "retained_pct": 98.84
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 26.13,
+            "retained_pct": 73.81
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 4.61,
+            "retained_pct": 13.02
+          }
+        ]
+      }
+    ],
+    "bgem3": [
+      {
+        "model": "bgem3",
+        "corpus": "beir:scifact",
+        "fp16_ndcg@10": 64.37,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 0.0,
+            "retained_pct": 0.0
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 64.29,
+            "retained_pct": 99.88
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 0.13,
+            "retained_pct": 0.2
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 56.52,
+            "retained_pct": 87.8
+          }
+        ]
+      },
+      {
+        "model": "bgem3",
+        "corpus": "beir:nfcorpus",
+        "fp16_ndcg@10": 31.57,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 1.53,
+            "retained_pct": 4.85
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 31.97,
+            "retained_pct": 101.27
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 1.76,
+            "retained_pct": 5.57
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 27.85,
+            "retained_pct": 88.22
+          }
+        ]
+      },
+      {
+        "model": "bgem3",
+        "corpus": "skillret:public-test",
+        "fp16_ndcg@10": 56.25,
+        "rows": [
+          {
+            "arm": "int2/g16",
+            "ndcg@10": 0.23,
+            "retained_pct": 0.41
+          },
+          {
+            "arm": "int2-embed-only",
+            "ndcg@10": 56.37,
+            "retained_pct": 100.21
+          },
+          {
+            "arm": "int2-attn-only",
+            "ndcg@10": 1.26,
+            "retained_pct": 2.24
+          },
+          {
+            "arm": "int2-ffn-only",
+            "ndcg@10": 44.21,
+            "retained_pct": 78.6
+          }
+        ]
+      }
+    ]
+  },
+  "finding": "임베딩 단독 INT2 는 5/5 모델에서 98.0~100.5% 보유. 붕괴는 어텐션 또는 FFN 에서 오며 계열마다 다르다(Qwen 계열 FFN, BGE-M3 어텐션 2.7%).",
+  "honest_caveats": [
+    "코퍼스 3개 평균 · 반복 1회(스프레드 미측정)",
+    "부위 분류는 파라미터 이름 기반(part_of) — 'other' 버킷은 양자화하지 않는다",
+    "이 측정은 INT2/g16 한 동작점에만 해당한다"
+  ]
+}

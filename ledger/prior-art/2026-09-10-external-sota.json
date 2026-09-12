@@ -1,0 +1,45 @@
+{
+  "date": "2026-09-10",
+  "why": "우리 PTQ 5방법이 INT2 이하에서 전부 붕괴한 뒤, 외부 SOTA 가 같은 구간을 어떻게 넘었는지 조사",
+  "decisive_finding": {
+    "repo": "microsoft/bitnet-embedding-0.6b",
+    "verified_on_hf": true, "hf_last_modified": "2026-07-17", "downloads": 1730,
+    "backbone": "Qwen3-Embedding-0.6B (우리와 동일)",
+    "format": "W1.58A8 — ternary {-1,0,+1} absmean, activation int8",
+    "quality": {"mmteb_eng_v2": 67.60, "fp16_teacher": 67.95, "delta_pt": -0.35},
+    "our_ptq_same_bitwidth_delta_pt": -80.72,
+    "cpu_throughput_vs_fp16": "2.28x",
+    "gguf_size_mb": 427.9,
+    "method_is_not_ptq": [
+      "1. BitNet Conversion — ternary weight + quantized activation + SubLN 으로 백본 변환",
+      "2. Continual Contrastive Pre-training — 텍스트 쌍 1B, InfoNCE",
+      "3. Distillation SFT — contrastive + similarity-distribution + attention-relation distillation"
+    ],
+    "source": "https://huggingface.co/microsoft/bitnet-embedding-0.6b"
+  },
+  "size_model_validation": {
+    "claim": "param_budget.py 가 외부 실물 산출물을 맞추는가",
+    "our_prediction_i2s_backbone_bf16_embedding_mb": 441.5,
+    "actual_gguf_mb": 427.9,
+    "error_pct": 3.2,
+    "verdict": "우리 크기 모델이 독립 산출물을 3.2% 안에서 맞춘다"
+  },
+  "what_it_changes": {
+    "ternary_is_reachable": "단, PTQ 가 아니라 백본 재학습(continual pretrain + distillation)으로만",
+    "100mb_still_unreached": "BitNet 도 427.9MB — 목표의 4.3배. embedding table 을 bf16 으로 남긴 게 지배",
+    "embedding_table_is_the_bottleneck": "155.3M(26.1%)을 어떻게 처리하느냐가 100MB 의 병목"
+  },
+  "other_findings": {
+    "nvidia_nvfp4_cpu": "불가 — Blackwell 5세대 Tensor Core 전용. ONNX 익스포트는 TensorRT/GPU 배포용",
+    "google_embeddinggemma": {"method": "QAT (파인튜닝 단계 적용)", "mteb_multi": {"bf16": 61.15, "int8": 60.93, "int4": 60.62},
+                              "source": "https://arxiv.org/abs/2509.20354"},
+    "gemma3_qat_cost": "~5,000 스텝, Q4_0 perplexity 저하를 순수 PTQ 대비 54% 감소",
+    "unsloth_dynamic_3": "layer-wise 비트 배분 + imatrix 보정. PTQ 이며 QAT 아님 (조사 진행 중)",
+    "dim_reduction_plus_quant": "결합이 단일 기법보다 강한 압축 (arXiv 2606.01074) — 정량 수치 미확인"
+  },
+  "unverified": [
+    "PTQ 만으로 INT2 이하 성공한 사례는 찾지 못함",
+    "임베딩 태스크에서 QAT vs PTQ 직접 비교 수치 없음",
+    "BitNet 을 우리 SkillRet 스플릿으로 재본 적 없음 — MMTEB 수치는 다른 벤치마크다"
+  ]
+}

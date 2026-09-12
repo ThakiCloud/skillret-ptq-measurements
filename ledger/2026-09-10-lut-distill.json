@@ -1,0 +1,40 @@
+{
+  "teacher": "ThakiCloud/SKILLRET-Embedding-0.6B",
+  "rows": [
+    {
+      "dim": 128,
+      "quantize_to": "int8",
+      "vocab": 151644,
+      "emb_dim": 128,
+      "dtype": "int8",
+      "table_bytes": 19410432,
+      "artifact_bytes": 24775219,
+      "artifact_mb": 24.775219,
+      "path": "<home>/models/skillret-lut/lut-128d-int8"
+    },
+    {
+      "dim": 256,
+      "quantize_to": "int8",
+      "vocab": 151644,
+      "emb_dim": 256,
+      "dtype": "int8",
+      "table_bytes": 38820864,
+      "artifact_bytes": 44185651,
+      "artifact_mb": 44.185651,
+      "path": "<home>/models/skillret-lut/lut-256d-int8"
+    },
+    {
+      "dim": 512,
+      "quantize_to": "int8",
+      "vocab": 151644,
+      "emb_dim": 512,
+      "dtype": "int8",
+      "table_bytes": 77641728,
+      "artifact_bytes": 83006515,
+      "artifact_mb": 83.006515,
+      "path": "<home>/models/skillret-lut/lut-512d-int8"
+    }
+  ],
+  "method": "Model2Vec (PCA + SIF reweighting, no gradient descent)",
+  "timestamp": "2026-09-10T15:43:24+0900"
+}

@@ -1,0 +1,70 @@
+{
+  "contract": "공개 데이터셋 test split (4,392질의 / 6,006스킬) — HF 원본과 해시 동일",
+  "teacher_ref": 80.82,
+  "rows": [
+    {
+      "arm": "SKILLRET 0.6B 교사",
+      "mb": 605.0,
+      "ndcg": 80.82,
+      "teacher": true
+    },
+    {
+      "arm": "109M fp32",
+      "mb": 437.9,
+      "ndcg": 79.18,
+      "se": 0.42
+    },
+    {
+      "arm": "109M int3/g16",
+      "mb": 68.59,
+      "ndcg": 78.04,
+      "se": 0.44,
+      "byte_verified": true
+    },
+    {
+      "arm": "109M int3/g32",
+      "mb": 54.7,
+      "ndcg": 77.1,
+      "se": 0.44
+    },
+    {
+      "arm": "22M fp32",
+      "mb": 90.9,
+      "ndcg": 75.26,
+      "se": 0.45
+    },
+    {
+      "arm": "22M int8/g16",
+      "mb": 28.41,
+      "ndcg": 75.27,
+      "se": 0.45
+    },
+    {
+      "arm": "22M int4/g16",
+      "mb": 17.07,
+      "ndcg": 75.14,
+      "se": 0.45,
+      "byte_verified": true
+    },
+    {
+      "arm": "22M int3/g16",
+      "mb": 14.24,
+      "ndcg": 73.82,
+      "se": 0.46
+    },
+    {
+      "arm": "22M 학습0",
+      "mb": 90.9,
+      "ndcg": 50.07,
+      "se": 0.58
+    }
+  ],
+  "pareto": [
+    "109M fp32",
+    "109M int3/g16",
+    "109M int3/g32",
+    "22M int3/g16",
+    "22M int4/g16",
+    "22M int8/g16"
+  ]
+}

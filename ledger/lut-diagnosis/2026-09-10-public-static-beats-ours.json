@@ -1,0 +1,46 @@
+{
+  "date": "2026-09-10",
+  "subject": "⛔ 공개 정적 검색모델이 우리 벤치마크에서 47.31 — 내 파이프라인이 고장난 것이 확정",
+  "probe": "학습 0. HF 에서 받아 우리 test split(1,000쿼리 × 6,006문서)에 그대로 태웠다",
+  "results": {
+    "minishlab/potion-retrieval-32M": {
+      "ndcg@10": 47.31,
+      "recall@10": 53.67,
+      "dim": 512,
+      "trained_by_us": false
+    },
+    "minishlab/potion-base-32M": {
+      "ndcg@10": 39.9,
+      "recall@10": 46.73,
+      "dim": 512,
+      "trained_by_us": false
+    },
+    "our_lut_distill": {
+      "ndcg@10": 0.31
+    },
+    "our_lut_sif_plus_standardize": {
+      "ndcg@10": 2.13
+    },
+    "our_lut_contrastive_10ep": {
+      "holdout_recall@10": 8.61
+    },
+    "random": {
+      "ndcg@10": 0.086
+    },
+    "teacher_0.6b": {
+      "ndcg@10": 80.82
+    }
+  },
+  "headline": "공개 정적 모델이 학습 0으로 47.31 을 내는데 우리 정적은 학습까지 하고 2~8 이다. 정적 임베딩이 검색을 못 하는 게 아니라 내 증류 파이프라인이 틀렸다",
+  "what_this_refutes": [
+    "'정적 임베딩은 문맥을 못 담아 검색이 안 된다' — 47.31 이 반증한다",
+    "'우리 태스크가 광고쪽 카테고리 분류보다 문맥 의존적이라 어렵다' — 같은 태스크에서 공개 모델이 된다",
+    "'distill() 은 사다리의 첫 칸이라 낮은 게 정상' — potion-base-32M 도 39.90 이다"
+  ],
+  "known_defect": "교사가 last-token pooling 인데 mean 으로 증류했다(코사인 1.00 vs 0.46). 하지만 그것만으로 47 -> 0.31 을 설명하기 어렵다 — 다른 결함이 더 있다",
+  "next": "potion 계열의 실제 제작 레시피를 읽고 우리 파이프라인과 대조한다. 그리고 potion-retrieval-32M 을 우리 쌍으로 파인튜닝하면 얼마나 오르는지 잰다(교사 증류를 아예 건너뛰는 경로)",
+  "unverified": [
+    "potion 은 영어 encoder 교사(bge 계열) 기반 — 우리 decoder 교사와 다르다",
+    "우리 데이터로 파인튜닝 시 얼마나 오르는지 미측정"
+  ]
+}

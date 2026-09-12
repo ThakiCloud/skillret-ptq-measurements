@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-11",
+  "subject": "8B 교사 단독 효과 — 더 좋은 교사가 더 나쁜 학생을 만든다",
+  "why_this_run": "파도2 의 8B 팔에는 하드네거티브가 같이 걸려 있어 두 변수가 섞였고, 매칭 비교는 t≈0.94 로 판정 불가였다. 이 팔은 네거티브를 빼고 교사만 바꿨다",
+  "arms": [
+    {
+      "teacher": "SKILLRET-Embedding-0.6B",
+      "teacher_ndcg": 80.82,
+      "student_ndcg@10": 75.26,
+      "run": "파도1 kd0.7",
+      "batch": 128,
+      "epochs": 12,
+      "sel_epoch": 9
+    },
+    {
+      "teacher": "SKILLRET-Embedding-8B",
+      "teacher_ndcg": 86.53,
+      "student_ndcg@10": 72.86,
+      "se": 0.47,
+      "run": "sr8bc",
+      "batch": 64,
+      "epochs": 12,
+      "sel_epoch": 9,
+      "quantized": {
+        "int3g16": 71.26,
+        "int3g32": 69.17
+      }
+    }
+  ],
+  "finding": "교사가 5.71pt 더 좋은데 학생은 2.40pt 나쁘다 (capacity gap)",
+  "interpretation": "8B 이 만드는 유사도 분포를 22M 이 표현할 수 없다. 따라갈 수 없는 목표는 학습을 흐트러뜨린다. '교사는 좋을수록 좋다'는 직관이 이 규모차(26배)에서는 틀린다",
+  "caveat": "⛔ 완전히 깨끗한 대조는 아니다 — 파도1 은 BS128, 이 팔은 BS64 다. 다만 방향은 파도2(교란된 비교)와 이 팔에서 두 번 독립적으로 같게 나왔다",
+  "actionable": "작은 학생(22M)에는 0.6B 교사를 쓴다. 8B 교사를 쓰려면 학생을 키워야 한다",
+  "open": "109M 학생에서 8B 교사가 역전되는지는 미측정"
+}

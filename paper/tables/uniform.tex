@@ -1,0 +1,26 @@
+\begin{table}[t]\centering\small
+\setlength{\tabcolsep}{4pt}
+\caption{Retained NDCG@10 as a percentage of the full-precision score, averaged over the
+three corpora. Weight-only quantization; group-wise affine unless marked \emph{sym}.
+Bold marks arms that lost more than half their retrieval quality. W8/g16 and W4/g16 are
+approximately NDCG-neutral for every model; widening to g128 already costs E5 5.9 points of
+retention and the fine-tuned checkpoint 3.3 --- which is not the same as harmless; see
+Table~\ref{tab:turnover}. The models separate at W3 and diverge at W2: EmbeddingGemma retains roughly
+two thirds of its quality where the two decoder-lineage and XLM-R-lineage models retain
+almost none. Ternary is reported for E5 only: the ternary and symmetric arms for the other
+four checkpoints were measured but retracted after a defect was found in the symmetric
+quantizer (Section~\ref{sec:repro}), and were not re-measured. One surviving ternary arm
+is not evidence about the other four.}
+\label{tab:uniform}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Model & W8 g16 & W4 g16 asym & W4 g16 sym & W4 g128 asym & W3 g16 & W3 g32 & W2 g16 & Ternary \\
+\midrule
+Qwen3-Emb-0.6B & 99.8 & 100.4 & -- & 98.7 & 89.6 & 87.4 & \textbf{1.3} & -- \\
+SkillRet-0.6B (finetuned) & 100.1 & 99.8 & -- & 96.5 & 92.2 & 87.2 & \textbf{1.7} & -- \\
+EmbeddingGemma-300M & 100.0 & 99.9 & -- & 98.3 & 97.6 & 94.2 & 65.7 & -- \\
+BGE-M3 & 100.1 & 98.7 & -- & 96.3 & 94.0 & 86.8 & \textbf{1.8} & -- \\
+E5-base-v2 & 100.0 & 99.0 & 98.1 & 93.1 & 98.5 & 95.6 & \textbf{41.9} & \textbf{2.1} \\
+\bottomrule
+\end{tabular}}\end{table}

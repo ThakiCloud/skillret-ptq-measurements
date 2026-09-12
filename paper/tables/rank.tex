@@ -1,0 +1,38 @@
+\begin{table}[t]\centering\small
+\caption{Retrieval quality against ranking stability, averaged over the corpora measured for
+each model. Retained NDCG@10 is the percentage of the full-precision score; top-10 overlap is
+the fraction of the full-precision top-10 still present; the flip rate is the fraction of
+queries whose rank-10 document left the top-10 entirely. At INT4/g16 the metric barely moves
+--- in two cells it reports a gain --- while 13\% to 22\% of the top-10 has been replaced
+(11.6\% to 25.2\% across individual model--corpus cells) and the boundary document moves for
+roughly half the queries. E5-base-v2 is absent from this table because the rank-preservation
+arm was never measured for it; its eviction composition, which was
+measured, is in Table~\ref{tab:turnover} --- where what is displaced is counted against the
+relevance judgements rather than inferred from the metric here.}
+\label{tab:rank}
+\begin{tabular}{lrrr}
+\toprule
+Arm & Retained NDCG@10 (\%) & Top-10 overlap & Rank-10 flip rate \\
+\midrule
+\multicolumn{4}{l}{\emph{Qwen3-Emb-0.6B}} \\
+\quad W8 g16 & 99.8 & 0.967 & 0.225 \\
+\quad W4 g16 asym & 100.4 & 0.796 & 0.555 \\
+\quad W3 g16 & 89.6 & 0.577 & 0.688 \\
+\quad W2 g16 & 1.3 & 0.005 & 0.995 \\
+\multicolumn{4}{l}{\emph{SkillRet-0.6B (finetuned)}} \\
+\quad W8 g16 & 100.1 & 0.973 & 0.208 \\
+\quad W4 g16 asym & 99.8 & 0.805 & 0.534 \\
+\quad W3 g16 & 92.2 & 0.589 & 0.699 \\
+\quad W2 g16 & 1.7 & 0.004 & 0.999 \\
+\multicolumn{4}{l}{\emph{EmbeddingGemma-300M}} \\
+\quad W8 g16 & 100.0 & 0.990 & 0.088 \\
+\quad W4 g16 asym & 99.9 & 0.872 & 0.484 \\
+\quad W3 g16 & 97.6 & 0.745 & 0.579 \\
+\quad W2 g16 & 65.7 & 0.329 & 0.842 \\
+\multicolumn{4}{l}{\emph{BGE-M3}} \\
+\quad W8 g16 & 100.1 & 0.981 & 0.158 \\
+\quad W4 g16 asym & 98.7 & 0.778 & 0.551 \\
+\quad W3 g16 & 94.0 & 0.567 & 0.703 \\
+\quad W2 g16 & 1.8 & 0.004 & 0.996 \\
+\bottomrule
+\end{tabular}\end{table}

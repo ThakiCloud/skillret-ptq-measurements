@@ -1,0 +1,33 @@
+{
+ "date": "2026-09-12",
+ "subject": "리뷰 2차 — robustness check 3종",
+ "relative_normalization": {
+  "models_with_same_ordering": 5,
+  "n": 5,
+  "verdict": "상대 정규화에서도 부위 순서 결론 유지"
+ },
+ "micro_vs_macro": {
+  "int8/g16": {
+   "micro": 2.14,
+   "macro": 4.36
+  },
+  "int4/g16-asym": {
+   "micro": 2.22,
+   "macro": 5.17
+  },
+  "int3/g16": {
+   "micro": 3.31,
+   "macro": 6.21
+  },
+  "int2/g16": {
+   "micro": 9.83,
+   "macro": 13.41
+  }
+ },
+ "bh_fdr": {
+  "n_module_cells": 45,
+  "uncorrected_ci_excludes_zero": 10,
+  "bh_fdr_significant_q05": 6,
+  "note": "유의성으로 민감도를 정의하지 않는다. 다중비교 보정은 강건성 확인용으로만 싣는다."
+ }
+}

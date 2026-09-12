@@ -1,0 +1,33 @@
+\begin{table}[t]\centering\small
+\caption{Distilled students against general-purpose embedders, same gate and same corpora.
+SkillRet is the domain the students were distilled on; SciFact and NFCorpus are not. Inside
+the domain the 109M student at INT3 holds 78.04 in 68.4\,MB. Outside it the same checkpoint
+scores 7.79 on NFCorpus, against 31 to 39 for models that were never specialised. The distilled student strictly dominates the extreme-PTQ arm on the
+size--quality frontier --- 68.4\,MB at 78.04 against 297.9\,MB at 64.46 --- but only within
+the task it was trained for. Three precisions are distinct here and should not be conflated: every score in
+this paper is computed in FP32 arithmetic; the teacher's reference storage artifact is its
+1191.6\,MB BF16 checkpoint as distributed; and student sizes are measured on-disk artifacts:
+serialized FP16 for the FP16 rows, packed quantized files for the INT rows. The lower block holds the 0.6B teacher, which is specialised for SkillRet, and
+four general-purpose references, which are not; size is left blank for the four, which are
+included for their scores rather than as size comparisons. $^{\dagger}$BF16 storage
+artifact as distributed; evaluation uses FP32 arithmetic like every other row.}
+\label{tab:students}
+\begin{tabular}{lrrrr}
+\toprule
+Model & Size (MB) & SkillRet & SciFact & NFCorpus \\
+\midrule
+22M student, FP16 & 45.4 & 75.26 & 55.58 & 16.86 \\
+22M student, INT4/g16 & 17.0 & 75.14 & 56.40 & 17.29 \\
+22M student, INT3/g16 & 14.2 & 73.82 & 56.78 & 16.90 \\
+109M student, FP16 & 219.0 & 79.18 & 50.17 & 7.54 \\
+109M student, INT4/g16 & 82.0 & 79.21 & 53.07 & 7.31 \\
+109M student, INT3/g16 & 68.4 & 78.04 & 50.73 & 7.79 \\
+\midrule
+SkillRet-0.6B teacher, INT3/g32 & 297.9 & 64.46 & 64.94 & 29.10 \\
+SkillRet-0.6B teacher$^{\dagger}$ & 1191.6 & 78.48 & 69.43 & 33.86 \\
+Qwen3-Emb-0.6B, FP32 & -- & 57.48 & 70.32 & 35.40 \\
+EmbeddingGemma-300M, FP32 & -- & 60.44 & 78.32 & 38.75 \\
+BGE-M3, FP32 & -- & 56.25 & 64.37 & 31.57 \\
+E5-base-v2, FP32 & -- & 51.72 & 71.05 & 35.52 \\
+\bottomrule
+\end{tabular}\end{table}

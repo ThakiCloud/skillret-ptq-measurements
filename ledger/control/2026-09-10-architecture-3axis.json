@@ -1,0 +1,44 @@
+{
+  "date": "2026-09-10",
+  "subject": "아키텍처 3축 완결 — 크기·품질·속도를 한 표에",
+  "measured_on": "Apple M4 Pro 12코어 CPU, 단건 인코딩 200쿼리",
+  "arms": {
+    "lut_static_256d": {
+      "size_int8_mb": 20.9,
+      "recall@10_smoke": 3.61,
+      "latency_p50_ms": 0.321,
+      "latency_p95_ms": 0.584,
+      "qps": 2928
+    },
+    "transformer_22m_zeroshot": {
+      "size_int8_mb": 22.7,
+      "size_fp16_mb": 45.4,
+      "recall@10_smoke": 63.86,
+      "latency_p50_ms": 9.123,
+      "latency_p95_ms": 9.898,
+      "qps": 112
+    },
+    "transformer_22m_finetuned": {
+      "size_int8_mb": 22.7,
+      "recall@10_smoke": 75.9
+    },
+    "transformer_600m_int8": {
+      "size_mb": 605,
+      "ndcg@10_full": 80.8,
+      "latency_p50_ms": 518,
+      "note": "ONNX INT8, seq_len 512, 전체 스플릿"
+    }
+  },
+  "tradeoff": {
+    "lut_speed_advantage": "28배 빠르다 (0.321ms vs 9.123ms)",
+    "lut_quality_cost": "17.7배 나쁘다 (3.61 vs 63.86, 학습 0인 트랜스포머 대비)",
+    "size": "거의 동률 — 20.9MB vs 22.7MB. 크기는 판단 근거가 아니다"
+  },
+  "verdict": "22M 트랜스포머가 9.1ms 에 63.86~75.90 을 낸다. LUT 은 0.32ms 에 3.61 이다. 9ms 를 못 견디는 제약이 실재하지 않는 한 트랜스포머가 답이다. 그리고 우리 스킬 라우팅은 매 턴 1회 호출이라 9ms 는 문제가 안 된다",
+  "what_this_settles": "100MB 목표는 아키텍처를 바꾸면 애초에 문제가 아니었다. 0.6B 를 짜내는 대신 22M 을 쓰면 22.7MB(int8)에 품질도 지킨다. PRD 의 '증류로 300M student' 도 과하다 — 22M 이면 된다",
+  "unverified": [
+    "스모크 규모(717쌍) 수치다. 전체 데이터 재측정 필요",
+    "22M 트랜스포머의 전체 스플릿 NDCG@10 미측정 (LUT/0.6B 와 같은 자로 비교해야 한다)",
+    "LUT v3(pooling 수정본) 미측정 — 다만 28배 속도로도 17.7배 품질차를 못 메운다면 결론은 안 바뀐다"
+  ]
+}

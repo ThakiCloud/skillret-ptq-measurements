@@ -1,0 +1,53 @@
+{
+ "date": "2026-09-12",
+ "subject": "qrels 기반 turnover — 양자화가 무엇을 밀어내는가",
+ "why": "리뷰 지적: 'NDCG 가 안 떨어졌으니 비정답'은 추론이지 측정이 아니다",
+ "coverage": "5모델 × 3코퍼스 × 4팔 = 60셀",
+ "rows": [
+  {
+   "arm": "int8/g16",
+   "ndcg_ret_pct": 100.01,
+   "evicted": 5604,
+   "evicted_relevant": 120,
+   "relevant_share_pct": 2.14,
+   "delta_recall": 0.043,
+   "relevant_only_overlap": 0.9952
+  },
+  {
+   "arm": "int4/g16-asym",
+   "ndcg_ret_pct": 99.57,
+   "evicted": 50681,
+   "evicted_relevant": 1127,
+   "relevant_share_pct": 2.22,
+   "delta_recall": -0.234,
+   "relevant_only_overlap": 0.954
+  },
+  {
+   "arm": "int3/g16",
+   "ndcg_ret_pct": 94.39,
+   "evicted": 105858,
+   "evicted_relevant": 3502,
+   "relevant_share_pct": 3.31,
+   "delta_recall": -2.558,
+   "relevant_only_overlap": 0.8785
+  },
+  {
+   "arm": "int2/g16",
+   "ndcg_ret_pct": 22.46,
+   "evicted": 227828,
+   "evicted_relevant": 22392,
+   "relevant_share_pct": 9.83,
+   "delta_recall": -41.767,
+   "relevant_only_overlap": 0.2084
+  }
+ ],
+ "findings": [
+  "INT4 에서 퇴출의 비정답 비율이 97% 대이고 정답만 겹침 0.94~1.00, ΔRecall 1점 안",
+  "⛔ 코퍼스 편차가 크다 — gemma INT4 정답퇴출이 SciFact 0% · SkillRet 1.7% · NFCorpus 15.1%",
+  "⛔ 어려운 코퍼스에서 '퇴출중 정답 비율'은 판별력을 잃는다(NFCorpus INT2: 생존 22.2% vs 붕괴 26.1%). 정답 잔존이 판별자",
+  "INT2 보존은 이진이 아니라 연속 — 65.7 · 41.9 · 1.8 · 1.7 · 1.3%, E5 가 중간(겹침 0.530)",
+  "붕괴의 모양은 계열을 건넌다 — qwen(디코더)과 bgem3(XLM-R)이 SciFact 에서 겹침 0.000 으로 포개짐",
+  "비정답 집중은 모델이 동작 범위 안에 있을 때만 성립한다 — 절벽 너머에선 그게 깨지는 게 붕괴다"
+ ],
+ "caveat": "퇴출 건수는 문서 단위 합산, recall 은 질의 단위. 질의 단위 페어드 검정 미실시."
+}

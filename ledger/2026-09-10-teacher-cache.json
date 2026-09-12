@@ -1,0 +1,21 @@
+{
+  "date": "2026-09-10", "job": "srteacher (H200, Kueue)", "duration_min": 61,
+  "what": "WP-07 — 8B teacher 로 train split 전체 점수화. 증류(L_simKD)의 입력",
+  "model": "ThakiCloud/SKILLRET-Embedding-8B",
+  "contract": {"doc_template": "name_desc_body512", "query_prompt": "skill", "max_seq_len": 512,
+               "note": "평가 하네스와 동일 고정 — 다른 규약으로 만들면 student 가 배우는 분포가 평가와 어긋난다"},
+  "scale": {"n_skills": 10123, "n_queries": 63259, "topk": 50, "dim": 4096},
+  "timing_sec": {"encode_docs": 696.0, "encode_queries": 2878.1},
+  "artifacts_s3": {
+    "prefix": "global/datasets/ThakiCloud/SKILLRET-teacher-cache/",
+    "teacher-scores-train.jsonl": "199MB", "teacher-scores-train-skill-emb.npy": "79MB"
+  },
+  "positives_outside_topk": {
+    "count": 28299, "total_positives": 127190, "pct": 22.2,
+    "interpretation": "teacher(8B)도 정답의 22.2%를 top-50 안에 못 넣는다. 버그가 아니라 데이터 난이도 — SkillRet 은 쿼리당 정답이 평균 2.01개이고 스킬 10,123개 중에서 고른다. positive_extra 로 따로 점수를 붙여뒀다(안 붙이면 student 가 그 정답들의 점수를 아예 못 배운다)."
+  },
+  "unverified": [
+    "이 cache 로 실제 증류를 돌린 적 없음 — student 학습은 미착수",
+    "top-50 이 충분한 K 인지 미검증 (22.2% 가 밖이라 K 를 키우면 달라질 수 있다)"
+  ]
+}

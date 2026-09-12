@@ -1,0 +1,21 @@
+\begin{table}[t]\centering\small
+\caption{Paired control. Retained NDCG@10 (\% of full precision) for the base checkpoint and
+for the same checkpoint fine-tuned on 127{,}190 in-domain pairs, averaged over SciFact and
+NFCorpus --- both out-of-domain for both models, so the comparison is like-for-like. Task
+fine-tuning moves quantization tolerance by at most 1.0 point in the two-corpus averages
+shown here, and by at most 2.28 points on any individual model--corpus arm. In the averages
+the movement is always toward greater robustness, but that is partly cancellation: at
+INT3/g32 the fine-tune gains 2.28 points on SciFact and loses 2.08 on NFCorpus, which the
+average reports as $+0.1$. Either way the base model already shows both the INT3 decline and
+the INT2 collapse, so fine-tuning did not create them.}
+\label{tab:paired}
+\begin{tabular}{lrrrrrr}
+\toprule
+Checkpoint & W8 g16 & W4 g16 asym & W4 g128 asym & W3 g16 & W3 g32 & W2 g16 \\
+\midrule
+Qwen3-Emb-0.6B (base) & 99.7 & 99.9 & 96.2 & 91.5 & 89.6 & 1.6 \\
+\quad + SkillRet fine-tune & 100.2 & 99.9 & 97.2 & 92.4 & 89.7 & 2.4 \\
+\midrule
+Difference & +0.5 & +0.0 & +1.0 & +0.9 & +0.1 & +0.7 \\
+\bottomrule
+\end{tabular}\end{table}

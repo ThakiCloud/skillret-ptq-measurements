@@ -1,0 +1,86 @@
+{
+ "date": "2026-09-11",
+ "subject": "paired control — 과제 파인튜닝이 양자화 내성을 바꾸는가",
+ "design": "같은 체크포인트 계보. Qwen/Qwen3-Embedding-0.6B(원본) vs ThakiCloud/SKILLRET-Embedding-0.6B(= 그 원본을 SkillRet 127,190쌍 · MultipleNegativesRankingLoss 로 파인튜닝). 아키텍처·토크나이저·차원 동일, 학습만 다름.",
+ "confound_control": "⛔ SkillRet 코퍼스는 파인튜닝 모델에만 in-domain 이라 비교가 오염된다. 판정은 BEIR(SciFact·NFCorpus, 양쪽 모두 out-of-domain)에서만 한다.",
+ "rows": [
+  {
+   "arm": "int8/g16",
+   "base_pct": 99.65,
+   "finetuned_pct": 100.19,
+   "delta_pp": 0.54
+  },
+  {
+   "arm": "int4/g16-asym",
+   "base_pct": 99.89,
+   "finetuned_pct": 99.92,
+   "delta_pp": 0.04
+  },
+  {
+   "arm": "int4/g16-sym",
+   "base_pct": 98.17,
+   "finetuned_pct": 99.96,
+   "delta_pp": 1.79
+  },
+  {
+   "arm": "int4/g128-asym",
+   "base_pct": 96.22,
+   "finetuned_pct": 97.19,
+   "delta_pp": 0.97
+  },
+  {
+   "arm": "int3/g16",
+   "base_pct": 91.55,
+   "finetuned_pct": 92.43,
+   "delta_pp": 0.88
+  },
+  {
+   "arm": "int2/g16",
+   "base_pct": 1.62,
+   "finetuned_pct": 2.37,
+   "delta_pp": 0.75
+  }
+ ],
+ "contaminated_reference": [
+  {
+   "arm": "int8/g16",
+   "corpus": "skillret",
+   "base_pct": 100.23,
+   "finetuned_pct": 100.05
+  },
+  {
+   "arm": "int4/g16-asym",
+   "corpus": "skillret",
+   "base_pct": 101.53,
+   "finetuned_pct": 99.5
+  },
+  {
+   "arm": "int4/g16-sym",
+   "corpus": "skillret",
+   "base_pct": 97.84,
+   "finetuned_pct": 98.09
+  },
+  {
+   "arm": "int4/g128-asym",
+   "corpus": "skillret",
+   "base_pct": 103.51,
+   "finetuned_pct": 95.17
+  },
+  {
+   "arm": "int3/g16",
+   "corpus": "skillret",
+   "base_pct": 85.72,
+   "finetuned_pct": 91.87
+  },
+  {
+   "arm": "int2/g16",
+   "corpus": "skillret",
+   "base_pct": 0.61,
+   "finetuned_pct": 0.36
+  }
+ ],
+ "finding": "파인튜닝은 양자화 내성을 거의 바꾸지 않는다 — 가장 큰 차이가 +1.8pp(int4 대칭)이고 나머지는 +1.0pp 이하다. 결정적으로 INT3 하락(원본 91.5%)과 INT2 붕괴(원본 1.6%)가 **원본 체크포인트에 이미 존재한다**.",
+ "rejects": "리뷰 가설 '파인튜닝 후 발생한 INT3 붕괴'를 기각한다. 절벽은 파인튜닝 산물이 아니라 원본 모델의 성질이다.",
+ "not_yet_measured": "부위별 민감도(FFN)가 파인튜닝으로 생겼는지는 **아직 모른다** — 원본 Qwen 의 int3/g32 부위별 절제가 미측정이다. 진행 중인 스윕에 포함돼 있다.",
+ "caveat": "코퍼스 2개 평균이다. 질의 단위 페어드 검정은 미실시."
+}

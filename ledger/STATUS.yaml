@@ -1,0 +1,47 @@
+# 원장 항목의 신뢰 상태. 삭제 대신 상태를 붙인다 — 실패와 옛 판본을 지우면
+# 이 논문이 주장하는 정직성이 저장소에서 증명되지 않는다.
+#
+#   canonical    : 현재 인용 가능
+#   superseded   : 그 뒤에 더 나은 측정이 나왔다 — 인용 금지, 기록으로만
+#   retracted    : 측정 자체가 결함이었다 (RETRACTIONS.md)
+#   exploratory  : 탐색용, 인용 대상이 아니었다
+#
+# 로더(paper/paper_numbers.py)는 canonical 이 아닌 항목을 표에 싣지 않는다.
+
+defaults:
+  status: canonical
+
+entries:
+  # ── 교사 기준값의 옛 판본 ─────────────────────────────────────────────
+  # 80.82 / 605 MB 는 (a) 질의 접두어 계약이 고쳐지기 전 점수이고
+  # (b) 605 MB 는 실제 파일이 아니다 — 배포된 BF16 파일은 1,191,586,416 바이트다.
+  # 왜 605 였는지는 미확인이다. 추측을 적지 않는다.
+  "2026-09-09-param-budget-0.6b.json":      {status: superseded, reason: old-teacher-reference}
+  "2026-09-09-pareto.md":                   {status: superseded, reason: old-teacher-reference}
+  "2026-09-11-MASTER-LEDGER.json":          {status: superseded, reason: old-teacher-reference}
+  "control/2026-09-10-frontier.json":       {status: superseded, reason: old-teacher-reference}
+  "control/2026-09-11-frontier-final.json": {status: superseded, reason: old-teacher-reference}
+  "control/2026-09-11-frontier-fixed.json": {status: superseded, reason: old-teacher-reference}
+  "control/2026-09-11-paper-protocol-and-offset.json": {status: superseded, reason: old-teacher-reference}
+  "control/2026-09-11-teacher-capacity-gap.json":      {status: superseded, reason: old-teacher-reference}
+  "control/2026-09-11-wave2.json":          {status: superseded, reason: old-teacher-reference}
+  "control/2026-09-11-wave3.json":          {status: superseded, reason: old-teacher-reference}
+  "lut-diagnosis/2026-09-10-prescription-verdict.json":   {status: exploratory}
+  "lut-diagnosis/2026-09-10-public-static-beats-ours.json": {status: exploratory}
+  "lut-diagnosis/2026-09-10-why-lut-collapses.json":      {status: exploratory}
+
+reasons:
+  old-teacher-reference:
+    text: >-
+      Teacher reference 80.82 NDCG@10 and 605 MB predate the canonical query-prefix
+      contract and the byte-verified artifact measurement.
+    superseded_by:
+      ndcg_at_10: 78.48
+      size_mb: 1191.6
+      size_bytes: 1191586416
+      evidence: artifacts.csv
+  predicted-not-measured:
+    text: >-
+      Sizes were the arithmetic prediction of size_mb(), not the byte count of a packed
+      file. Re-packed 2026-09-13; measured bytes are in artifacts.csv and in the
+      sizes_bytes_measured field of the student ledger.

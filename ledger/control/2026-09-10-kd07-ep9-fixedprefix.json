@@ -1,0 +1,18 @@
+{
+  "n_queries": 4392,
+  "n_docs": 6006,
+  "note": "학습0(zero-shot)",
+  "rows": [
+    {
+      "model": "<home>/models/skillret-kd07-ep9",
+      "params": 22713216,
+      "int3g16_mb": 14.2,
+      "pool": "cls",
+      "query_prefix": "none",
+      "ndcg@10": 75.25539754006203,
+      "se": 0.4531629484915166,
+      "encode_sec": 56.3,
+      "dim": 384
+    }
+  ]
+}

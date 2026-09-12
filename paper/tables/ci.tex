@@ -1,0 +1,40 @@
+\begin{table}[t]\centering\small
+\caption{Per-query paired bootstrap on the INT4 arms. For each model we show the corpus with
+the largest absolute effect, its 95\% interval over 10{,}000 resamples of
+$\Delta\text{NDCG}_q$, and how many of that model's three corpora have an interval
+excluding zero. No single-module effect exceeds 0.59 in the three-corpus averages, or 1.01
+on any individual model--corpus pair. Ten of the forty-five
+module cells exclude zero, which is what 4{,}392 queries buys in resolution rather than
+evidence of a usable sensitivity gap --- and three of those ten are positive.}
+\label{tab:ci}
+\begin{tabular}{lrcr}
+\toprule
+Arm & Worst $\Delta$ (pts) & 95\% CI & CI excludes 0 \\
+\midrule
+\multicolumn{4}{l}{\emph{Qwen3-Emb-0.6B}} \\
+\quad Embed.\ only & +0.21 & $[+0.06, +0.35]$ & 1/3 \\
+\quad Attn.\ only & +0.79 & $[+0.48, +1.12]$ & 1/3 \\
+\quad FFN only & +0.18 & $[-0.74, +1.12]$ & 0/3 \\
+\quad All & +0.88 & $[+0.46, +1.30]$ & 1/3 \\
+\multicolumn{4}{l}{\emph{SkillRet-0.6B (finetuned)}} \\
+\quad Embed.\ only & -0.12 & $[-0.70, +0.45]$ & 0/3 \\
+\quad Attn.\ only & -0.31 & $[-1.10, +0.47]$ & 0/3 \\
+\quad FFN only & +0.67 & $[-0.15, +1.52]$ & 1/3 \\
+\quad All & -0.39 & $[-0.70, -0.09]$ & 1/3 \\
+\multicolumn{4}{l}{\emph{EmbeddingGemma-300M}} \\
+\quad Embed.\ only & -0.26 & $[-0.68, +0.06]$ & 0/3 \\
+\quad Attn.\ only & +0.18 & $[-0.22, +0.61]$ & 0/3 \\
+\quad FFN only & +0.50 & $[-0.18, +1.20]$ & 1/3 \\
+\quad All & +0.23 & $[-0.54, +1.00]$ & 0/3 \\
+\multicolumn{4}{l}{\emph{BGE-M3}} \\
+\quad Embed.\ only & +0.15 & $[-0.06, +0.47]$ & 0/3 \\
+\quad Attn.\ only & -1.01 & $[-2.08, +0.04]$ & 1/3 \\
+\quad FFN only & -0.69 & $[-1.41, -0.04]$ & 2/3 \\
+\quad All & -1.63 & $[-2.85, -0.44]$ & 1/3 \\
+\multicolumn{4}{l}{\emph{E5-base-v2}} \\
+\quad Embed.\ only & -0.28 & $[-0.93, +0.30]$ & 1/3 \\
+\quad Attn.\ only & -0.48 & $[-1.19, +0.20]$ & 1/3 \\
+\quad FFN only & -0.44 & $[-0.65, -0.23]$ & 1/3 \\
+\quad All & -1.19 & $[-1.46, -0.91]$ & 1/3 \\
+\bottomrule
+\end{tabular}\end{table}

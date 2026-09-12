@@ -1,0 +1,21 @@
+# The Hub is mutable. Every number in the paper is pinned to this revision.
+skillret:
+  repo: ThakiCloud/SKILLRET
+  revision: a050ad233a504a43135bafe8cdf45574052b5729
+  split: test
+  n_queries: 4392
+  n_documents: 6006
+  note: >-
+    The benchmark paper (arXiv:2605.05726) was revised. v1 described 17,810 skills
+    and 4,997 evaluation queries; v2 onward describes 16,129 and 4,392. Figures
+    quoted against the v1 split are not comparable to these.
+
+# ⛔ SkillRet 만 고정하고 나머지를 HEAD 로 두면 같은 지적을 그대로 받는다.
+beir_scifact:
+  repo: BeIR/scifact
+  revision: b3b5335604bf5ee3c4447671af975ea25143d4f5
+  split: test
+beir_nfcorpus:
+  repo: BeIR/nfcorpus
+  revision: b5026a0e96e8a7ac4f95f482a596389289d46269
+  split: test

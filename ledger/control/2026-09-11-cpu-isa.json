@@ -1,0 +1,38 @@
+{
+  "date": "2026-09-11",
+  "subject": "CPU 지연 — ISA 축 (배포 타깃 확인)",
+  "model": "22M kd0.7 ep9 (배포 후보), 가중치 fp32 · int 커널 아님",
+  "rows": [
+    {
+      "isa": "arm64",
+      "cpu": "Apple M4 Pro",
+      "threads": 4,
+      "q1_p50_ms": 6.5,
+      "batch32_per_item_ms": 5.11
+    },
+    {
+      "isa": "x86_64",
+      "cpu": "AMD EPYC 9355 32-Core",
+      "threads": 4,
+      "q1_p50_ms": 3.1,
+      "batch32_per_item_ms": 1.25,
+      "avx512": [
+        "avx512_bf16",
+        "avx512_vnni",
+        "avx512f",
+        "avx512bw",
+        "avx512vl",
+        "avx512ifma",
+        "avx512vbmi"
+      ]
+    }
+  ],
+  "finding": "x86 이 단건 2.1배 · 배치 4.1배 빠르다. AVX-512 를 제대로 받는 워크로드다",
+  "teacher_ref_ms": "518~650 (0.6B, 같은 자)",
+  "speedup_vs_teacher": {
+    "arm": "80~100배",
+    "x86": "165~200배"
+  },
+  "opportunity": "EPYC 이 avx512_vnni(int8 정수 가속)를 갖는다. 지금은 가중치만 int4 이고 연산은 fp32 다 — 진짜 int 커널(llama.cpp/ONNX)로 가면 여기서 한 번 더 벌 여지가 있다",
+  "caveat": "⛔ 두 측정은 다른 머신이다. ISA 외에 메모리·클럭도 다르므로 ISA 단독 효과는 아니다"
+}

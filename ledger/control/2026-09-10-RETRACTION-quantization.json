@@ -1,0 +1,83 @@
+{
+  "retraction": "양자화가 fp16 을 이긴다는 발견을 철회한다",
+  "what_was_claimed": "int3/g16 양자화가 파인튜닝된 22M 에서 fp16 보다 최대 +4.45pp 높고, 이는 파인튜닝된 인코더 × 구조화된 그룹 양자화의 곱에서만 나온다고 보고했다",
+  "why_it_was_wrong": "그 측정 전부가 학습/평가 접두어 불일치 위에서 이뤄졌다. 학습은 맨 질의, 평가는 20토큰 instruct 접두어. 양자화 잡음이 그 불일치로 눌린 모델을 부분적으로 되돌려준 것을 '양자화가 좋다'로 읽었다. 에포크가 갈수록 모델이 맨 질의에 특화돼 어긋남의 대가가 커졌고, 그래서 옛 계약에서 이득이 에포크에 비례해 커지는 것처럼 보였다.",
+  "corrected_finding": "접두어를 맞추면 int3/g16 은 7개 에포크 전부에서 fp16 보다 낮다(-0.49 ~ -1.29pp). 양자화는 크기를 사는 대가로 약 1pp 를 낸다 — 통상적인 결과다.",
+  "also_retracted": [
+    "ledger/control/2026-09-10-perturb-probe.json — 가우시안 대조·부위별 절제(임베딩 vs 인코더)·학습0 대조는 모두 위 허상을 설명한 것이라 함께 무효",
+    "2026-09-10-ft22m-quant*.json 의 fp16 대비 delta 열",
+    "슬랙 스레드에 올린 '그룹 세밀도가 명목 비트폭을 압도한다' 서술"
+  ],
+  "still_valid": [
+    "크기 산술과 실바이트 검증(11.403MB 등)",
+    "환경 간 계약 일치",
+    "증류 효과(kd0.0 < kd0.3 < kd0.7)",
+    "결정론·재현성",
+    "하드 네거티브 마이닝 통계"
+  ],
+  "rows": [
+    {
+      "epoch": 1,
+      "broken_fp16": 60.11,
+      "broken_int3g16": 58.36,
+      "broken_delta": -1.75,
+      "fixed_fp16": 70.20834022614684,
+      "fixed_int3g16": 69.19252342773636,
+      "fixed_delta": -1.02
+    },
+    {
+      "epoch": 2,
+      "broken_fp16": 61.51,
+      "broken_int3g16": 61.81,
+      "broken_delta": 0.3,
+      "fixed_fp16": 71.47785563692132,
+      "fixed_int3g16": 70.42002566718126,
+      "fixed_delta": -1.06
+    },
+    {
+      "epoch": 3,
+      "broken_fp16": 61.86,
+      "broken_int3g16": 63.78,
+      "broken_delta": 1.92,
+      "fixed_fp16": 71.81550110272478,
+      "fixed_int3g16": 70.83188990531846,
+      "fixed_delta": -0.98
+    },
+    {
+      "epoch": 4,
+      "broken_fp16": 62.69,
+      "broken_int3g16": 65.18,
+      "broken_delta": 2.49,
+      "fixed_fp16": 72.04263648443816,
+      "fixed_int3g16": 70.75061662307272,
+      "fixed_delta": -1.29
+    },
+    {
+      "epoch": 5,
+      "broken_fp16": 61.79,
+      "broken_int3g16": 65.55,
+      "broken_delta": 3.76,
+      "fixed_fp16": 72.05897504530218,
+      "fixed_int3g16": 70.99738134114467,
+      "fixed_delta": -1.06
+    },
+    {
+      "epoch": 6,
+      "broken_fp16": 63.1,
+      "broken_int3g16": 64.79,
+      "broken_delta": 1.69,
+      "fixed_fp16": 71.93543415069482,
+      "fixed_int3g16": 70.64968732439164,
+      "fixed_delta": -1.29
+    },
+    {
+      "epoch": 7,
+      "broken_fp16": 59.75,
+      "broken_int3g16": 64.19,
+      "broken_delta": 4.44,
+      "fixed_fp16": 71.3633566571837,
+      "fixed_int3g16": 70.86942095030766,
+      "fixed_delta": -0.49
+    }
+  ]
+}

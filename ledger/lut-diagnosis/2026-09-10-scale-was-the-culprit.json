@@ -1,0 +1,40 @@
+{
+  "date": "2026-09-10",
+  "subject": "LUT 학습 실패의 진범 — 테이블 좌표 스케일",
+  "audit_findings": {
+    "claim_1_tiny_data": {
+      "verdict": "틀렸다",
+      "evidence": "GPU 런 meta.json 실측: 학습 56,928쌍 · 홀드아웃 6,331건 · 545건 적중. 717쌍 스모크가 아니다. 다만 지적자가 본 파일은 로컬 스모크 산출물이었을 가능성"
+    },
+    "claim_2_pooling_provenance": {
+      "verdict": "맞다 — 고쳤다",
+      "evidence": "eval_retrieval.py 가 pooling 을 'lasttoken' 으로 하드코딩. LUT 팔은 실제 mean 인데 원장 6건에 거짓 기록. 코드 수정 + 기존 원장에 정정 표시"
+    },
+    "claim_3_weight_decay": {
+      "verdict": "맞다 — 고쳤다",
+      "evidence": "AdamW 기본 weight_decay=0.01 이 켜져 있었다. 토큰 가방에는 해롭다(ST 정본은 0.0)"
+    },
+    "claim_4_scale": {
+      "verdict": "맞다 — 이게 진범이다",
+      "evidence": "테이블 좌표 범위 -78.7~137 인데 lr=1e-2. 학습이 값을 거의 못 움직였다"
+    }
+  },
+  "the_fix": "테이블을 max(|x|) 로 나눠 O(1) 스케일로 정규화 후 학습. 코사인은 스케일 불변이라 평가 영향 없음",
+  "effect_smoke": {
+    "before": {
+      "recall@10": 3.61,
+      "epochs": 20
+    },
+    "after": {
+      "recall@10_at_10ep": 32.53,
+      "recall@10_at_20ep": 31.33,
+      "epochs": 20
+    },
+    "gain": "9배. 같은 데이터·같은 하이퍼, 스케일 정규화 + weight_decay=0 만 바꿈"
+  },
+  "remaining_gap": "32.53 vs potion 공개 가중치 69.88 — 아직 절반이다. pooling 불일치(mean vs lasttoken)와 tokenlearn 단계 부재가 남아 있다",
+  "unverified": [
+    "전체 규모(56,928쌍) 재측정 필요 — 이 수치는 717쌍 스모크다",
+    "v3(pooling='last') 와 결합하면 더 오를 것으로 예상하나 미측정"
+  ]
+}

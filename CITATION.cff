@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+title: >-
+  Where Post-Training Quantization Breaks Text Embedders:
+  A Measured Map Across Four Embedder Families
+message: "If you use these measurements, please cite the paper."
+type: dataset
+authors:
+  - family-names: Han
+    given-names: Hyojung
+    affiliation: ThakiCloud
+repository-code: "https://github.com/ThakiCloud/skillret-ptq-measurements"
+# 이 저장소는 혼합 라이선스다: 코드 Apache-2.0, ledger/ 의 측정치 CC BY 4.0.
+# 이 CFF 가 인용 대상으로 지목하는 것은 측정 데이터다.
+license: CC-BY-4.0
+abstract: >-
+  Arm-by-arm retrieval measurements for group-wise weight-only post-training
+  quantization across five embedding checkpoints from four architecture
+  families, including module-isolated INT2 and INT3 arms and the packed
+  artifact sizes cited in the paper.

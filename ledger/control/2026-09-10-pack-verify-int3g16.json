@@ -1,0 +1,12 @@
+{
+  "model": "<home>/models/skillret-109m",
+  "bits": 3,
+  "group": 16,
+  "total_params": 109482240,
+  "quantized_params": 109360128,
+  "quantized_frac": 0.9989,
+  "predicted_mb": 68.594,
+  "on_disk_mb": 68.594,
+  "error_pct": 0.0,
+  "roundtrip_max_abs_err": 0.0
+}

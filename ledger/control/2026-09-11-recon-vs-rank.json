@@ -1,0 +1,157 @@
+{
+ "rows": [
+  {
+   "model": "qwen",
+   "arm": "int8/g16",
+   "recon_rel_err": 0.00387,
+   "ndcg_drop_pct": 0.156,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int4/g16-asym",
+   "recon_rel_err": 0.06546,
+   "ndcg_drop_pct": -0.434,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int4/g16-sym",
+   "recon_rel_err": 0.08629,
+   "ndcg_drop_pct": 1.939,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int4/g128-asym",
+   "recon_rel_err": 0.1022,
+   "ndcg_drop_pct": 1.348,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int3/g16",
+   "recon_rel_err": 0.14039,
+   "ndcg_drop_pct": 10.395,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int2/g16",
+   "recon_rel_err": 0.32919,
+   "ndcg_drop_pct": 98.714,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "ternary/g16",
+   "recon_rel_err": 0.58544,
+   "ndcg_drop_pct": 98.682,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int4-embed-only",
+   "recon_rel_err": 0.06499,
+   "ndcg_drop_pct": 0.016,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int4-attn-only",
+   "recon_rel_err": 0.06558,
+   "ndcg_drop_pct": -0.461,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int4-ffn-only",
+   "recon_rel_err": 0.06566,
+   "ndcg_drop_pct": -0.301,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int8/g16",
+   "recon_rel_err": 0.00397,
+   "ndcg_drop_pct": -0.005,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int4/g16-asym",
+   "recon_rel_err": 0.06679,
+   "ndcg_drop_pct": 0.092,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int4/g16-sym",
+   "recon_rel_err": 0.09165,
+   "ndcg_drop_pct": 0.588,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int4/g128-asym",
+   "recon_rel_err": 0.11551,
+   "ndcg_drop_pct": 1.665,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int3/g16",
+   "recon_rel_err": 0.14323,
+   "ndcg_drop_pct": 2.404,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int2/g16",
+   "recon_rel_err": 0.33732,
+   "ndcg_drop_pct": 34.336,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "ternary/g16",
+   "recon_rel_err": 0.58206,
+   "ndcg_drop_pct": 98.61,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int4-embed-only",
+   "recon_rel_err": 0.06715,
+   "ndcg_drop_pct": -0.087,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int4-attn-only",
+   "recon_rel_err": 0.06612,
+   "ndcg_drop_pct": -0.036,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int4-ffn-only",
+   "recon_rel_err": 0.06605,
+   "ndcg_drop_pct": 0.193,
+   "n_corpora": 3
+  }
+ ],
+ "analysis": {
+  "pooled_pearson": 0.933,
+  "per_model": {
+   "qwen": 0.927,
+   "gemma": 0.971
+  },
+  "excluding_collapsed_pooled": 0.917,
+  "excluding_collapsed_per_model": {
+   "qwen": 0.749,
+   "gemma": 0.938
+  },
+  "note": "붕괴 팔(손실 50% 초과)을 넣으면 상관이 부풀려진다 — 오차도 크고 손실도 크니까. 배분이 실제로 필요한 구간은 '살아 있는' 팔이다."
+ }
+}

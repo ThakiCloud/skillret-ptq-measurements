@@ -1,0 +1,27 @@
+{
+  "tokenizer": "ThakiCloud/SKILLRET-Embedding-0.6B",
+  "vocab_size": 151643,
+  "unique_tokens_used": 81615,
+  "unused_tokens": 70028,
+  "used_ratio": 0.5382048627368227,
+  "total_token_occurrences": 41907986,
+  "unique_by_split": {
+    "query": 45395,
+    "skill": 80600
+  },
+  "coverage_at_topN": {
+    "8000": 0.8850332726559563,
+    "16000": 0.9464524971445777,
+    "32000": 0.9850523477792514,
+    "48000": 0.9959457607912726,
+    "64000": 0.999172496621527,
+    "96000": 1.0
+  },
+  "vocab_needed_for_coverage": {
+    "0.999": 62334,
+    "0.9999": 77425,
+    "0.99999": 81196,
+    "1.0": 81615
+  },
+  "elapsed_sec": 30.3
+}

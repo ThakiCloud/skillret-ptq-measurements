@@ -1,0 +1,31 @@
+{
+ "date": "2026-09-11",
+ "subject": "109M 에포크 축 — 24에포크는 12에포크를 못 이긴다",
+ "design": "같은 학생(arctic-embed-m 109.5M)·같은 교사(0.6B kd0.7)·같은 지시문(none)·배치 64. 에포크만 12 vs 24",
+ "rows": [
+  {
+   "run": "sr109m2",
+   "epochs": 12,
+   "selected_epoch": 11,
+   "holdout": 64.64,
+   "test_fp16": 79.18,
+   "test_int3g16": 78.04,
+   "se": 0.42
+  },
+  {
+   "run": "sr109long",
+   "epochs": 24,
+   "selected_epoch": 17,
+   "holdout": 64.72,
+   "test_fp16": 78.33,
+   "test_int3g16": 76.66,
+   "test_int3g32": 75.53,
+   "se": 0.44,
+   "train_sec": 12789.4
+  }
+ ],
+ "finding": "24에포크가 test 에서 0.85pp 나쁘다. 12에포크가 이미 천장이다.",
+ "holdout_disagreement": "⛔ 홀드아웃은 +0.08pp 로 24에포크가 낫다고 했고 test 는 -0.85pp 로 반대였다. 홀드아웃 기반 에포크 선택이 이 축에서는 틀린 방향을 가리켰다 — 홀드아웃 이득이 SE 안이면 그걸로 런 간 비교를 하면 안 된다.",
+ "operating_point": "공개 test split 4,392질의/6,006스킬 · 가중치 전용",
+ "cost": "3시간 41분 · H200 1장"
+}

@@ -1,0 +1,51 @@
+{
+  "paper": {
+    "arxiv": "2605.05726",
+    "title": "SkillRet: A Large-Scale Benchmark for Skill Retrieval in LLM Agents",
+    "headline_metric": "NDCG@10",
+    "design": [
+      "스킬 16,129개 · 6 major / 18 sub 2단 분류",
+      "학습 63,259 · 평가 4,392 · 스킬 풀 disjoint",
+      "질의 합성: 학습=Qwen3.5-122B-A10B, 평가=Claude Opus 4.6",
+      "질의당 정답 1~3개(k 필드) — 복합 질의 설계",
+      "파인튜닝이 최강 기존 검색기 대비 NDCG@10 +12.9, off-the-shelf 대비 +16.2"
+    ]
+  },
+  "split_offset": {
+    "note": "⛔ 모델카드는 4,997질의/6,660스킬 split 으로 보고한다. 우리 로컬 데이터는 4,392/6,006 이라 **직접 비교 금지**. 같은 모델을 양쪽에서 재서 오프셋만 쓴다.",
+    "rows": [
+      {
+        "model": "SKILLRET-Embedding-0.6B",
+        "card_ndcg@10": 78.03,
+        "ours": 80.82,
+        "delta": 2.79
+      },
+      {
+        "model": "SKILLRET-Embedding-8B",
+        "card_ndcg@10": 83.45,
+        "ours": 86.53,
+        "delta": 3.08
+      }
+    ],
+    "mean_offset": 2.94,
+    "implication": "우리 split 이 약 3점 쉽다. 우리 22M 의 75.26 은 모델카드 눈금에서 약 72.3 에 해당한다 — 다만 이건 **환산 추정치이지 측정값이 아니다**."
+  },
+  "our_best": {
+    "model": "arctic-embed-xs 22.7M, kd0.7 12ep, 홀드아웃 선택 ep9",
+    "ndcg@10_ours": 75.26,
+    "se": 0.45,
+    "size_fp16_mb": 46.14,
+    "teacher_used": "SKILLRET-Embedding-0.6B (80.82 ours)",
+    "ratio_to_teacher": 0.931
+  },
+  "caveats": [
+    "환산 추정치를 측정값처럼 인용하지 마라",
+    "모델카드 split 으로 우리 모델을 실제로 재본 적은 없다 — 재려면 그 split 을 받아야 한다"
+  ],
+  "correction_2026_09_11": {
+    "finding": "HF 공개 데이터셋(ThakiCloud/SKILLRET)을 직접 받아 대조한 결과 우리 로컬 사본과 질의·스킬 수가 정확히 같다(4,392 / 6,006)· 파일 해시도 동일.",
+    "implication": "⛔ 모델 카드가 말하는 4,997질의/6,660스킬 split 은 **현재 공개 데이터셋에 없다**. 이전 리비전이거나 공개 전 내부 split 이다. 따라서 (1) 우리 모델을 그 split 으로 재는 것은 데이터가 없어 불가능하고 (2) 오프셋 2.94 로 환산한 추정치는 재현 불가능한 기준에 기댄 값이다.",
+    "action": "환산 추정치를 외부에 인용하지 마라. 우리 수치는 공개 데이터셋 test split(4,392/6,006) 기준으로만 말한다 — 그게 재현 가능한 유일한 기준이다.",
+    "still_valid": "교사 0.6B=80.82 · 8B=86.53 은 우리 split 에서 직접 잰 값이라 유효"
+  }
+}

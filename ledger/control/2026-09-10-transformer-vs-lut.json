@@ -1,0 +1,42 @@
+{
+  "date": "2026-09-10",
+  "subject": "통제군 — 22M 트랜스포머 vs LUT, 같은 스모크 조건",
+  "why": "LUT 이 얼마나 나쁜지는 알았지만 '무엇과 비교해' 나쁜지를 몰랐다. 이 팔이 그 기준선이다",
+  "conditions": {
+    "pairs_train": 717,
+    "pairs_holdout": 83,
+    "holdout_skills": 161,
+    "seed": 20260910,
+    "split": "스킬 단위 (LUT 과 동일)",
+    "note": "스모크 규모 — 절대값이 아니라 비교용"
+  },
+  "results": {
+    "transformer_22m_zeroshot": {
+      "recall@10": 63.86,
+      "note": "학습 0. 그냥 받아서 잰 값"
+    },
+    "transformer_22m_finetuned_2ep": {
+      "recall@10": 75.9,
+      "delta": 12.05,
+      "train_sec": 50.7
+    },
+    "lut_static_20ep": {
+      "recall@10": 3.61,
+      "note": "같은 조건, 20 epoch 학습 후"
+    }
+  },
+  "headline": "학습을 하나도 안 한 22M 트랜스포머(63.86)가 20 epoch 학습한 LUT(3.61)을 17.7배 이긴다",
+  "size": {
+    "transformer_params": 22713216,
+    "fp16_mb": 45.4,
+    "int8_mb": 22.7,
+    "lut_256d_int8_mb": 20.9,
+    "note": "크기가 거의 같다 — 45MB vs 21MB, 둘 다 100MB 예산 안. 정적을 고를 이유가 크기가 아니다"
+  },
+  "implication": "리서치가 인용한 정적 상한(MTEB-R 35) vs 22M 트랜스포머(50.15) 격차가 우리 태스크에서 훨씬 크게 나타난다. 정적을 고를 유일한 근거는 인코딩 지연뿐이고, 그 지연 이득이 이 품질 차를 정당화하는지가 남은 질문이다",
+  "unverified": [
+    "스모크 규모(쌍 717)라 전체 데이터에서의 값은 다를 수 있다",
+    "LUT v3(pooling='last' 수정본)는 아직 미측정 — 개선될 여지가 있다",
+    "인코딩 지연 비교 미측정 — 정적의 유일한 장점을 아직 안 쟀다"
+  ]
+}

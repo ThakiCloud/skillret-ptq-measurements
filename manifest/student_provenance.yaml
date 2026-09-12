@@ -1,0 +1,29 @@
+# Provenance for the two distilled students. The training code is not in this
+# repository; the recipe is, because a size and a score are not interpretable
+# without knowing what produced the checkpoint.
+students:
+  - id: ThakiCloud/SKILLRET-Edge-22M
+    revision: ce6d1d2eb1eaa4f36e6d1ed1742eacc78d615f44
+    backbone: Snowflake/snowflake-arctic-embed-xs
+    params_total: 22.7M
+    embedding_share: 0.516          # vocab 30522 x 384 -- half the model is the table
+    teacher: ThakiCloud/SKILLRET-Embedding-0.6B
+    teacher_revision: c5b550f3f4febab17016f5239557b4d43808b249
+    dataset_revision: a050ad233a504a43135bafe8cdf45574052b5729
+    objective: contrastive + teacher similarity distillation
+    pooling: cls
+    query_prefix: ""
+  - id: ThakiCloud/SKILLRET-Edge-109M
+    revision: ecc843f140f229cfaa940dcf45158ef58ffc4396
+    backbone: bert-base-uncased sized encoder
+    params_total: 109M
+    teacher: ThakiCloud/SKILLRET-Embedding-0.6B
+    teacher_revision: c5b550f3f4febab17016f5239557b4d43808b249
+    dataset_revision: a050ad233a504a43135bafe8cdf45574052b5729
+    objective: contrastive + teacher similarity distillation
+    pooling: cls
+    query_prefix: ""
+notes: >-
+  The teacher row in the storage table is the full-precision reference artifact
+  used for size comparisons; no FP32 checkpoint file was written. Student
+  quantization arms in artifacts.csv were packed for real, not estimated.

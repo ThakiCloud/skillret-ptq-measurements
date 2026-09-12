@@ -1,0 +1,26 @@
+\begin{table}[t]\centering\small
+\caption{Retained NDCG@10 (\% of full precision, averaged over the three corpora) when only
+the named module is quantized to INT2/g16, against quantizing everything. Vocabulary size
+directly determines the number of embedding rows, so this arm tests whether fragility of the
+vocabulary-dependent embedding table explains the cliff; it does not test tokenization
+behaviour itself. It does not explain it: embedding-only INT2 leaves 98.0\% to 100.5\% in the
+per-model averages (95.6\% to 101.3\% across cells), including in the three checkpoints that
+retain under 2\% when everything is quantized, and BGE-M3 reads 100.5\%. The decomposition of
+the failure is itself family-dependent: BGE-M3 is close to a single-module bottleneck, since
+quantizing its attention alone leaves almost what quantizing everything leaves; the Qwen
+lineage is feed-forward-dominant with a large residual on top; and for EmbeddingGemma and
+E5-base-v2 no isolated module comes near the joint loss at all. The All column is the same arm as in
+Table~\ref{tab:uniform} and is read from the same source; the run reported here
+re-measured it and agreed to within 0.05 points of retained quality.}
+\label{tab:int2mod}
+\begin{tabular}{lrrrr}
+\toprule
+Model & All & Embed.\ only & Attn.\ only & FFN only \\
+\midrule
+Qwen3-Emb-0.6B & 1.3 & 99.1 & 75.0 & 11.3 \\
+SkillRet-0.6B (finetuned) & 1.7 & 99.7 & 74.7 & 9.9 \\
+EmbeddingGemma-300M & 65.7 & 98.4 & 92.0 & 89.3 \\
+BGE-M3 & 1.8 & 100.5 & 2.7 & 84.9 \\
+E5-base-v2 & 41.9 & 98.0 & 82.7 & 84.6 \\
+\bottomrule
+\end{tabular}\end{table}

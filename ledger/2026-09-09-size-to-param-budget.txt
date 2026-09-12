@@ -1,0 +1,9 @@
+목표 크기에서 역산한 파라미터 예산 (embedding 포함 전체 weight 기준)
+
+포맷                                     50MB      100MB      150MB      200MB   실 kernel ISA
+-------------------------------------------------------------------------------------------
+INT8 (g128,fp16 scale)                 49M        98M       148M       197M    x86 AVX2/VNNI · ARM i8mm  (성숙)
+INT4 (g128,fp16 scale)                 97M       194M       291M       388M    x86 OpenVINO/oneDNN · ARM 확인필요
+bitnet.cpp I2_S (2b+fp32/128)         178M       356M       533M       711M    x86 AVX2/VNNI 문서화 · ARM 미확인
+
+참고: 현 SKILLRET 0.6B = 595.8M — 위 표의 어느 칸에도 들어가지 않는다.

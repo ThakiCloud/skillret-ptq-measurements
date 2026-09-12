@@ -1,0 +1,12 @@
+{
+  "model": "<home>/models/skillret-kd07-ep9",
+  "bits": 4,
+  "group": 16,
+  "total_params": 22713216,
+  "quantized_params": 22682112,
+  "quantized_frac": 0.9986,
+  "predicted_mb": 17.074,
+  "on_disk_mb": 17.074,
+  "error_pct": 0.0,
+  "roundtrip_max_abs_err": 0.0
+}

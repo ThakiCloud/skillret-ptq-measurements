@@ -1,0 +1,47 @@
+{
+  "n_queries": 4392,
+  "n_docs": 6006,
+  "note": "학습0(zero-shot)",
+  "rows": [
+    {
+      "model": "Snowflake/snowflake-arctic-embed-xs",
+      "params": 22713216,
+      "int3g16_mb": 14.2,
+      "pool": "cls",
+      "ndcg@10": 44.36887311364332,
+      "se": 0.5729708005881841,
+      "encode_sec": 26.2,
+      "dim": 384
+    },
+    {
+      "model": "BAAI/bge-small-en-v1.5",
+      "params": 33360000,
+      "int3g16_mb": 20.85,
+      "pool": "cls",
+      "ndcg@10": 41.71337532256871,
+      "se": 0.5693196540947372,
+      "encode_sec": 74.4,
+      "dim": 384
+    },
+    {
+      "model": "Snowflake/snowflake-arctic-embed-s",
+      "params": 33360000,
+      "int3g16_mb": 20.85,
+      "pool": "cls",
+      "ndcg@10": 41.45368327780603,
+      "se": 0.5807342251267169,
+      "encode_sec": 50.7,
+      "dim": 384
+    },
+    {
+      "model": "Snowflake/snowflake-arctic-embed-m",
+      "params": 109482240,
+      "int3g16_mb": 68.43,
+      "pool": "cls",
+      "ndcg@10": 35.60335126780256,
+      "se": 0.5785532897950216,
+      "encode_sec": 146.0,
+      "dim": 768
+    }
+  ]
+}

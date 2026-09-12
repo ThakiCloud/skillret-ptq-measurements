@@ -1,0 +1,40 @@
+{
+  "model": "ThakiCloud/SKILLRET-Embedding-0.6B",
+  "device": "mps",
+  "dtype": "float32",
+  "max_seq_len": 512,
+  "batch": 16,
+  "doc_template": "ns_name_desc",
+  "query_prompt": "web",
+  "query_prompt_text": "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery: ",
+  "pooling": "lasttoken (모델 설정 그대로)",
+  "normalize": true,
+  "n_queries": 400,
+  "n_docs": 6006,
+  "corpus_note": "공개 데이터셋 test split. 모델카드(4,997q/6,660d)와 다른 revision.",
+  "embedding_dim": 1024,
+  "doc_cache_hit": true,
+  "metrics": {
+    "completeness@10": 0.63,
+    "completeness@15": 0.6775,
+    "completeness@5": 0.545,
+    "ndcg@10": 0.7288081642991147,
+    "ndcg@15": 0.73897075081893,
+    "ndcg@5": 0.701774597804488,
+    "recall@10": 0.7895833333333333,
+    "recall@15": 0.8204166666666667,
+    "recall@5": 0.7208333333333334
+  },
+  "timing_sec": {
+    "model_load": 5.9,
+    "encode_docs": 0.0,
+    "encode_queries": 41.1
+  },
+  "host": {
+    "machine": "Hanui-MacBookPro-4.local",
+    "arch": "arm64",
+    "python": "3.12.8"
+  },
+  "corpus_sha": "edbfae0b8109de46",
+  "timestamp": "2026-09-09T16:53:32+0900"
+}

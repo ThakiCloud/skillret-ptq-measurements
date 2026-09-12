@@ -1,0 +1,68 @@
+{
+  "date": "2026-09-10",
+  "subject": "⛔ 전체 스플릿 확정 — 스모크가 소형 모델 둘을 과대평가했다",
+  "scale": {
+    "n_queries": 4392,
+    "n_docs": 6006,
+    "vs_smoke": "스모크는 홀드아웃 83건 · 문서 후보 161개였다. 6,006개 중 고르는 난이도와 다르다"
+  },
+  "results": {
+    "0.6B-teacher": {
+      "ndcg@10": 80.77,
+      "se": 0.42,
+      "recall@10": 87.76,
+      "encode_sec": 1125.7,
+      "dim": 1024
+    },
+    "22M-arctic-zeroshot": {
+      "ndcg@10": 45.68,
+      "se": 0.58,
+      "recall@10": 52.6,
+      "encode_sec": 58.4,
+      "dim": 384
+    },
+    "potion-retrieval-32M": {
+      "ndcg@10": 46.36,
+      "se": 0.57,
+      "recall@10": 53.76,
+      "encode_sec": 1.9,
+      "dim": 512
+    }
+  },
+  "correction": {
+    "22m_arctic": {
+      "smoke_recall@10": 63.86,
+      "full_recall@10": 52.6,
+      "overestimate_pp": 11.26
+    },
+    "potion": {
+      "smoke_recall@10": 69.88,
+      "full_recall@10": 53.76,
+      "overestimate_pp": 16.12
+    },
+    "why": "홀드아웃 스킬만 161개인 스모크는 후보 집합이 37배 작다. 소형 모델일수록 후보가 늘 때 더 크게 무너진다"
+  },
+  "standings_full": {
+    "0.6B_teacher": {
+      "ndcg@10": 80.77,
+      "encode_sec": 1126,
+      "size_int8_mb": 605
+    },
+    "potion_static_32M": {
+      "ndcg@10": 46.36,
+      "encode_sec": 2,
+      "size_int8_mb": 32.3
+    },
+    "22M_arctic_zeroshot": {
+      "ndcg@10": 45.68,
+      "encode_sec": 58,
+      "size_int8_mb": 22.7
+    }
+  },
+  "verdict": "소형 후보 둘이 전체 스플릿에서 46 근처로 수렴한다. 0.6B(80.77) 대비 57% 수준이다. 스모크에서 본 '84%' 는 없다. 다만 두 소형 모델은 아직 우리 데이터로 학습을 안 한 상태이고(potion 은 zero-shot, arctic 도 zero-shot), 파인튜닝 여지가 남아 있다",
+  "encode_cost": "potion 2초 vs 0.6B 1,126초 = 563배. arctic 58초 = 19배",
+  "unverified": [
+    "22M/potion 을 전체 학습셋(56,928쌍)으로 파인튜닝했을 때의 값 미측정 — 스모크에서는 arctic 이 63.86->84.34 로 올랐다",
+    "그 상승폭이 전체 규모에서도 유지되는지가 다음 질문"
+  ]
+}

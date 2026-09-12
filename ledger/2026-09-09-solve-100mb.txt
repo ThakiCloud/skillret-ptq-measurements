@@ -1,0 +1,12 @@
+100MB 이하 조합 8개 (파라미터 많이 남는 순 = 품질 유리한 순)
+
+  남는 params      MB    vocab  emb rank  bits
+--------------------------------------------------------------------
+     465.6M    99.3    48000       512  backbone ternary(이론 1.58b)
+     461.6M    98.5    81615       256  backbone ternary(이론 1.58b)
+     460.0M    98.1       전체       128  backbone ternary(이론 1.58b)
+     457.1M    97.5    64000       256  backbone ternary(이론 1.58b)
+     453.0M    96.7    48000       256  backbone ternary(이론 1.58b)
+     451.0M    96.2    81615       128  backbone ternary(이론 1.58b)
+     448.8M    95.8    64000       128  backbone ternary(이론 1.58b)
+     446.7M    95.3    48000       128  backbone ternary(이론 1.58b)

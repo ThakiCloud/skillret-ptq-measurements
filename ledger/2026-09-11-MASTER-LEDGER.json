@@ -1,0 +1,256 @@
+{
+ "title": "SkillRet Edge 통합 원장 — 무엇을 했고, 무엇이 살아남았고, 무엇이 폐기·철회됐나",
+ "as_of": "2026-09-11 (일반화 실험 진행 중)",
+ "contract": "모든 인용 수치는 query_prefix.json 계약(2026-09-10 수정 이후) 기준. 그 이전 파인튜닝 수치는 학습/평가 지시문 불일치 위에서 잰 것이라 무효.",
+ "benchmark": {
+  "source": "arXiv:2605.05726 · HF ThakiCloud/SKILLRET",
+  "skills_total": 17810,
+  "skills_train": 10123,
+  "skills_test": 6006,
+  "train_test_overlap": 0,
+  "queries_test": 4392,
+  "golds_per_query": "1~3 (k 필드)",
+  "generators": {
+   "train": "Qwen3.5-122B-A10B",
+   "test": "Claude Opus 4.6"
+  },
+  "official_metric": "NDCG@10 (논문 헤드라인 — 관행 아님)",
+  "note": "복합 질의: 정답들이 서로 다른 카테고리(major 다름 1,370 vs 같음 879)"
+ },
+ "tracks": {
+  "A_직접양자화_0.6B": {
+   "status": "완료 · 결론 유효",
+   "finding": "IQ1_S 로 임베딩을 1비트로 쳐도 149MB — 100MB 는 이 모델에서 도달 불가",
+   "consequence": "작은 인코더를 새로 학습하는 트랙 B 로 전환하게 만든 근거",
+   "ledgers": [
+    "2026-09-09-param-budget-*.json",
+    "quant-arms/",
+    "quant-arms-v2/"
+   ]
+  },
+  "B_LUT_정적임베딩": {
+   "status": "⛔ 실질 폐기 (배포 경로로는 부적합)",
+   "origin": "광고(ai-strategy-private) 온디바이스 2.XM 모델의 룩업테이블 방식을 참고",
+   "what_happened": [
+    "자체 Model2Vec 증류 20에포크 → 홀드아웃 3.61 (사실상 무작위)",
+    "진단: 정적 임베딩의 한계가 아니라 증류 파이프라인 고장. 테이블 좌표 스케일이 진범",
+    "공개 potion-retrieval-32M 을 그대로 쓰니 47.31 — 내 20에포크 학습본을 19배 이김",
+    "potion 파인튜닝 10에포크 → 55.15 (32.3MB, 인코딩 2초)"
+   ],
+   "why_dropped": "22M 트랜스포머가 같은 자에서 75.26. 정적 임베딩은 문맥을 못 담아 복합 질의에 구조적으로 불리하다. 인코딩 2초라는 속도만 남는 장점",
+   "still_useful": "속도가 절대 조건인 자리의 대안으로 보존",
+   "ledgers": [
+    "lut-*/",
+    "control/2026-09-10-why-lut-collapses.json",
+    "control/2026-09-10-public-static-beats-ours.json",
+    "control/2026-09-10-static-works-and-epochs.json"
+   ]
+  },
+  "C_22M_트랜스포머": {
+   "status": "✅ 현재 배포 경로",
+   "ladder": [
+    {
+     "step": "학습0 (arctic-embed-xs, 자기 접두어)",
+     "ndcg@10": 50.07
+    },
+    {
+     "step": "대조학습만 12ep, 홀드아웃 선택 ep6",
+     "ndcg@10": 71.94,
+     "delta": "+21.87"
+    },
+    {
+     "step": "+ 교사증류 kd0.7, 12ep, ep9",
+     "ndcg@10": 75.26,
+     "delta": "+3.32"
+    },
+    {
+     "step": "+ int4/g16 양자화",
+     "ndcg@10": 75.14,
+     "size_mb": 17.07,
+     "delta": "-0.12 (페어드 t=1.15, 통계적 동률)"
+    }
+   ],
+   "latency_cpu": {
+    "1thread_ms": 8.1,
+    "4thread_ms": 6.5,
+    "batch32_per_item_ms": 5.11,
+    "teacher_0.6b_ms": "518~650"
+   },
+   "byte_verified": {
+    "predicted_mb": 17.074,
+    "on_disk_mb": 17.074,
+    "error_pct": 0.0,
+    "note": "가중치만. 토크나이저 712KB 포함 시 17.79MB"
+   }
+  },
+  "D_109M": {
+   "status": "✅ 교란 제거 후 확정 — 현재 최고점",
+   "confirmed": {
+    "arm": "sr109m2",
+    "ndcg@10": 79.18,
+    "se": 0.42,
+    "int3g16": 78.04,
+    "size_mb": {
+     "fp16": 219.0,
+     "int3g16": 68.4
+    },
+    "teacher_pct": 98.0
+   },
+   "finding": "22M→109M +3.92pp. 반대로 교사 0.6B→8B 는 -2.40pp — 병목은 교사가 아니라 학생이다",
+   "prefix_axis": "파인튜닝 후 지시문 종류는 무관(none 79.18 vs arctic 78.50, SE 안). 중요한 건 학습·평가를 '같게' 유지하는 것뿐",
+   "running": "sr109long (24에포크, 12에포크가 천장인지 확인) — ep7 홀드아웃 64.34 상승 중"
+  }
+ },
+ "why_yesterday_bad_today_good": {
+  "질문": "어제는 결론이 안 좋았는데 오늘은 왜 좋은가",
+  "답": "네 가지인데 가장 큰 것이 버그 수정이다 — 모델이 좋아진 게 아니라 어제 잘못 쟀다",
+  "breakdown": [
+   {
+    "원인": "평가 지시문 불일치 수정",
+    "기여": "+8.84pp",
+    "성격": "버그",
+    "설명": "같은 체크포인트가 71.03 → 75.26"
+   },
+   {
+    "원인": "교사 증류 추가(kd0.7)",
+    "기여": "+3.32pp",
+    "성격": "새 방법"
+   },
+   {
+    "원인": "5에포크 → 12에포크",
+    "기여": "곡선 상승분",
+    "성격": "설정"
+   },
+   {
+    "원인": "정답 절반 회복(다중양성 손실)",
+    "기여": "미측정",
+    "성격": "버그"
+   }
+  ],
+  "추가": "어제는 오전 내내 LUT 축에 있었고 22M 트랜스포머 경로를 늦게 시작했다"
+ },
+ "retracted": [
+  {
+   "what": "양자화가 fp16 을 이긴다(최대 +4.45pp)",
+   "why": "지시문 불일치 위에서 잰 허상. 고친 계약에서는 7개 에포크 전부 fp16 아래",
+   "ledger": "control/2026-09-10-RETRACTION-quantization.json"
+  },
+  {
+   "what": "섭동 프로브(가우시안 대조·부위별 절제·학습0 대조)",
+   "why": "설계는 멀쩡했으나 존재하지 않는 현상을 설명했다"
+  },
+  {
+   "what": "'스킬 250개면 학습 불필요'",
+   "why": "표집이 난이도를 같이 바꿨다. 난이도 고정 후 학습0 76.79 vs 학습본 94.24"
+  },
+  {
+   "what": "frontier.json · cutoffs.json",
+   "why": "broken 계약 산출물. 파일에 retracted 플래그 박음"
+  }
+ ],
+ "bugs_found_and_gated": [
+  {
+   "bug": "학습/평가 지시문 불일치",
+   "cost": "-8.84pp",
+   "gate": "query_prefix.json + prefix.py 단일출처, 기록 없으면 죽음"
+  },
+  {
+   "bug": "홀드아웃이 격리 안 됨(스킬 1,012개 100% 학습 등장)",
+   "cost": "팔 순위 역전",
+   "gate": "정답 하나라도 걸리면 홀드아웃"
+  },
+  {
+   "bug": "정답 절반 폐기(127,190 중 63,931)",
+   "cost": "미측정",
+   "gate": "다중양성 InfoNCE"
+  },
+  {
+   "bug": "마이너가 나머지 정답을 네거티브로 캠(42,483 질의)",
+   "cost": "미측정",
+   "gate": "전체 정답 제외 + assert"
+  },
+  {
+   "bug": "GIST/KL 충돌로 loss inf 4에포크",
+   "cost": "런 1개 폐기",
+   "gate": "유한성 검사 raise"
+  },
+  {
+   "bug": "LEAF 죽은 코드",
+   "cost": "0(안 돌아서)",
+   "gate": "조건부 초기화 + 스모크"
+  },
+  {
+   "bug": "스모크가 파이프라인 앞단계를 안 태움",
+   "cost": "GPU 잡 5개 폐기",
+   "gate": "스모크에 티처인코딩·마이닝 단계 추가"
+  },
+  {
+   "bug": "NaN 게이트가 원인을 지목하지 못함",
+   "cost": "srhn2 1회 재실행",
+   "gate": "게이트가 base/kd/leaf 항별 값 + gist 마스크 비율 + 네거티브가 0인 행 수를 같이 출력"
+  }
+ ],
+ "key_results": {
+  "corpus_size_k1only": "250개 학습본 94.24/학습0 76.79 · 6,006개 82.05/59.76 — 후보가 적을수록 학습의 상대 값어치가 크다",
+  "full_pool_16129": {
+   "kd0.7": 67.16,
+   "zeroshot": 42.6,
+   "train_skill_share_top10": {
+    "kd0.7": 56.5,
+    "zeroshot": 59.7,
+    "chance": 62.8
+   },
+   "verdict": "학습 편향 없음 — 우리 모델이 학습 스킬을 무작위보다 덜 뽑는다"
+  },
+  "hard_negatives": "22M 에서 -1pp. 단 기준점 결함으로 질의당 2.49/4개만 캠 — 판정 보류",
+  "teacher_8b": "73.54 (0.6B 75.26 대비 낮음). 단 하드네거티브와 교란 — 분리 실험 중"
+ },
+ "wave4": {
+  "subject": "파도4 — 남은 방법 축 정리",
+  "rows": [
+   {
+    "arm": "srlossmean (다중양성 mean 형태)",
+    "status": "완료",
+    "result": "73.76 vs sum 73.45 (+0.31pp, p=0.016 경계)",
+    "note": "⛔ 메커니즘 가설은 반증됐다. k=3 에서 가장 크게 올라야 했는데 -0.13pp(p=0.651), 오히려 k=1 이 +0.32pp"
+   },
+   {
+    "arm": "srleaf2 (LEAF 보조손실 0.3)",
+    "status": "완료",
+    "result": "73.75 vs 기준 75.26 = -1.51pp (페어드 t=-7.78)",
+    "verdict": "⛔ 채택 안 함. 교사 공간 사영 제약이 검색 목적함수와 경쟁한다"
+   },
+   {
+    "arm": "sr109long (109M × 24에포크)",
+    "status": "완료",
+    "note": "⛔ 홀드아웃은 +0.08 로 반대를 가리켰다. 12에포크가 천장",
+    "result": "24에포크 test 78.33 vs 12에포크 79.18 — 0.85pp 나쁘다"
+   },
+   {
+    "arm": "srhn2 (하드네거티브 + GIST)",
+    "status": "⛔ 1차 실패 → 계기 달아 재제출",
+    "failure": "step 0 에서 loss=nan. 게이트가 잡았지만 '둘 중 하나'라고만 해서 원인을 못 짚었다",
+    "fix": "게이트가 항별 값(base/kd/leaf)과 마스크 통계를 같이 뱉도록 수정. 스모크 green 확인 후 재제출"
+   }
+  ]
+ },
+ "wave5": {
+  "subject": "파도5 — 계획서(RankPTQ Embed)의 게이트를 4+1 모델로 실측",
+  "models": "Qwen3-Emb-0.6B · SKILLRET-0.6B(그 파인튜닝본) · EmbeddingGemma-300M · BGE-M3 · E5-base-v2 = 계열 4, 체크포인트 5",
+  "corpora": "SciFact · NFCorpus · SkillRet",
+  "arms": "균일 8 + 부위별 9 = 17팔, 일부 모델은 순위 보존 지표 포함",
+  "findings": [
+   "INT4/g16 은 전 모델 무손실. 부위별 민감도도 ±0.7pp 안 — 배분할 차이가 없다",
+   "INT3 에서 민감도 발생, 그런데 순위가 뒤집힌다 — 3모델은 FFN 최다민감, BGE-M3 는 FFN 무손실·어텐션 병목",
+   "부위별 합이 결합 손실을 1.8~7.6배 과소평가 — knapsack 가산성 가정이 깨진다",
+   "임베딩 테이블은 전 모델·전 동작점 무손실(최악 -0.51pp). 파라미터의 26~66% 인데도",
+   "재구성 오차는 균일 축 r=0.89, 부위 축 r=0.54 — 배분기가 쓰는 축에서 약하다",
+   "INT2 생존은 2/5(Gemma 65.7%, E5 41.9%). 풀링 가설은 조작으로 반증됐다 — 원인 미상",
+   "파인튜닝은 양자화 내성을 최대 1.8pp 만 움직인다 — 절벽은 원본에 이미 있다",
+   "NDCG@10 이 무손실이라는 INT4 에서 top-10 의 13~20%가 교체되고 경계 문서가 절반 뒤집힌다",
+   "경계 마진은 뒤집힘을 예측하나(ρ≈-0.64) 기울기가 얕아 마진 가중이 균일 가중과 비슷해진다"
+  ],
+  "gate_verdict": "계획서 표13 기준: RankPTQ Embed 의 전제 2개(모듈별 정책 차이·재구성 지표의 무력함) 중 전자는 성립(순위 뒤집힘), 후자는 축을 나눠야 성립(부위 축만). 다만 INT4 에 배분 여지가 없고 NDCG 가 경계 churn 을 벌하지 않으므로, 방법 논문보다 **PTQ 한계·정책 비전이 분석 논문**이 정직하다.",
+  "paper": "paper/main.tex — Where Post-Training Quantization Breaks Text Embedders"
+ }
+}

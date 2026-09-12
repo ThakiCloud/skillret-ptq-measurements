@@ -1,0 +1,30 @@
+# The five evaluated checkpoints. Pooling and the query prefix are what the
+# evaluator refuses to run without; a mismatch there once manufactured a result
+# in which quantization beat full precision.
+models:
+  - id: Qwen/Qwen3-Embedding-0.6B
+    revision: 97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3
+    family: qwen
+    pooling: lasttoken
+    query_prefix: "Instruct: Given a skill search query, retrieve relevant skills that match the query\nQuery: "
+  - id: ThakiCloud/SKILLRET-Embedding-0.6B
+    revision: c5b550f3f4febab17016f5239557b4d43808b249
+    family: qwen
+    pooling: lasttoken
+    query_prefix: ""
+    note: fine-tune of Qwen3-Embedding-0.6B; the paired control, not independent evidence
+  - id: google/embeddinggemma-300m
+    revision: 57c266a740f537b4dc058e1b0cda161fd15afa75
+    family: gemma
+    pooling: mean
+    query_prefix: ""
+  - id: BAAI/bge-m3
+    revision: 5617a9f61b028005a4858fdac845db406aefb181
+    family: xlm-r
+    pooling: cls
+    query_prefix: ""
+  - id: intfloat/e5-base-v2
+    revision: f52bf8ec8c7124536f0efb74aca902b2995e5bcd
+    family: bert
+    pooling: mean
+    query_prefix: "query: "

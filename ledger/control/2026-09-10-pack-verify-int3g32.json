@@ -1,0 +1,12 @@
+{
+  "model": "<home>/models/skillret-ft22m",
+  "bits": 3,
+  "group": 32,
+  "total_params": 22713216,
+  "quantized_params": 22682112,
+  "quantized_frac": 0.9986,
+  "predicted_mb": 11.403,
+  "on_disk_mb": 11.403,
+  "error_pct": 0.0,
+  "roundtrip_max_abs_err": 0.0
+}

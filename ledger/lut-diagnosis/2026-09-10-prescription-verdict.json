@@ -1,0 +1,45 @@
+{
+  "date": "2026-09-10",
+  "subject": "LUT 처방 스윕 결과 — 진단은 맞았고, 처방으로는 부족하다",
+  "prescriptions_applied": {
+    "1_sif_off_at_distill": "sif_coefficient=None (model2vec 기본 1e-4 는 우리 vocab 94.8%에 w>0.9 라 무효)",
+    "2_corpus_frequency_sif": "우리 문서 코퍼스 실측 빈도로 풀링 시점에 재적용, 질의·문서 대칭",
+    "3_rowwise_quant": "전역 absmax 대신 행별 4bit"
+  },
+  "results": {
+    "mean_pooling": {
+      "ndcg@10": 0.12,
+      "doc_cos_median": 0.9974
+    },
+    "sif_1e-3_best": {
+      "ndcg@10": 0.31,
+      "doc_cos_median": 0.9439
+    },
+    "dim_standardized": {
+      "ndcg@10": 2.13,
+      "note": "차원별 표준화 추가"
+    },
+    "teacher": 80.82,
+    "random": 0.086
+  },
+  "what_worked": {
+    "sif_lowered_clustering": "문서간 코사인 중앙값 0.9974 -> 0.9439. 뭉침이 실제로 풀렸다",
+    "alpha_optimum_matches_plataid": "1e-3 이 최적. plataid 실측(3e-4~1e-3)과 일치하고 1e-4(m2v 기본값)는 열등 — 그쪽 관찰 재현",
+    "standardization_7x": "차원별 표준화가 0.31 -> 2.13"
+  },
+  "decisive_finding": {
+    "claim": "차원 무관은 양자화 탓이 아니었다 — PCA 의 정상 동작이다",
+    "evidence": "fp32 에서도 128/256/512 가 동일. 차원별 분산: dim[0]=483.15 vs dim[64]=0.0065, dim[511]=0.0006. 누적 설명분산이 128d 에서 이미 100.0%",
+    "meaning": "첫 축 하나가 분산 전체를 지배한다. 뒤 차원을 늘려도 코사인에 기여가 없다. 내 처방 2(행별 양자화)는 이 증상의 원인이 아니었다"
+  },
+  "honest_verdict": {
+    "gap": "최선 2.13 vs 교사 80.82. 무작위(0.086)의 25배지만 제품 수준과는 자릿수가 다르다",
+    "conclusion": "진단(SIF 무효·흔한토큰 지배·지배축)은 전부 맞았고 각각 개선을 냈지만, 합쳐도 부족하다. distill() 은 5단계 사다리의 첫 칸이라는 plataid 결론이 우리에게도 성립한다",
+    "next": "tokenlearn(코퍼스 재정렬) + 지도 대조학습 없이는 이 축이 안 열린다 — GPU 시간이 드는 학습 단계다"
+  },
+  "unverified": [
+    "tokenlearn 미적용",
+    "지도 대조학습 미적용",
+    "우리 태스크가 plataid 카테고리 분류보다 문맥 의존적인지 정량 미확인"
+  ]
+}

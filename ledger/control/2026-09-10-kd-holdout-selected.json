@@ -1,0 +1,34 @@
+{
+  "selection": "홀드아웃 recall@10 최대 에포크 — test 로 고르지 않는다",
+  "holdout_by_epoch": {
+    "kd0.0": {
+      "3": 82.33,
+      "4": 82.53,
+      "5": 82.88
+    },
+    "kd0.3": {
+      "3": 83.3,
+      "4": 83.92,
+      "5": 84.03
+    }
+  },
+  "arms": {
+    "kd0.0": {
+      "selected_epoch": 5,
+      "holdout": 82.88,
+      "test_fp16": 61.79266220531798,
+      "test_int3g32": 61.65790006463854,
+      "test_oracle_best": 62.688113704336835,
+      "holdout_still_rising": true
+    },
+    "kd0.3": {
+      "selected_epoch": 5,
+      "holdout": 84.03,
+      "test_fp16": 66.51265894405265,
+      "test_int3g32": 64.88918722943882,
+      "test_oracle_best": 67.02828219454689,
+      "holdout_still_rising": true
+    }
+  },
+  "caveat": "kd0.3 홀드아웃이 ep5 에서도 계속 오르는 중 — 5에포크 상한에 걸렸다. 승자 재학습은 더 긴 에포크로 돌려야 한다."
+}
