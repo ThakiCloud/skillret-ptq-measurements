@@ -6,7 +6,7 @@
 또 recon-vs-rank-4models.json 의 module_axis_within_bitwidth 등은 산출 스크립트가 없었다 — 여기서 낸다."""
 import glob, json, math, os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "paper"))
-from paper_numbers import load, recon  # noqa: E402
+from paper_numbers import load, recon, sweep_files  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UNIFORM = {"int8/g16", "int4/g16-asym", "int4/g16-sym", "int4/g128-asym", "int3/g16", "int3/g32", "int2/g16", "ternary/g16"}
@@ -23,20 +23,10 @@ def pearson(x, y):
 
 
 def touched_fraction(rows):
-    """모델별 팔별 quantized_params / 전체(균일 int3/g16 팔의 quantized_params)."""
-    out = {}
-    for (m, c), arms in rows.items():
-        pass
-    # quantized_params 는 sweep 원장 rows 에 있다 — paper_numbers.load() 는 안 싣는다. 직접 읽는다.
+    """모델별 팔별 quantized_params / 전체(균일 int3/g16 팔의 quantized_params).
+    quantized_params 는 sweep 원장 rows 에 있다 — paper_numbers.load() 는 안 싣는다. 같은 파일 집합을 읽는다."""
     frac = {}
-    for f in sorted(glob.glob(os.path.join(ROOT, "ledger/sweep/*.json"))):
-        b = os.path.basename(f)
-        if b.startswith(("rank-", "pool-", "attn-", "student-", "turn-", "2026-")):
-            continue
-        d = json.load(open(f))
-        if not isinstance(d, dict) or not isinstance(d.get("rows"), list):
-            continue
-        m = b[:-5].partition("-")[0]
+    for f, m, _c, d in sweep_files():
         nq = {r["arm"]: r.get("quantized_params") for r in d["rows"] if not r.get("retracted")}
         total = nq.get("int3/g16") or nq.get("int4/g16-asym")
         if not total:

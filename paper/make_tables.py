@@ -60,7 +60,7 @@ def t_uniform(rows):
 \\caption{{Retained NDCG@10 as a percentage of the full-precision score, averaged over the
 three corpora. Weight-only quantization; group-wise affine unless marked \\emph{{sym}}.
 Bold marks arms that lost more than half their retrieval quality. W8/g16 and W4/g16 are
-approximately NDCG-neutral for every model; widening to g128 already costs E5 5.9 points of
+approximately NDCG-neutral for every model; widening to g128 already costs E5 4.4 points of
 retention and the fine-tuned checkpoint 3.3 --- which is not the same as harmless; see
 Table~\\ref{{tab:turnover}}. The models separate at W3 and diverge at W2: EmbeddingGemma retains roughly
 two thirds of its quality where the two decoder-lineage and XLM-R-lineage models retain
@@ -124,14 +124,14 @@ corpora) when \\emph{{only}} the named module is quantized, against quantizing e
 Three things vary. At INT4/g16 isolated-module effects stay small --- at most 0.59 in the
 averages shown here, and 1.01 on any individual model--corpus pair --- leaving little
 sensitivity differential to allocate against. At INT3 sensitivity appears, but the ordering
-is not shared: at g16 the feed-forward block is the most costly module for Qwen3, its
-fine-tuned derivative and EmbeddingGemma, BGE-M3 reverses the ordering with a free FFN and
-attention as the bottleneck, and E5 is tied to within 0.01 before becoming attention-dominant
-at g32. And in every model
+is not shared: at g16 the feed-forward block is the most costly module for Qwen3 and its
+fine-tuned derivative, BGE-M3 reverses the ordering with a free FFN and attention as the
+bottleneck, E5 is attention-dominant at both group sizes, and EmbeddingGemma's costliest
+module is attention at g16 and the feed-forward block at g32. And in every model
 the parts do not add up to the whole. The last column is the interaction residual
 $I=\\Delta_{{\\text{{joint}}}}-\\sum\\Delta_{{\\text{{module}}}}$, shown only where all three
 single-module arms were measured; negative means joint quantization hurts more than the parts
-predict. At INT4/g16 $I$ is small ($-0.15$ to $+0.24$); at INT3 it is substantial in every
+predict. At INT4/g16 $I$ is small ($-0.15$ to $+0.17$); at INT3 it is substantial in every
 model and at g16 it changes sign between them, so a bit allocator that
 treats per-module sensitivity as an independent cost is wrong by a model-dependent amount in
 a model-dependent direction. The
@@ -167,7 +167,7 @@ def t_recon():
                  for r in sorted(i2, key=lambda x: x["model"]))
     w("recon.tex", f"""\\begin{{table}}[t]\\centering\\small
 \\caption{{Pearson correlation between parameter-weighted relative weight reconstruction
-error and NDCG@10 loss, excluding arms that lost more than half their quality. Left: computed
+error (weighted over the quantized tensors) and NDCG@10 loss, excluding arms that lost more than half their quality. Left: computed
 within each model and split by arm family. Reconstruction error tracks damage well along the
 \\emph{{uniform}} axis --- how hard the whole model was quantized --- and poorly along the
 \\emph{{module}} axis --- which part was quantized, the axis a mixed-precision allocator
@@ -177,7 +177,7 @@ damage consistently across the evaluated checkpoints. Model-specific evidence fo
 point is the ordering inversion in Table~\\ref{{tab:modules}}. Pooling module arms across bit widths
 inflates the correlation to 0.658 by range extension, because severity then varies along with
 module choice; within a bit width it never exceeds 0.42, and at INT4 it is approximately zero
-($r=-0.008$). The INT2 module arms added in
+($r=-0.043$). The INT2 module arms added in
 Section~\\ref{{sec:int2mod}} sit in the same weak band as INT3 rather than improving it.
 Right: the INT2 arm per model, where nearly equal reconstruction error produces very
 different retrieval outcomes. $^{{\\ddagger}}$Pooled over all bit widths and inflated for the
@@ -331,7 +331,7 @@ $\\Delta\\text{{NDCG}}_q$, and how many of that model's three corpora have an in
 excluding zero. No single-module effect exceeds 0.59 in the three-corpus averages, or 1.01
 on any individual model--corpus pair. Ten of the forty-five
 module cells exclude zero, which is what 4{{,}}392 queries buys in resolution rather than
-evidence of a usable sensitivity gap --- and three of those ten are positive.}}
+evidence of a usable sensitivity gap --- and four of those ten are positive.}}
 \\label{{tab:ci}}
 \\begin{{tabular}}{{lrcr}}
 \\toprule
@@ -416,11 +416,10 @@ Model & Size (MB) & SkillRet & SciFact & NFCorpus \\\\
 def t_int2mod(rows=None):
     """절벽에서의 부위별 격리 — 어휘/토크나이저 가설의 직접 검정."""
     import statistics as _st
-    p = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                     "ledger/sweep/2026-09-12-int2-module-isolation.json")
-    if not os.path.exists(p):
+    from paper_numbers import INT2_ISO
+    if not os.path.exists(INT2_ISO):
         w("int2mod.tex", "% int2 부위별 원장 없음\n"); return
-    d = json.load(open(p))
+    d = json.load(open(INT2_ISO))
     ARMS = ["int2/g16", "int2-embed-only", "int2-attn-only", "int2-ffn-only"]
     body = ""
     for m in ORDER:
@@ -447,8 +446,8 @@ def t_int2mod(rows=None):
 the named module is quantized to INT2/g16, against quantizing everything. Vocabulary size
 directly determines the number of embedding rows, so this arm tests whether fragility of the
 vocabulary-dependent embedding table explains the cliff; it does not test tokenization
-behaviour itself. It does not explain it: embedding-only INT2 leaves 98.0\\% to 100.5\\% in the
-per-model averages (95.6\\% to 101.3\\% across cells), including in the three checkpoints that
+behaviour itself. It does not explain it: embedding-only INT2 leaves 97.6\\% to 100.5\\% in the
+per-model averages (94.7\\% to 101.3\\% across cells), including in the three checkpoints that
 retain under 2\\% when everything is quantized, and BGE-M3 reads 100.5\\%. The decomposition of
 the failure is itself family-dependent: BGE-M3 is close to a single-module bottleneck, since
 quantizing its attention alone leaves almost what quantizing everything leaves; the Qwen

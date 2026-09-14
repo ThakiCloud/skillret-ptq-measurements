@@ -81,16 +81,29 @@ individual arm inside a canonical file carries `"retracted": true` (plus a reaso
 loader drops that row. The records stay in place — see `RETRACTIONS.md` for why each one
 was withdrawn and `grep -rl '"retracted": true' ledger/` to enumerate them.
 
+Two sweep directories feed the same loader: `ledger/sweep/` (the 2026-09-10/12 runs) and
+`ledger/sweep-promptfix/` (E5-base-v2 and EmbeddingGemma re-measured on 2026-09-14 under their own
+prompt contracts, see below). `paper_numbers.sweep_files()` reads both with the same STATUS filter;
+the pre-fix E5/Gemma files in `sweep/` are `superseded(prompt-contract)`, and the three aggregates
+derived from them (`2026-09-12-int2-module-isolation`, `2026-09-11-recon-vs-rank-4models`,
+`2026-09-11-paired-ci-int4`) are `superseded(prompt-contract-partial)` with 2026-09-14 rebuilds.
+Every consumer (`recon_analysis.py`, `bh_fdr.py`, the table generators) goes through that one
+function — a private glob would resurrect superseded rows.
+
 ## Multiple-comparison check (INT4 module cells)
 
-The sentence "ten of forty-five cells exclude zero, six survive Benjamini--Hochberg at q=0.05,
-and the largest effect is unchanged at 1.01" is recomputed from the raw per-query scores:
+The sentence "ten of forty-five cells exclude zero, four of them positive, eight survive
+Benjamini--Hochberg at q=0.05, and the largest effect is unchanged at 1.01" is recomputed from the
+raw per-query scores:
 
 ```bash
-python scripts/bh_fdr.py     # prints cells=45 ci_excludes_zero=10 bh_significant=6 largest=-1.01
+python scripts/bh_fdr.py     # prints cells=45 ci_excludes_zero=10 (positive 4) bh_significant=8 largest=-1.01
 ```
 
-It writes `ledger/control/2026-09-14-bh-fdr-int4.json` with per-cell two-sided bootstrap p-values.
+It writes `ledger/control/2026-09-14-bh-fdr-int4.json` with per-cell two-sided bootstrap p-values
+and `ledger/control/2026-09-14-paired-ci-int4.json` (the 60-cell paired-CI table, 46 covering zero).
+On the pre-fix E5/Gemma rows the same script printed `bh_significant=6` and three positive cells;
+the arXiv v1 text carries those values.
 
 ## Arithmetic size prediction vs packed bytes
 
@@ -115,8 +128,10 @@ python scripts/recon_analysis.py   # writes ledger/control/2026-09-14-recon-defi
 ```
 
 Both definitions leave the module axis weak (within-bit Pearson r: touched-only
--0.008 / 0.367 / 0.408 / 0.415; whole-model -0.346 / -0.088 / -0.089 / -0.078 at
-INT4/g16, INT3/g16, INT3/g32, INT2/g16) and the uniform axis strong (0.856 either way). The
+-0.043 / 0.350 / 0.415 / 0.412; whole-model -0.272 / -0.151 / -0.150 / -0.061 at
+INT4/g16, INT3/g16, INT3/g32, INT2/g16) and the uniform axis strong (0.875 either way).
+On the pre-fix rows (arXiv v1) the same four read -0.008 / 0.367 / 0.408 / 0.415 and
+-0.346 / -0.088 / -0.089 / -0.078. The
 v1 anecdote comparing BGE-M3 `int3/g32` (0.159) with `int3g32-ffn-only` (0.174) compares two
 denominators; whole-model the FFN-only arm reads 0.062 and the ordering is unremarkable. That
 sentence is withdrawn in the errata.
@@ -127,9 +142,39 @@ uniform arm quantizes `position_embeddings` (BGE-M3 1.48%, E5 0.36% of parameter
 module arm touches, so the interaction residual for those two models includes that leftover.
 E5-base-v2 ran with no query/document prefix and EmbeddingGemma without its document prefix
 (`quant_sweep.py` now resolves both and refuses unknown prompt contracts). NFCorpus qrels were
-binarized (576 of 12,334 judgments are graded 2). None of these change which module is
-costliest within a model or the INT2 retention ordering; they are disclosed here and in the
-errata, and the prompt/Dense cases are queued for re-measurement.
+binarized (576 of 12,334 judgments are graded 2). The prompt and Dense cases were re-measured;
+see the next section.
+
+## Prompt-contract re-measurement (E5-base-v2, EmbeddingGemma — 2026-09-14)
+
+`ledger/sweep-promptfix/` holds the 21-arm sweep of both checkpoints on all three corpora under
+their own prompt contracts (`query: `/`passage: ` for E5; `task: search result | query: ` and
+`title: none | text: ` for EmbeddingGemma). Each file records `query_prompt`, `doc_prompt`,
+`prompt_source` and `include_dense`. `ledger/control/2026-09-14-promptfix-gemma-dense-*.json` is
+the control with EmbeddingGemma's two sentence-transformers Dense layers quantized as well:
+INT3/g16 retention moves 0.1 points and INT2 retention 65.9% -> 64.8%, so the FP32 output path
+does not explain the INT2 survival.
+
+```bash
+python scripts/promote_promptfix.py   # rebuilds the INT2-isolation and recon-vs-rank aggregates
+python scripts/recon_analysis.py      # both denominators on the rebuilt rows
+python scripts/bh_fdr.py              # BH + paired CI on the canonical per-query scores
+```
+
+`promote_promptfix.py` keeps the reconstruction errors of the v1 ledger (a weights-only quantity;
+the in-job recomputation in `control/2026-09-14-recon-promptfix-inrun.json` agrees to every
+decimal), recomputes only the retrieval loss, and refuses to write if any row of the three
+unaffected checkpoints changes. Its self-check first reproduces every analysis block of the
+old ledger on the row set that block was actually computed from: the old ledger mixed three
+generations (72 rows for per-model/robustness, 87 for the pooled and per-family figures,
+92 for the within-bit-width figures), so its pooled module correlation of 0.658 omitted five
+`int3g32-attn-only` rows. Every block is now computed on the same 92 rows.
+
+What moved: E5 INT2 retention 41.9% -> 44.8%, EmbeddingGemma 65.7% -> 65.9%; E5's uniform-axis
+Pearson r 0.56 -> 0.80 (the v1 "apparent exception" was the missing prompt); at INT3/g16
+EmbeddingGemma's costliest module is now attention (0.71 vs 0.56 points) and E5, reported as
+tied in v1, is attention-dominant (0.98 vs 0.36). Not re-measured (pre-fix values remain):
+`sweep/turn-e5-*`, `sweep/turn-gemma-*`, `sweep/rank-gemma-*`, `ledger/pooling/`.
 
 ## Manuscript claims gate
 

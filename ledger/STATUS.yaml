@@ -30,6 +30,22 @@ entries:
   "lut-diagnosis/2026-09-10-public-static-beats-ours.json": {status: exploratory}
   "lut-diagnosis/2026-09-10-why-lut-collapses.json":      {status: exploratory}
 
+  # ── 프롬프트 계약 위반 행 (2026-09-14 감사 (ii)) ────────────────────────────
+  # 평가기가 프롬프트를 질의에만 적용했다. E5-base-v2 는 ST 프롬프트 설정이 없어 query:/passage:
+  # 없이, EmbeddingGemma 는 문서 접두어(title: none | text: ) 없이 측정됐다. 계약대로 다시 잰
+  # sweep-promptfix/ 가 정본이다(잡 srpromptfix, h200, 2026-09-14). Qwen·fine-tune·BGE-M3 는 무영향.
+  "sweep/e5-scifact.json":        {status: superseded, reason: prompt-contract}
+  "sweep/e5-nfcorpus.json":       {status: superseded, reason: prompt-contract}
+  "sweep/e5-skillret.json":       {status: superseded, reason: prompt-contract}
+  "sweep/gemma-beir-scifact.json":  {status: superseded, reason: prompt-contract}
+  "sweep/gemma-beir-nfcorpus.json": {status: superseded, reason: prompt-contract}
+  "sweep/gemma-skillret.json":      {status: superseded, reason: prompt-contract}
+  # attn-*/turn-* 의 e5·gemma 판도 같은 결함 — attn 은 본 파일에 병합돼 로더가 읽지 않고,
+  # turn-(top-10 교체율)·rank-gemma-*(뒤집힘 곡선)은 재측정이 없다: 논문 §audit 이 공개한다.
+  "sweep/2026-09-12-int2-module-isolation.json": {status: superseded, reason: prompt-contract-partial}
+  "control/2026-09-11-recon-vs-rank-4models.json": {status: superseded, reason: prompt-contract-partial}
+  "control/2026-09-11-paired-ci-int4.json":        {status: superseded, reason: prompt-contract-partial}
+
 reasons:
   old-teacher-reference:
     text: >-
@@ -45,3 +61,15 @@ reasons:
       Sizes were the arithmetic prediction of size_mb(), not the byte count of a packed
       file. Re-packed 2026-09-13; measured bytes are in artifacts.csv and in the
       sizes_bytes_measured field of the student ledger.
+  prompt-contract:
+    text: >-
+      Evaluated with the prompt applied to queries only; E5-base-v2 had no query:/passage:
+      prefixes and EmbeddingGemma no document prefix. Re-measured under the model's own
+      prompt contract in sweep-promptfix/ (job srpromptfix, H200, 2026-09-14).
+    superseded_by: sweep-promptfix/
+  prompt-contract-partial:
+    text: >-
+      Aggregate ledger whose E5-base-v2 and EmbeddingGemma cells came from the pre-fix rows.
+      Rebuilt by scripts/promote_promptfix.py; the other three checkpoints are unchanged.
+    superseded_by: 2026-09-14 rebuilds (sweep/2026-09-14-int2-module-isolation.json,
+      control/2026-09-14-recon-vs-rank-4models-promptfix.json, control/2026-09-14-paired-ci-int4.json)

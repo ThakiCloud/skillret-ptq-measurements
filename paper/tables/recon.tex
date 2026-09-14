@@ -1,6 +1,6 @@
 \begin{table}[t]\centering\small
 \caption{Pearson correlation between parameter-weighted relative weight reconstruction
-error and NDCG@10 loss, excluding arms that lost more than half their quality. Left: computed
+error (weighted over the quantized tensors) and NDCG@10 loss, excluding arms that lost more than half their quality. Left: computed
 within each model and split by arm family. Reconstruction error tracks damage well along the
 \emph{uniform} axis --- how hard the whole model was quantized --- and poorly along the
 \emph{module} axis --- which part was quantized, the axis a mixed-precision allocator
@@ -10,7 +10,7 @@ damage consistently across the evaluated checkpoints. Model-specific evidence fo
 point is the ordering inversion in Table~\ref{tab:modules}. Pooling module arms across bit widths
 inflates the correlation to 0.658 by range extension, because severity then varies along with
 module choice; within a bit width it never exceeds 0.42, and at INT4 it is approximately zero
-($r=-0.008$). The INT2 module arms added in
+($r=-0.043$). The INT2 module arms added in
 Section~\ref{sec:int2mod} sit in the same weak band as INT3 rather than improving it.
 Right: the INT2 arm per model, where nearly equal reconstruction error produces very
 different retrieval outcomes. $^{\ddagger}$Pooled over all bit widths and inflated for the
@@ -22,23 +22,23 @@ moves the INT2 figure to 0.294 rather than improving it.}
 \toprule
 Model & Uniform arms & Module arms$^{\ddagger}$ & All \\
 \midrule
-Qwen3-Emb-0.6B & 0.865 & 0.648 & 0.62 \\
-SkillRet-0.6B (finetuned) & 0.92 & 0.624 & 0.601 \\
-EmbeddingGemma-300M & 0.91 & 0.775 & 0.633 \\
-BGE-M3 & 0.897 & 0.635 & 0.524 \\
-E5-base-v2 & 0.555 & 0.823 & 0.763 \\
+Qwen3-Emb-0.6B & 0.865 & 0.648 & 0.617 \\
+SkillRet-0.6B (finetuned) & 0.92 & 0.622 & 0.595 \\
+EmbeddingGemma-300M & 0.915 & 0.828 & 0.637 \\
+BGE-M3 & 0.897 & 0.596 & 0.531 \\
+E5-base-v2 & 0.804 & 0.828 & 0.791 \\
 \midrule
-Pooled & 0.856 & 0.658 & 0.623 \\
+Pooled & 0.875 & 0.658 & 0.631 \\
 \bottomrule
 \end{tabular}\quad
 \begin{tabular}{lrr}
 \toprule
 Module axis & $n$ & $r$ \\
 \midrule
-INT2/g16 & 12 & 0.415 \\
-INT3/g16 & 15 & 0.367 \\
-INT3/g32 & 15 & 0.408 \\
-INT4/g16 & 15 & -0.008 \\
+INT2/g16 & 12 & 0.412 \\
+INT3/g16 & 15 & 0.35 \\
+INT3/g32 & 15 & 0.415 \\
+INT4/g16 & 15 & -0.043 \\
 \bottomrule
 \end{tabular}\quad
 \begin{tabular}{lrr}
@@ -46,8 +46,8 @@ INT4/g16 & 15 & -0.008 \\
 INT2/g16 & Recon.\ err. & NDCG loss (\%) \\
 \midrule
 BGE-M3 & 0.3146 & 98.2 \\
-E5-base-v2 & 0.3195 & 58.1 \\
-EmbeddingGemma-300M & 0.3373 & 34.3 \\
+E5-base-v2 & 0.3195 & 55.2 \\
+EmbeddingGemma-300M & 0.3373 & 34.1 \\
 Qwen3-Emb-0.6B & 0.3292 & 98.7 \\
 SkillRet-0.6B (finetuned) & 0.3292 & 98.3 \\
 \bottomrule

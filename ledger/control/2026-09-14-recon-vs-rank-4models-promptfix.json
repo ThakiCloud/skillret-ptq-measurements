@@ -1,0 +1,1172 @@
+{
+ "date": "2026-09-14",
+ "subject": "재구성 오차 ↔ NDCG 손실 (5 체크포인트·17팔) — E5·Gemma 손실을 prompt-contract 재측정으로 갱신",
+ "provenance": {
+  "recon_rel_err": "control/2026-09-11-recon-vs-rank-4models.json 그대로 (가중치만의 양; promptfix 잡의 in-run 재계산과 max|Δ|=0)",
+  "ndcg_drop_pct": "paper_numbers.load() (STATUS canonical 행) + sweep/2026-09-14-int2-module-isolation.json",
+  "remeasured_models": [
+   "e5",
+   "gemma"
+  ],
+  "unchanged_models_guard": "abs Δ ≤ 0.0015 on every row"
+ },
+ "rows": [
+  {
+   "model": "qwen",
+   "arm": "int8/g16",
+   "recon_rel_err": 0.00387,
+   "ndcg_drop_pct": 0.156,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int4/g16-asym",
+   "recon_rel_err": 0.06546,
+   "ndcg_drop_pct": -0.434,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int4/g128-asym",
+   "recon_rel_err": 0.1022,
+   "ndcg_drop_pct": 1.348,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int3/g16",
+   "recon_rel_err": 0.14039,
+   "ndcg_drop_pct": 10.395,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int2/g16",
+   "recon_rel_err": 0.32919,
+   "ndcg_drop_pct": 98.714,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int4-embed-only",
+   "recon_rel_err": 0.06499,
+   "ndcg_drop_pct": 0.016,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int4-attn-only",
+   "recon_rel_err": 0.06558,
+   "ndcg_drop_pct": -0.461,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int4-ffn-only",
+   "recon_rel_err": 0.06566,
+   "ndcg_drop_pct": -0.301,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int3-embed-only",
+   "recon_rel_err": 0.13939,
+   "ndcg_drop_pct": 0.053,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int3-attn-only",
+   "recon_rel_err": 0.14063,
+   "ndcg_drop_pct": 2.746,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int3-ffn-only",
+   "recon_rel_err": 0.14082,
+   "ndcg_drop_pct": 3.49,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int3/g32",
+   "recon_rel_err": 0.16963,
+   "ndcg_drop_pct": 12.591,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int3g32-ffn-only",
+   "recon_rel_err": 0.17057,
+   "ndcg_drop_pct": 6.056,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int3g32-embed-only",
+   "recon_rel_err": 0.16753,
+   "ndcg_drop_pct": 0.883,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int8/g16",
+   "recon_rel_err": 0.00397,
+   "ndcg_drop_pct": 0.042,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int4/g16-asym",
+   "recon_rel_err": 0.06679,
+   "ndcg_drop_pct": -0.089,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int4/g128-asym",
+   "recon_rel_err": 0.11551,
+   "ndcg_drop_pct": 2.046,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int3/g16",
+   "recon_rel_err": 0.14323,
+   "ndcg_drop_pct": 2.832,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int2/g16",
+   "recon_rel_err": 0.33732,
+   "ndcg_drop_pct": 34.073,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int4-embed-only",
+   "recon_rel_err": 0.06715,
+   "ndcg_drop_pct": -0.004,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int4-attn-only",
+   "recon_rel_err": 0.06612,
+   "ndcg_drop_pct": -0.297,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int4-ffn-only",
+   "recon_rel_err": 0.06605,
+   "ndcg_drop_pct": -0.057,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int3-embed-only",
+   "recon_rel_err": 0.14398,
+   "ndcg_drop_pct": 0.114,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int3-attn-only",
+   "recon_rel_err": 0.14182,
+   "ndcg_drop_pct": 1.117,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int3-ffn-only",
+   "recon_rel_err": 0.14167,
+   "ndcg_drop_pct": 0.759,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int3/g32",
+   "recon_rel_err": 0.17691,
+   "ndcg_drop_pct": 6.027,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int3g32-ffn-only",
+   "recon_rel_err": 0.1725,
+   "ndcg_drop_pct": 2.768,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int3g32-embed-only",
+   "recon_rel_err": 0.17911,
+   "ndcg_drop_pct": 0.672,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int8/g16",
+   "recon_rel_err": 0.0037,
+   "ndcg_drop_pct": -0.052,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int4/g16-asym",
+   "recon_rel_err": 0.06248,
+   "ndcg_drop_pct": 1.268,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int4/g128-asym",
+   "recon_rel_err": 0.09477,
+   "ndcg_drop_pct": 3.678,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int3/g16",
+   "recon_rel_err": 0.13404,
+   "ndcg_drop_pct": 6.025,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int2/g16",
+   "recon_rel_err": 0.31459,
+   "ndcg_drop_pct": 98.248,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int4-embed-only",
+   "recon_rel_err": 0.05783,
+   "ndcg_drop_pct": -0.105,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int4-attn-only",
+   "recon_rel_err": 0.06624,
+   "ndcg_drop_pct": 1.108,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int4-ffn-only",
+   "recon_rel_err": 0.06615,
+   "ndcg_drop_pct": 0.19,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int3-embed-only",
+   "recon_rel_err": 0.12411,
+   "ndcg_drop_pct": -0.476,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int3-attn-only",
+   "recon_rel_err": 0.14206,
+   "ndcg_drop_pct": 4.524,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int3-ffn-only",
+   "recon_rel_err": 0.14186,
+   "ndcg_drop_pct": 0.013,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int3/g32",
+   "recon_rel_err": 0.15938,
+   "ndcg_drop_pct": 13.167,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int3g32-ffn-only",
+   "recon_rel_err": 0.17421,
+   "ndcg_drop_pct": 2.398,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int3g32-embed-only",
+   "recon_rel_err": 0.14077,
+   "ndcg_drop_pct": -0.625,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int8/g16",
+   "recon_rel_err": 0.00387,
+   "ndcg_drop_pct": -0.143,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int4/g16-asym",
+   "recon_rel_err": 0.06546,
+   "ndcg_drop_pct": 0.217,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int4/g128-asym",
+   "recon_rel_err": 0.1022,
+   "ndcg_drop_pct": 3.482,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int3/g16",
+   "recon_rel_err": 0.14039,
+   "ndcg_drop_pct": 7.755,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int2/g16",
+   "recon_rel_err": 0.32919,
+   "ndcg_drop_pct": 98.299,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int4-embed-only",
+   "recon_rel_err": 0.06499,
+   "ndcg_drop_pct": -0.047,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int4-attn-only",
+   "recon_rel_err": 0.06558,
+   "ndcg_drop_pct": 0.413,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int4-ffn-only",
+   "recon_rel_err": 0.06566,
+   "ndcg_drop_pct": -0.384,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int3-embed-only",
+   "recon_rel_err": 0.13939,
+   "ndcg_drop_pct": 0.018,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int3-attn-only",
+   "recon_rel_err": 0.14063,
+   "ndcg_drop_pct": 2.16,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int3-ffn-only",
+   "recon_rel_err": 0.14082,
+   "ndcg_drop_pct": 2.478,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int3/g32",
+   "recon_rel_err": 0.16963,
+   "ndcg_drop_pct": 12.796,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int3g32-ffn-only",
+   "recon_rel_err": 0.17057,
+   "ndcg_drop_pct": 5.914,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int3g32-embed-only",
+   "recon_rel_err": 0.16753,
+   "ndcg_drop_pct": 0.154,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int8/g16",
+   "recon_rel_err": 0.00377,
+   "ndcg_drop_pct": 0.051,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int4/g16-asym",
+   "recon_rel_err": 0.06362,
+   "ndcg_drop_pct": 0.573,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int4/g16-sym",
+   "recon_rel_err": 0.08635,
+   "ndcg_drop_pct": 0.511,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int4/g128-asym",
+   "recon_rel_err": 0.10154,
+   "ndcg_drop_pct": 4.98,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int3/g16",
+   "recon_rel_err": 0.13631,
+   "ndcg_drop_pct": 2.718,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int2/g16",
+   "recon_rel_err": 0.31947,
+   "ndcg_drop_pct": 55.244,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "ternary/g16",
+   "recon_rel_err": 0.58548,
+   "ndcg_drop_pct": 98.053,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int4-embed-only",
+   "recon_rel_err": 0.05613,
+   "ndcg_drop_pct": 0.316,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int4-attn-only",
+   "recon_rel_err": 0.06538,
+   "ndcg_drop_pct": 0.378,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int4-ffn-only",
+   "recon_rel_err": 0.06578,
+   "ndcg_drop_pct": 0.13,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int3-embed-only",
+   "recon_rel_err": 0.12039,
+   "ndcg_drop_pct": 0.511,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int3-attn-only",
+   "recon_rel_err": 0.14021,
+   "ndcg_drop_pct": 1.785,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int3-ffn-only",
+   "recon_rel_err": 0.14081,
+   "ndcg_drop_pct": 0.932,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int3/g32",
+   "recon_rel_err": 0.16566,
+   "ndcg_drop_pct": 6.73,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int3g32-ffn-only",
+   "recon_rel_err": 0.17121,
+   "ndcg_drop_pct": 0.43,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int3g32-embed-only",
+   "recon_rel_err": 0.14699,
+   "ndcg_drop_pct": 0.414,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int2-embed-only",
+   "recon_rel_err": 0.32678,
+   "ndcg_drop_pct": 0.897,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int2-attn-only",
+   "recon_rel_err": 0.32977,
+   "ndcg_drop_pct": 24.95,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int2-ffn-only",
+   "recon_rel_err": 0.33022,
+   "ndcg_drop_pct": 88.737,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int2-embed-only",
+   "recon_rel_err": 0.32678,
+   "ndcg_drop_pct": 0.29,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int2-attn-only",
+   "recon_rel_err": 0.32977,
+   "ndcg_drop_pct": 25.303,
+   "n_corpora": 3
+  },
+  {
+   "model": "skillret06",
+   "arm": "int2-ffn-only",
+   "recon_rel_err": 0.33022,
+   "ndcg_drop_pct": 90.113,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int2-embed-only",
+   "recon_rel_err": 0.29166,
+   "ndcg_drop_pct": -0.453,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int2-attn-only",
+   "recon_rel_err": 0.33338,
+   "ndcg_drop_pct": 97.33,
+   "n_corpora": 3
+  },
+  {
+   "model": "bgem3",
+   "arm": "int2-ffn-only",
+   "recon_rel_err": 0.33251,
+   "ndcg_drop_pct": 15.127,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int2-embed-only",
+   "recon_rel_err": 0.28227,
+   "ndcg_drop_pct": 2.447,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int2-attn-only",
+   "recon_rel_err": 0.32884,
+   "ndcg_drop_pct": 18.977,
+   "n_corpora": 3
+  },
+  {
+   "model": "e5",
+   "arm": "int2-ffn-only",
+   "recon_rel_err": 0.32978,
+   "ndcg_drop_pct": 15.727,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int2-embed-only",
+   "recon_rel_err": 0.3398,
+   "ndcg_drop_pct": 2.43,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int2-attn-only",
+   "recon_rel_err": 0.33263,
+   "ndcg_drop_pct": 8.257,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int2-ffn-only",
+   "recon_rel_err": 0.33227,
+   "ndcg_drop_pct": 9.573,
+   "n_corpora": 3
+  },
+  {
+   "model": "qwen",
+   "arm": "int3g32-attn-only",
+   "recon_rel_err": 0.17007,
+   "ndcg_drop_pct": 3.965,
+   "n_corpora": 3,
+   "n_corpora_note": "old ledger recorded n_corpora=6 (double-counted attn-* merge); value identical"
+  },
+  {
+   "model": "skillret06",
+   "arm": "int3g32-attn-only",
+   "recon_rel_err": 0.17007,
+   "ndcg_drop_pct": 2.999,
+   "n_corpora": 3,
+   "n_corpora_note": "old ledger recorded n_corpora=6 (double-counted attn-* merge); value identical"
+  },
+  {
+   "model": "bgem3",
+   "arm": "int3g32-attn-only",
+   "recon_rel_err": 0.17381,
+   "ndcg_drop_pct": 9.901,
+   "n_corpora": 3,
+   "n_corpora_note": "old ledger recorded n_corpora=6 (double-counted attn-* merge); value identical"
+  },
+  {
+   "model": "e5",
+   "arm": "int3g32-attn-only",
+   "recon_rel_err": 0.16952,
+   "ndcg_drop_pct": 3.324,
+   "n_corpora": 3
+  },
+  {
+   "model": "gemma",
+   "arm": "int3g32-attn-only",
+   "recon_rel_err": 0.17258,
+   "ndcg_drop_pct": 1.652,
+   "n_corpora": 3
+  }
+ ],
+ "analysis": {
+  "pooled_pearson": 0.661,
+  "per_model": {
+   "bgem3": 0.667,
+   "e5": 0.855,
+   "gemma": 0.637,
+   "qwen": 0.684,
+   "skillret06": 0.68
+  },
+  "excluding_collapsed_pooled": 0.631,
+  "excluding_collapsed_per_model": {
+   "bgem3": 0.531,
+   "e5": 0.791,
+   "gemma": 0.637,
+   "qwen": 0.617,
+   "skillret06": 0.595
+  },
+  "note": "붕괴 팔(손실 50% 초과)을 넣으면 상관이 부풀려진다 — 오차도 크고 손실도 크니까. 배분이 실제로 필요한 구간은 '살아 있는' 팔이다.",
+  "by_arm_family": {
+   "bgem3": {
+    "uniform": 0.897,
+    "module": 0.596,
+    "all": 0.531
+   },
+   "e5": {
+    "uniform": 0.804,
+    "module": 0.828,
+    "all": 0.791
+   },
+   "gemma": {
+    "uniform": 0.915,
+    "module": 0.828,
+    "all": 0.637
+   },
+   "qwen": {
+    "uniform": 0.865,
+    "module": 0.648,
+    "all": 0.617
+   },
+   "skillret06": {
+    "uniform": 0.92,
+    "module": 0.622,
+    "all": 0.595
+   }
+  },
+  "by_arm_family_pooled": {
+   "uniform": 0.875,
+   "module": 0.658,
+   "all": 0.631
+  },
+  "robustness": {
+   "bgem3": {
+    "uniform_excl_collapse": {
+     "pearson": 0.897,
+     "spearman": 1.0,
+     "ci95": [
+      0.87,
+      1.0
+     ],
+     "n": 5
+    },
+    "uniform_incl_collapse": {
+     "pearson": 0.907,
+     "spearman": 1.0,
+     "ci95": [
+      0.871,
+      0.999
+     ],
+     "n": 6
+    },
+    "module_excl_collapse": {
+     "pearson": 0.596,
+     "spearman": 0.455,
+     "ci95": [
+      -0.209,
+      0.935
+     ],
+     "n": 11
+    },
+    "all_incl_collapse": {
+     "pearson": 0.667,
+     "spearman": 0.581,
+     "ci95": [
+      0.288,
+      0.915
+     ],
+     "n": 18
+    }
+   },
+   "e5": {
+    "uniform_excl_collapse": {
+     "pearson": 0.804,
+     "spearman": 0.886,
+     "ci95": [
+      0.478,
+      0.989
+     ],
+     "n": 6
+    },
+    "uniform_incl_collapse": {
+     "pearson": 0.975,
+     "spearman": 0.952,
+     "ci95": [
+      0.74,
+      0.996
+     ],
+     "n": 8
+    },
+    "module_excl_collapse": {
+     "pearson": 0.828,
+     "spearman": 0.818,
+     "ci95": [
+      0.58,
+      0.967
+     ],
+     "n": 12
+    },
+    "all_incl_collapse": {
+     "pearson": 0.855,
+     "spearman": 0.779,
+     "ci95": [
+      0.588,
+      0.957
+     ],
+     "n": 20
+    }
+   },
+   "gemma": {
+    "uniform_excl_collapse": {
+     "pearson": 0.915,
+     "spearman": 0.943,
+     "ci95": [
+      0.871,
+      0.998
+     ],
+     "n": 6
+    },
+    "uniform_incl_collapse": {
+     "pearson": 0.915,
+     "spearman": 0.943,
+     "ci95": [
+      0.871,
+      0.998
+     ],
+     "n": 6
+    },
+    "module_excl_collapse": {
+     "pearson": 0.828,
+     "spearman": 0.818,
+     "ci95": [
+      0.656,
+      0.977
+     ],
+     "n": 12
+    },
+    "all_incl_collapse": {
+     "pearson": 0.637,
+     "spearman": 0.798,
+     "ci95": [
+      0.509,
+      0.925
+     ],
+     "n": 18
+    }
+   },
+   "qwen": {
+    "uniform_excl_collapse": {
+     "pearson": 0.865,
+     "spearman": 0.9,
+     "ci95": [
+      0.518,
+      1.0
+     ],
+     "n": 5
+    },
+    "uniform_incl_collapse": {
+     "pearson": 0.909,
+     "spearman": 0.943,
+     "ci95": [
+      0.729,
+      1.0
+     ],
+     "n": 6
+    },
+    "module_excl_collapse": {
+     "pearson": 0.648,
+     "spearman": 0.836,
+     "ci95": [
+      0.004,
+      0.969
+     ],
+     "n": 11
+    },
+    "all_incl_collapse": {
+     "pearson": 0.684,
+     "spearman": 0.818,
+     "ci95": [
+      0.368,
+      0.919
+     ],
+     "n": 18
+    }
+   },
+   "skillret06": {
+    "uniform_excl_collapse": {
+     "pearson": 0.92,
+     "spearman": 1.0,
+     "ci95": [
+      0.827,
+      1.0
+     ],
+     "n": 5
+    },
+    "uniform_incl_collapse": {
+     "pearson": 0.908,
+     "spearman": 1.0,
+     "ci95": [
+      0.87,
+      0.998
+     ],
+     "n": 6
+    },
+    "module_excl_collapse": {
+     "pearson": 0.622,
+     "spearman": 0.7,
+     "ci95": [
+      -0.115,
+      0.961
+     ],
+     "n": 11
+    },
+    "all_incl_collapse": {
+     "pearson": 0.68,
+     "spearman": 0.748,
+     "ci95": [
+      0.323,
+      0.914
+     ],
+     "n": 18
+    }
+   }
+  },
+  "robustness_note": "리뷰 지적(2026-09-11): 붕괴 팔을 빼면 비선형 구간이 제거돼 상관이 올라간 것 아니냐는 질문이 가능하다. 포함/제외 둘 다, Pearson·Spearman 둘 다 싣는다. ci95 = 팔 단위 백분위 부트스트랩 10000회, seed 20260914.",
+  "module_axis_within_bitwidth": {
+   "INT4/g16": {
+    "n": 15,
+    "pearson": -0.043
+   },
+   "INT3/g16": {
+    "n": 15,
+    "pearson": 0.35
+   },
+   "INT3/g32": {
+    "n": 15,
+    "pearson": 0.415
+   },
+   "INT2/g16": {
+    "n": 12,
+    "pearson": 0.412
+   }
+  },
+  "module_axis_within_bitwidth_note": "⛔ 비트폭을 섞어 module 축 상관을 내면 '얼마나 세게 눌렀나'(균일 축)가 섞여 들어와 범위 확장으로 상관이 부풀려진다. 배분기가 푸는 문제는 '같은 비트폭에서 어느 부위를 보호할까'이므로 비트폭 안 상관이 그 주장에 맞는 통계다.",
+  "int2_module_all15": {
+   "n": 15,
+   "pearson": 0.294,
+   "note": "사전규칙(손실 50% 초과 제외)을 풀면 이 값이 된다. 본표는 규칙을 유지한다."
+  },
+  "retraction_note": "철회된 팔(대칭·삼진, 수정 전 양자화기)은 제외하고 재계산했다.",
+  "g32_attn_backfill_note": "2026-09-12: int3g32-attn-only 의 recon 이 원장에 없어 INT3/g32 가 n=10 이었다(그 팔은 이전 리뷰에서 나중에 추가됐고 recon 만 재계산이 누락됐다). CPU 로 채워 n=15."
+ },
+ "int2_module_note": "2026-09-12: INT2 부위별 팔 15개 추가(recon 은 CPU 재계산, ndcg 는 int2-module-isolation 원장). 이전 판본의 module-axis 상관은 INT4/INT3 팔만으로 낸 값이었다.",
+ "analysis_rowset_note": "모든 analysis 블록을 같은 92행(INT2 부위 팔 15·int3g32-attn-only 5 포함)으로 냈다. 옛 원장은 per_model/robustness 가 72행, pooled/excluding_collapsed/by_arm_family/int2_all15 가 87행(g32-attn 백필 전), within-bitwidth 만 92행 값이었다 — 본문의 'INT2 팔을 넣은 pooled module 0.658' 은 int3g32-attn-only 5행이 빠진 값이고, 같은 옛 손실로 92행이면 0.651 이다.",
+ "old_rowset_analysis_92rows": {
+  "by_arm_family_pooled": {
+   "uniform": 0.856,
+   "module": 0.651,
+   "all": 0.619
+  },
+  "excluding_collapsed_pooled": 0.619
+ },
+ "remeasurement_deltas": [
+  {
+   "model": "gemma",
+   "arm": "int8/g16",
+   "old_drop_pct": -0.005,
+   "new_drop_pct": 0.042
+  },
+  {
+   "model": "gemma",
+   "arm": "int4/g16-asym",
+   "old_drop_pct": 0.092,
+   "new_drop_pct": -0.089
+  },
+  {
+   "model": "gemma",
+   "arm": "int4/g128-asym",
+   "old_drop_pct": 1.665,
+   "new_drop_pct": 2.046
+  },
+  {
+   "model": "gemma",
+   "arm": "int3/g16",
+   "old_drop_pct": 2.404,
+   "new_drop_pct": 2.832
+  },
+  {
+   "model": "gemma",
+   "arm": "int2/g16",
+   "old_drop_pct": 34.336,
+   "new_drop_pct": 34.073
+  },
+  {
+   "model": "gemma",
+   "arm": "int4-embed-only",
+   "old_drop_pct": -0.087,
+   "new_drop_pct": -0.004
+  },
+  {
+   "model": "gemma",
+   "arm": "int4-attn-only",
+   "old_drop_pct": -0.036,
+   "new_drop_pct": -0.297
+  },
+  {
+   "model": "gemma",
+   "arm": "int4-ffn-only",
+   "old_drop_pct": 0.193,
+   "new_drop_pct": -0.057
+  },
+  {
+   "model": "gemma",
+   "arm": "int3-embed-only",
+   "old_drop_pct": -0.147,
+   "new_drop_pct": 0.114
+  },
+  {
+   "model": "gemma",
+   "arm": "int3-attn-only",
+   "old_drop_pct": 0.501,
+   "new_drop_pct": 1.117
+  },
+  {
+   "model": "gemma",
+   "arm": "int3-ffn-only",
+   "old_drop_pct": 1.178,
+   "new_drop_pct": 0.759
+  },
+  {
+   "model": "gemma",
+   "arm": "int3/g32",
+   "old_drop_pct": 5.816,
+   "new_drop_pct": 6.027
+  },
+  {
+   "model": "gemma",
+   "arm": "int3g32-ffn-only",
+   "old_drop_pct": 2.458,
+   "new_drop_pct": 2.768
+  },
+  {
+   "model": "gemma",
+   "arm": "int3g32-embed-only",
+   "old_drop_pct": 0.967,
+   "new_drop_pct": 0.672
+  },
+  {
+   "model": "e5",
+   "arm": "int8/g16",
+   "old_drop_pct": 0.001,
+   "new_drop_pct": 0.051
+  },
+  {
+   "model": "e5",
+   "arm": "int4/g16-asym",
+   "old_drop_pct": 1.016,
+   "new_drop_pct": 0.573
+  },
+  {
+   "model": "e5",
+   "arm": "int4/g16-sym",
+   "old_drop_pct": 1.888,
+   "new_drop_pct": 0.511
+  },
+  {
+   "model": "e5",
+   "arm": "int4/g128-asym",
+   "old_drop_pct": 6.928,
+   "new_drop_pct": 4.98
+  },
+  {
+   "model": "e5",
+   "arm": "int3/g16",
+   "old_drop_pct": 1.475,
+   "new_drop_pct": 2.718
+  },
+  {
+   "model": "e5",
+   "arm": "int2/g16",
+   "old_drop_pct": 58.12,
+   "new_drop_pct": 55.244
+  },
+  {
+   "model": "e5",
+   "arm": "ternary/g16",
+   "old_drop_pct": 97.949,
+   "new_drop_pct": 98.053
+  },
+  {
+   "model": "e5",
+   "arm": "int4-embed-only",
+   "old_drop_pct": 0.38,
+   "new_drop_pct": 0.316
+  },
+  {
+   "model": "e5",
+   "arm": "int4-attn-only",
+   "old_drop_pct": 0.688,
+   "new_drop_pct": 0.378
+  },
+  {
+   "model": "e5",
+   "arm": "int4-ffn-only",
+   "old_drop_pct": 0.454,
+   "new_drop_pct": 0.13
+  },
+  {
+   "model": "e5",
+   "arm": "int3-embed-only",
+   "old_drop_pct": 0.136,
+   "new_drop_pct": 0.511
+  },
+  {
+   "model": "e5",
+   "arm": "int3-attn-only",
+   "old_drop_pct": 0.715,
+   "new_drop_pct": 1.785
+  },
+  {
+   "model": "e5",
+   "arm": "int3-ffn-only",
+   "old_drop_pct": 1.304,
+   "new_drop_pct": 0.932
+  },
+  {
+   "model": "e5",
+   "arm": "int3/g32",
+   "old_drop_pct": 4.446,
+   "new_drop_pct": 6.73
+  },
+  {
+   "model": "e5",
+   "arm": "int3g32-ffn-only",
+   "old_drop_pct": 1.117,
+   "new_drop_pct": 0.43
+  },
+  {
+   "model": "e5",
+   "arm": "int3g32-embed-only",
+   "old_drop_pct": 0.747,
+   "new_drop_pct": 0.414
+  },
+  {
+   "model": "e5",
+   "arm": "int2-embed-only",
+   "old_drop_pct": 1.977,
+   "new_drop_pct": 2.447
+  },
+  {
+   "model": "e5",
+   "arm": "int2-attn-only",
+   "old_drop_pct": 17.29,
+   "new_drop_pct": 18.977
+  },
+  {
+   "model": "e5",
+   "arm": "int2-ffn-only",
+   "old_drop_pct": 15.37,
+   "new_drop_pct": 15.727
+  },
+  {
+   "model": "gemma",
+   "arm": "int2-embed-only",
+   "old_drop_pct": 1.6,
+   "new_drop_pct": 2.43
+  },
+  {
+   "model": "gemma",
+   "arm": "int2-attn-only",
+   "old_drop_pct": 7.997,
+   "new_drop_pct": 8.257
+  },
+  {
+   "model": "gemma",
+   "arm": "int2-ffn-only",
+   "old_drop_pct": 10.7,
+   "new_drop_pct": 9.573
+  },
+  {
+   "model": "e5",
+   "arm": "int3g32-attn-only",
+   "old_drop_pct": 2.029,
+   "new_drop_pct": 3.324
+  },
+  {
+   "model": "gemma",
+   "arm": "int3g32-attn-only",
+   "old_drop_pct": 1.391,
+   "new_drop_pct": 1.652
+  }
+ ]
+}

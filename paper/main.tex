@@ -40,15 +40,15 @@ tenths of a point, and ten of forty-five module cells do exclude zero. The argum
 magnitude, not significance: the module-level headroom we observe at this operating point is
 about one NDCG point. At INT3 module sensitivity becomes large enough to matter, but its
 ordering is family-dependent and the costs stop being additive --- the feed-forward block is
-costliest in the Qwen lineage and EmbeddingGemma while attention dominates BGE-M3, and the
-interaction residual varies in both magnitude and sign. At INT2/g16 checkpoints whose
-reconstruction error is clustered between 0.315 and 0.337 retain between 1.3\% and 65.7\% of
+costliest in the Qwen lineage while attention dominates BGE-M3 and E5, EmbeddingGemma switches
+between the two with the group size, and the interaction residual varies in both magnitude and sign. At INT2/g16 checkpoints whose
+reconstruction error is clustered between 0.315 and 0.337 retain between 1.3\% and 65.9\% of
 their retrieval quality.
 
 Cutting across the three regimes,
 weighted weight-reconstruction error is a good predictor of retrieval loss along one axis and
 a poor one along another: it tracks damage from \emph{uniform} quantization closely
-($r=0.87$ to $0.92$ in four of the five checkpoints) but tracks damage from quantizing
+($r=0.80$ to $0.92$ in each of the five checkpoints) but tracks damage from quantizing
 \emph{individual modules} weakly: computed within an operating point, where the allocator's
 question actually lives, it runs from $-0.01$ at INT4 to $0.41$ at INT3, and is $0.42$ at the
 INT2 cliff. The weak axis is the one a mixed-precision
@@ -61,8 +61,8 @@ regularity is negative, and it survives the cliff: the embedding table never eme
 isolated protection priority, even at INT2. We do not claim
 architecture causes it: the families differ in parameter count, pretraining objective and
 training data as well as in architecture. We show that vocabulary size and embedding-table fragility cannot by
-themselves explain the cliff: quantizing only the embedding table to INT2 retains 98.0\% to
-100.5\% of retrieval quality in the per-model averages (95.6\% to 101.3\% across individual
+themselves explain the cliff: quantizing only the embedding table to INT2 retains 97.6\% to
+100.5\% of retrieval quality in the per-model averages (94.7\% to 101.3\% across individual
 model--corpus cells), including in the three checkpoints whose full-model INT2 retention is
 below 2\%. Tokenization behaviour itself is untested. The paired control rules out the obvious alternative explanation: task fine-tuning
 on 127{,}190 pairs moves quantization tolerance by at most 1.0 point in two-corpus averages
@@ -119,19 +119,19 @@ corpora, a grid over bit width and group size, with per-query scores retained. A
 is NDCG-neutral and no module carries a sensitivity differential large enough to allocate against: the
 largest single-module effect on any individual model--corpus pair is 1.01 points. At INT3 sensitivity appears, but its
 ordering inverts between families --- at INT3/g16 the feed-forward block is the costliest
-module for Qwen3, its fine-tuned derivative and EmbeddingGemma, BGE-M3 reverses the ordering,
-and E5 is effectively tied and becomes attention-dominant at g32 --- and module costs stop
+module for Qwen3 and its fine-tuned derivative, attention is costliest for EmbeddingGemma,
+BGE-M3 and E5, and EmbeddingGemma switches to the feed-forward block at g32 --- and module costs stop
 being additive, with the
 interaction residual varying in magnitude and, at INT3/g16, in sign. At INT2, checkpoints whose
-reconstruction error is clustered between 0.315 and 0.337 retain between 1.3\% and 65.7\% of
+reconstruction error is clustered between 0.315 and 0.337 retain between 1.3\% and 65.9\% of
 their retrieval quality. At the cliff itself, embedding-only quantization still retains
-98.0\% to 100.5\% across all five checkpoints, while the dominant isolated damage shifts to
+97.6\% to 100.5\% across all five checkpoints, while the dominant isolated damage shifts to
 the feed-forward block in the Qwen lineage and to attention in BGE-M3.
 
 \item \textbf{The standard sensitivity proxy holds on one axis and fails on the other.}
-Weight reconstruction error tracks the damage from uniform quantization well ($r=0.87$ to
-$0.92$ in four of five checkpoints, Spearman $\rho=1.00$ in three) and tracks the damage from
-quantizing individual modules poorly ($r=-0.01$ to $0.42$ across fixed operating points; pooling
+Weight reconstruction error tracks the damage from uniform quantization well ($r=0.80$ to
+$0.92$ in each of the five checkpoints, Spearman $\rho\geq0.89$ in all five and $1.00$ in two) and tracks the damage from
+quantizing individual modules poorly ($r=-0.04$ to $0.42$ across fixed operating points; pooling
 module arms across bit widths inflates this to $0.66$ by range extension). The weak axis is
 the one a mixed-precision allocator searches. Module-sensitivity policies are therefore not
 reliably transferable across embedder families, which is a constraint on what any such method
@@ -155,7 +155,7 @@ collapsing at it.
 base/fine-tuned control shows task adaptation changes quantization tolerance by at most 1.0
 point in two-corpus averages, and 2.28 points on any individual arm, and creates neither the INT3 decline nor the INT2 collapse. An intervention on pooling
 refutes the sufficiency of the most attractive explanation for the cliff and leaves its
-necessity undecided, so we report the cliff as unexplained. The prompt-hash, byte-ledger and
+necessity undecided, so we report the cliff as unexplained. The prompt-contract, byte-ledger and
 holdout-isolation gates each exist because the corresponding failure produced a number we
 briefly believed.
 \end{enumerate}
@@ -324,36 +324,38 @@ table alone, the attention projections alone, or the feed-forward block alone co
 reaching 1.63 points, which is consistent with the non-additive interactions reported below. Per-query paired
 bootstrap intervals (Table~\ref{tab:ci}) show that this is a statement about magnitude and
 not about noise: thirty-five of forty-five module cells have a 95\% interval covering zero,
-but the ten that do not are simply small effects measured on 4{,}392 queries, and three of
+but the ten that do not are simply small effects measured on 4{,}392 queries, and four of
 them are \emph{positive}. We do not use statistical significance to define sensitivity; as a
 robustness check, two-sided bootstrap $p$-values computed from the empirical proportion of
 resamples falling on either side of zero, then Benjamini--Hochberg corrected across the
 forty-five cells at $q=0.05$
-leaves six, and the largest effect is unchanged at 1.01 points --- the same global maximum
+leaves eight, and the largest effect is unchanged at 1.01 points --- the same global maximum
 quoted above, not a separate figure. Normalising each change by its
 own full-precision score rather than reporting absolute points leaves every module ordering
 in Table~\ref{tab:modules} intact in all five checkpoints. A bit allocator run at this operating point is choosing among near
 equals, and it cannot even rely on the sign.
 
 Second, sensitivity does appear at INT3 --- but the ordering is not shared. For
-Qwen3-Embedding, its fine-tuned derivative, and EmbeddingGemma, the feed-forward block is the
-most expensive module to quantize. For BGE-M3 it is the cheapest: the FFN costs 0.01 points
-while attention costs 2.46. The inversion is not an artifact of one setting --- at INT3/g32
-BGE-M3's attention costs 5.09 points against 1.14 for its FFN, the largest single-module
-effect anywhere in our grid. A policy that says ``protect the feed-forward block'' is right
-for three of our five checkpoints --- Qwen3, its fine-tuned derivative and EmbeddingGemma ---
-is effectively tied on E5, and spends its extra bits on the wrong tensors on BGE-M3; at g32
-E5 becomes attention-dominant as well.
+Qwen3-Embedding and its fine-tuned derivative the feed-forward block is the most expensive
+module to quantize at both group sizes. For BGE-M3 it is the cheapest: at g16 the FFN costs
+0.01 points while attention costs 2.46. The inversion is not an artifact of one setting --- at
+INT3/g32 BGE-M3's attention costs 5.09 points against 1.14 for its FFN, the largest
+single-module effect anywhere in our grid. E5-base-v2 is attention-dominant at both group
+sizes (0.98 against 0.36 at g16, 1.81 against 0.04 at g32), and EmbeddingGemma does not keep
+one ordering across group sizes: attention costs more at g16 (0.71 against 0.56) and the
+feed-forward block at g32 (1.67 against 1.13). A policy that says ``protect the feed-forward
+block'' is right for the Qwen lineage, right for EmbeddingGemma at one group size and wrong at
+the other, and spends its extra bits on the wrong tensors on BGE-M3 and E5.
 
 Third, and independently of which module wins, the per-module costs do not add up to the
 joint cost. We report the interaction residual $I = \Delta_{\text{joint}} -
 (\Delta_{\text{embed}} + \Delta_{\text{attn}} + \Delta_{\text{ffn}})$ rather than a ratio,
 because a ratio explodes when the denominator approaches zero. At INT3/g16, $I$ is $-2.35$ for Qwen,
-$-1.91$ for its fine-tune, $-0.80$ for BGE-M3 and $-0.35$ for EmbeddingGemma --- joint
-quantization is worse than the parts predict --- but $+0.32$ for E5, where it is
-\emph{better}. At INT3/g32 every model is negative, from $-0.40$ to $-2.12$. So the
+$-1.91$ for its fine-tune, $-0.80$ for BGE-M3 and $-0.47$ for EmbeddingGemma --- joint
+quantization is worse than the parts predict --- but $+0.39$ for E5, where it is
+\emph{better}. At INT3/g32 every model is negative, from $-0.56$ to $-2.12$. So the
 interaction is substantial in all five models and at both operating points, its magnitude
-varies by a factor of five, and its sign is not even stable across models at one setting. Treating
+varies four- to six-fold, and its sign is not even stable across models at one setting. Treating
 per-module sensitivity as an independent cost, the assumption behind additive knapsack and
 linear bit-allocation formulations, is therefore unsafe in a way that cannot be corrected by a
 constant: an allocator calibrated on one model can be wrong about the direction of the error
@@ -366,7 +368,7 @@ accounting for 21\% to 66\% of the parameters depending on the model.
 We first stated that rule having measured module arms only at INT4 and INT3, which is to
 say everywhere except the regime where models actually break. Section~\ref{sec:int2mod}
 measures the cliff itself, and the rule survives in a stronger form: quantizing only the
-embedding table to INT2 leaves 98.0\% to 100.5\% of retrieval quality in all five
+embedding table to INT2 leaves 97.6\% to 100.5\% of retrieval quality in all five
 checkpoints, including the three that keep under 2\% when everything is quantized. If there
 is a transferable rule here, it is that the largest tensor is the one that never emerges as the
 dominant isolated protection priority --- and that holds at the operating point where every
@@ -390,34 +392,38 @@ within them --- span almost the full range of retrieval loss.}
 
 Reconstruction error is the cheapest possible sensitivity proxy: quantize a tensor, measure
 how far it moved, spend bits where it moved most. Table~\ref{tab:recon} splits its
-predictive power by what is being varied.
+predictive power by what is being varied. Throughout, the error of an arm is the
+relative Frobenius error per quantized tensor, averaged with parameter-count weights
+\emph{over the quantized tensors}: a whole-model figure for a uniform arm, and the module's
+own error for a module arm --- the quantity an allocator compares when ranking modules. The
+whole-model variant (the same number scaled by the fraction of parameters the arm touched)
+is reported below wherever the two could disagree.
 
 Along the uniform axis it works, and the relationship is monotone rather than merely linear:
-Spearman $\rho$ is $1.00$ for three of the five checkpoints and $0.90$ for a fourth, while
-Pearson $r$ runs $0.87$ to $0.92$. E5-base-v2 appears to be an exception at $r=0.56$, but its
-bootstrap interval is $[-0.24, +1.00]$ --- uninformative. Excluding collapsed arms leaves E5
-with almost no dynamic range, since its surviving arms all sit at small losses; including
-them raises its $r$ to $0.97$, the highest of the five. The apparent exception is a
-restricted-range artifact of the exclusion rule, not a property of the model. For uniform
-bit-width screening, the proxy is informative.
+excluding arms that lost more than half their quality, Pearson $r$ runs $0.80$ to $0.92$
+across the five checkpoints and Spearman $\rho$ is $1.00$ for two of them and at least $0.89$
+for the rest; including the collapsed arms raises every $r$ to $0.91$ or above. The lowest
+per-model figure is E5-base-v2's $0.80$, with bootstrap interval $[0.48, 0.99]$. (The first
+version of this paper reported E5 as an apparent exception at $r=0.56$ with an uninformative
+interval; that figure was measured without the model's prompt prefixes,
+Section~\ref{sec:audit}.) For uniform bit-width screening, the proxy is informative.
 
 Along the module axis, pooling bit widths together is misleading. With the INT2 module arms of
 Section~\ref{sec:int2mod} included, the pooled module correlation is $0.658$, but that rise
 comes from range extension: bit width changes quantization severity at the same time module
 identity changes, so the uniform axis leaks into the module figure. Holding the operating point
-fixed removes the leak. Across the evaluated checkpoints the correlation is $-0.008$ at
-INT4/g16, $0.367$ at INT3/g16, $0.408$ at INT3/g32 and $0.415$ at INT2/g16, against $0.86$ for
+fixed removes the leak. Across the evaluated checkpoints the correlation is $-0.043$ at
+INT4/g16, $0.350$ at INT3/g16, $0.415$ at INT3/g32 and $0.412$ at INT2/g16, against $0.88$ for
 the uniform arms. The proxy does not become more informative as the allocation decision becomes
 more consequential. Relaxing the \mbox{pre-specified} exclusion at INT2 --- adding back the three
 module arms that lose more than half their quality --- moves that figure to $0.294$ rather than
 improving it. The contrast survives the
 obvious objection --- that excluding collapsed arms removes the non-linear region and
 inflates the uniform figure --- because including those arms raises the uniform correlation
-further, to $0.91$ or above in every model, while leaving the module arms where they are. The failure is structural rather
-than noisy. BGE-M3's \texttt{int3/g32} arm and its FFN-only variant at the same bit width
-differ by $0.015$ in reconstruction error, in the direction that would predict the FFN-only
-arm to be \emph{worse}; the measured retrieval losses are 13.2\% and 2.4\%. Quantizing more
-of the model moved the weights less and hurt retrieval far more.
+further, to $0.91$ or above in every model, while leaving the module arms where they are. The verdict does not depend on the denominator: scaling each module arm's error by the
+fraction of parameters it touched, so that the axis reads whole-model error, moves the
+within-bit correlations to $-0.272$, $-0.151$, $-0.150$ and $-0.061$ and the pooled module
+figure to $0.413$, while the uniform axis stays at $0.88$ under either definition.
 
 This matters because the two axes are not equally useful. Choosing a bit width is a
 one-dimensional search a practitioner can run exhaustively. Choosing which tensors to protect
@@ -426,7 +432,7 @@ on which the cheap proxy is weakest.
 
 Across families the proxy fails outright where the decision matters. At INT2 reconstruction error is tightly
 clustered between $0.315$ and $0.337$ across the five checkpoints, while retained NDCG ranges
-from 1.3\% to 65.7\%.
+from 1.3\% to 65.9\%.
 
 \subsection{Task fine-tuning does not create the cliff}
 \label{sec:paired}
@@ -548,7 +554,7 @@ is used barely matters after fine-tuning; only consistency does.
 \paragraph{Byte ledger.} A size claim is arithmetic until a file of that size exists. Every
 reported size is the byte count of an actual on-disk artifact: serialized weights for the
 full-precision rows, and for the low-bit rows the packed quantized file rather than an
-arithmetic estimate. The arithmetic prediction runs 0.04 to 0.44\% above the packed file across the seven quantized artifacts, so the two are close but not interchangeable; the measured byte count is what we report, and \texttt{artifacts.csv} in the measurement repository carries the file name, byte count and SHA-256 behind every size in this paper.
+arithmetic estimate. The arithmetic prediction runs 0.04 to 0.45\% above the packed file across the seven quantized artifacts, so the two are close but not interchangeable; the measured byte count is what we report, and \texttt{artifacts.csv} in the measurement repository carries the file name, byte count and SHA-256 behind every size in this paper.
 
 \paragraph{Holdout isolation.} Splitting by a query's first gold document leaves every
 ``held-out'' document reachable through that query's other golds. In our case this left
@@ -569,14 +575,14 @@ vocabulary-dependent embedding table it produces: the five checkpoints carry voc
 21\% to 66\% of their parameters.
 
 Two measurements argue against that explanation. First, vocabulary size does not order the outcome. Ranked by
-vocabulary the survivors sit at both extremes --- E5-base-v2 at 30{,}522 keeps 41.9\% and
-EmbeddingGemma at 262{,}144 keeps 65.7\% --- while BGE-M3 at 250{,}002 keeps 1.8\%. BGE-M3 and
+vocabulary the survivors sit at both extremes --- E5-base-v2 at 30{,}522 keeps 44.8\% and
+EmbeddingGemma at 262{,}144 keeps 65.9\% --- while BGE-M3 at 250{,}002 keeps 1.8\%. BGE-M3 and
 EmbeddingGemma have similarly large vocabularies, 250{,}002 and 262{,}144, yet their INT2
-retention differs by 63.9 points.
+retention differs by 64.1 points.
 
 Second, and directly: we quantized \emph{only} the embedding table to INT2
 (Table~\ref{tab:int2mod}). If vocabulary-dependent embedding-table fragility were the source of
-the cliff, quantizing that table alone should reproduce substantial degradation. It does not. Embedding-only INT2 leaves 98.0\% to 100.5\% of retrieval quality
+the cliff, quantizing that table alone should reproduce substantial degradation. It does not. Embedding-only INT2 leaves 97.6\% to 100.5\% of retrieval quality
 in all five checkpoints, including the three that keep under 2\% when everything is
 quantized; BGE-M3 reads 100.5\% on it. The embedding table is not the dominant isolated
 source of damage, and what replaces it is family-dependent --- not merely which module, but how
@@ -590,7 +596,7 @@ which is the non-additivity we report throughout.
 
 Computing the interaction residual of Section~\ref{sec:modules} at this operating point is
 only partly meaningful. For the two checkpoints that remain above the floor the residual is
-negative --- $-8.6$ points for EmbeddingGemma and $-12.2$ for E5-base-v2 --- so joint
+negative --- $-8.3$ points for EmbeddingGemma and $-8.8$ for E5-base-v2 --- so joint
 degradation substantially exceeds the sum of the isolated effects. These residuals are computed
 from absolute NDCG-point changes under the same definition as Table~\ref{tab:modules}, not
 from the retention percentages in Table~\ref{tab:int2mod}. For the three that collapse the sum of
@@ -611,7 +617,7 @@ remains untested.
 \label{sec:pooling}
 
 INT2 retention spans the full range rather than splitting in two. EmbeddingGemma keeps
-65.7\% of its full-precision NDCG, E5 keeps 41.9\%, and the remaining three keep 1.3\% to
+65.9\% of its full-precision NDCG, E5 keeps 44.8\%, and the remaining three keep 1.3\% to
 1.8\%. E5 sits between the extremes on the ranking measurements as well --- at INT2 on SciFact
 its relevant-only top-10 overlap is 0.530 against 0.764 for EmbeddingGemma and 0.000 for both
 collapses --- so ``survives'' and ``collapses'' are convenient labels for the ends of a
@@ -683,6 +689,54 @@ dominates the extreme-PTQ point we measured on the size--quality Pareto frontier
 comparison does not hold, and the size--quality argument is only legitimate within the task
 the student was trained for.
 
+\subsection{Post-submission audit of the measurement code}
+\label{sec:audit}
+
+After the first version of this paper was submitted we audited the measurement code against
+the text, applying the module masks to the actual tensor names of every checkpoint, probing
+the quantizer on synthetic tensors, and recomputing every quoted statistic from the raw
+per-query scores. The masks, the quantizer, the pooling and the statistics reproduce the
+tables; the following deviations between text and implementation did not change any ordering
+reported above but are disclosed here. (i) The reconstruction error of a module arm was
+averaged over the quantized tensors only, not over the whole model as the first version
+implied; Section~\ref{sec:recon} now states the definition and reports both variants, and a
+sentence comparing a whole-model figure with a module figure has been withdrawn. (ii) The
+evaluator applied a model's prompt to queries only. Qwen3-Embedding and its fine-tune have an
+empty document prompt and BGE-M3 uses none, so they are unaffected; E5-base-v2 ships no
+sentence-transformers prompt configuration and was therefore evaluated without its
+\texttt{query:}/\texttt{passage:} prefixes, and EmbeddingGemma without its document prefix.
+Both were re-measured under their own prompt contracts with the corrected evaluator, and every
+E5-base-v2 and EmbeddingGemma number in this version comes from that re-measurement.
+Full-precision NDCG@10 moved by at most 1.4 points. The largest downstream changes are E5's
+INT2 retention (41.9\% to 44.8\%); E5's uniform-axis correlation, which the first version
+reported as an apparent exception at $r=0.56$ and which now reads $0.80$
+(Section~\ref{sec:recon}); and the INT3/g16 module ordering of the two re-measured
+checkpoints, where EmbeddingGemma's attention (0.71 points) now edges the feed-forward block
+(0.56) that the first version named as costliest, and E5, previously reported as tied, is
+attention-dominant. Eight rather than six of the forty-five INT4 module cells survive the
+Benjamini--Hochberg correction, and four rather than three of the ten interval-excluding cells
+are positive. Every headline verdict --- the INT4 headroom bound of 1.01 points, the
+family-dependent INT3 ordering, the sign instability of the interaction residual, the
+within-bit correlations below 0.42 and the INT2 divergence --- is unchanged. Three measurements
+were not repeated and remain from the pre-fix evaluator: the top-10 turnover of
+Table~\ref{tab:turnover} for E5 and EmbeddingGemma, EmbeddingGemma's rank-flip curve, and the
+pooling intervention of Section~\ref{sec:pooling}; each compares arms of one model under one
+constant prompt convention, so the comparison stands but the absolute values are pre-fix.
+(iii) The quantizer walks the transformer only; EmbeddingGemma's two sentence-transformers
+dense output layers (4.7M parameters) stayed at full precision in every arm. Quantizing them
+together with everything else changes EmbeddingGemma's INT3/g16 retention by 0.1 points and
+its INT2 retention by 1.1 points (64.8\% against 65.9\%), so the unquantized output path does
+not explain why it survives INT2. (iv) The uniform arm
+quantizes position embeddings that no module arm touches (1.5\% of BGE-M3's and 0.4\% of
+E5's parameters), so the interaction residual for those two checkpoints includes that
+leftover; the residual is exactly attributable for the other three. (v) NFCorpus relevance
+judgements were binarised. (vi) The correlation table of the first version mixed three
+generations of its underlying rows: the per-model and robustness figures predate the INT2
+module arms, and the pooled module figure of $0.658$ predates the backfilled INT3/g32
+attention arm and so omitted five rows. Every block of Table~\ref{tab:recon} is now computed
+on the same ninety-two rows; the pooled module figure is $0.658$ on that set as well, by
+coincidence rather than by construction.
+
 \section{Limitations}
 \label{sec:limitations}
 
@@ -727,7 +781,7 @@ promise. At INT4/g16 the module-level sensitivity that exists is too small to al
 there is, and its ordering inverts between families. Per-module costs fail to predict joint cost
 additively; both the magnitude and, at INT3/g16, even the sign of the interaction vary across
 model families. And at INT2 five checkpoints whose reconstruction error
-spans $0.315$ to $0.337$ retain between 1.3\% and 65.7\% of their retrieval quality.
+spans $0.315$ to $0.337$ retain between 1.3\% and 65.9\% of their retrieval quality.
 
 The recurring finding is not that compression is hard but that its policy does not transfer
 reliably.

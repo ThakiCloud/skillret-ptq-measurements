@@ -8,7 +8,16 @@ import json, glob, os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SWEEP = os.path.join(ROOT, "ledger/sweep")
+# 2026-09-14 감사 후속: E5·EmbeddingGemma 는 프롬프트 계약을 고친 재측정(sweep-promptfix/)이 정본이고
+# 옛 행은 STATUS.yaml 에서 superseded 다. 두 디렉터리를 같은 규칙으로 읽는다 — 어느 한쪽만 읽는
+# 소비자(recon·BH·표)가 남으면 같은 팔이 두 값을 갖는다.
+SWEEP_DIRS = [SWEEP, os.path.join(ROOT, "ledger/sweep-promptfix")]
 LEDGER = os.path.join(ROOT, "ledger")
+# INT2 부위별 격리 원장 — e5/gemma 셀은 promptfix 행으로 다시 만든 병합본(scripts/promote_promptfix.py)
+INT2_ISO = os.path.join(LEDGER, "sweep/2026-09-14-int2-module-isolation.json")
+# 재구성 오차 ↔ 손실 원장 — recon 은 가중치만의 양이라 4models 판 그대로, 손실만 promptfix 로 재계산
+RECON_PATH = os.path.join(LEDGER, "control/2026-09-14-recon-vs-rank-4models-promptfix.json")
+SPECIAL_PREFIX = ("rank-", "pool-", "attn-", "student-", "turn-", "2026-")
 
 
 def _status():
@@ -46,23 +55,34 @@ MODULES_I4 = ["int4-embed-only", "int4-attn-only", "int4-ffn-only"]
 MODULES_I3 = ["int3-embed-only", "int3-attn-only", "int3-ffn-only"]
 
 
-def load():
-    out = {}
-    for f in sorted(glob.glob(os.path.join(SWEEP, "*.json"))):
-        # ⛔ rank-*/pool-* 는 접두어가 하나 더 붙어 있어 이 파서로는 모델명이 "rank" 가 된다.
-        #    실측: protocol 표에 유령 모델·유령 코퍼스 12개가 생겨 페이지를 501pt 넘었다.
-        #    이 함수는 균일/부위별 스윕만 읽는다. attn-*/student-* 도 같은 이유로 제외한다 —
-    #    attn 은 본 파일에 병합됐고, student 는 별도 원장(2026-09-12-student-ood.json)이다.
-        if os.path.basename(f).startswith(("rank-", "pool-", "attn-", "student-", "turn-")):
+def sweep_files():
+    """(path, tag, corpus, doc) — 팔별 스윕 원장만, canonical 만, 두 디렉터리 모두.
+
+    ⛔ rank-*/pool-* 는 접두어가 하나 더 붙어 있어 이 파서로는 모델명이 "rank" 가 된다.
+       실측: protocol 표에 유령 모델·유령 코퍼스 12개가 생겨 페이지를 501pt 넘었다.
+       attn-*/student-*/turn-* 도 같은 이유로 제외한다 — attn 은 본 파일에 병합됐고, student 는
+       별도 원장(2026-09-12-student-ood.json)이다. 날짜 접두 파일은 집계본이다.
+    ⛔ 디렉터리는 팔별 스윕 원장 전용이 아니다 — 형태(rows 리스트)로도 판정한다.
+    recon_analysis.py·bh_fdr.py 도 이 함수를 쓴다. 자기 glob 을 따로 두면 superseded 행이 되살아난다."""
+    files = []
+    for d in SWEEP_DIRS:
+        files += glob.glob(os.path.join(d, "*.json"))
+    for f in sorted(files, key=os.path.basename):
+        b = os.path.basename(f)
+        if b.startswith(SPECIAL_PREFIX):
             continue
         if not is_canonical(f):      # superseded/retracted/exploratory 는 제외
             continue
         d = json.load(open(f))
-        # ⛔ 이 디렉터리는 팔별 스윕 원장 전용이 아니다 — 다른 형태(집계본·부위별 격리 등)가
-        #    섞여 들어오면 접두어 목록은 매번 뒤늦게 고쳐야 한다. 형태로 판정한다.
         if not isinstance(d, dict) or not isinstance(d.get("rows"), list):
             continue
-        tag, _, corpus = os.path.basename(f)[:-5].partition("-")
+        tag, _, corpus = b[:-5].partition("-")
+        yield f, tag, corpus.replace("beir-", ""), d
+
+
+def load():
+    out = {}
+    for f, tag, corpus, d in sweep_files():
         # ⛔ retracted 플래그가 붙은 팔은 아예 싣지 않는다. 표에 안 나와야 인용도 못 한다.
         out[(tag, corpus.replace("beir-", ""))] = {
             r["arm"]: {"ndcg": r["ndcg@10"], "se": r.get("se"),
@@ -83,8 +103,8 @@ def retention(rows, model, arm):
 
 def recon():
     # ⛔ 4모델·17팔 판이 정본. 2모델·10팔 구판은 균일 사다리에 치우쳐 상관이 부풀려졌다.
-    p = os.path.join(ROOT, "ledger/control/2026-09-11-recon-vs-rank-4models.json")
-    return json.load(open(p)) if os.path.exists(p) else None
+    #    2026-09-14: E5·Gemma 손실을 promptfix 행으로 재계산한 판(RECON_PATH)이 정본.
+    return json.load(open(RECON_PATH)) if os.path.exists(RECON_PATH) else None
 
 
 if __name__ == "__main__":

@@ -1,13 +1,9 @@
 {
  "date": "2026-09-14",
- "subject": "INT4/g16 부위별 45셀 — 페어드 부트스트랩 양측 p + BH(q=0.05) 재계산",
- "method": "per-query paired bootstrap n=10000 seed=20260911; p=2*min(empirical tails), floor 1/n; BH step-up q=0.05",
- "n_cells": 45,
- "ci_excludes_zero": 10,
- "ci_excludes_zero_positive": 4,
- "bh_significant_q05": 8,
- "largest_abs_delta_pp": -1.007,
- "largest_cell": "bgem3/scifact/int4-attn-only",
+ "method": "질의 단위 페어드 부트스트랩 10000회, 백분위 95% CI",
+ "note": "ΔNDCG_q = NDCG_quant(q) - NDCG_fp16(q). 같은 질의가 두 팔을 모두 통과한다. E5·Gemma 셀은 sweep-promptfix/ 행(프롬프트 계약 수정 후).",
+ "n_cells": 60,
+ "n_covering_zero": 46,
  "rows": [
   {
    "model": "bgem3",
@@ -19,10 +15,8 @@
     -0.17,
     0.207
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.855,
    "paired_se": 0.097,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "bgem3",
@@ -34,10 +28,8 @@
     -0.803,
     0.211
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.2536,
    "paired_se": 0.26,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "bgem3",
@@ -49,10 +41,21 @@
     -0.615,
     0.327
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.564,
    "paired_se": 0.242,
-   "bh_significant": false
+   "covers_zero": true
+  },
+  {
+   "model": "bgem3",
+   "corpus": "nfcorpus",
+   "arm": "int4/g16-asym",
+   "n_queries": 323,
+   "delta_pp": -0.434,
+   "ci95": [
+    -1.054,
+    0.194
+   ],
+   "paired_se": 0.321,
+   "covers_zero": true
   },
   {
    "model": "bgem3",
@@ -64,10 +67,8 @@
     -0.057,
     0.465
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.2326,
    "paired_se": 0.137,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "bgem3",
@@ -79,10 +80,8 @@
     -2.081,
     0.042
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.062,
    "paired_se": 0.541,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "bgem3",
@@ -94,10 +93,21 @@
     -1.41,
     -0.041
    ],
-   "ci_excludes_zero": true,
-   "p_two_sided": 0.0354,
    "paired_se": 0.35,
-   "bh_significant": false
+   "covers_zero": false
+  },
+  {
+   "model": "bgem3",
+   "corpus": "scifact",
+   "arm": "int4/g16-asym",
+   "n_queries": 300,
+   "delta_pp": -1.627,
+   "ci95": [
+    -2.854,
+    -0.44
+   ],
+   "paired_se": 0.617,
+   "covers_zero": false
   },
   {
    "model": "bgem3",
@@ -109,10 +119,8 @@
     -0.091,
     0.119
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.8176,
    "paired_se": 0.054,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "bgem3",
@@ -124,10 +132,8 @@
     -0.782,
     -0.15
    ],
-   "ci_excludes_zero": true,
-   "p_two_sided": 0.0044,
    "paired_se": 0.159,
-   "bh_significant": true
+   "covers_zero": false
   },
   {
    "model": "bgem3",
@@ -139,10 +145,21 @@
     0.325,
     0.766
    ],
-   "ci_excludes_zero": true,
-   "p_two_sided": 0.0001,
    "paired_se": 0.114,
-   "bh_significant": true
+   "covers_zero": false
+  },
+  {
+   "model": "bgem3",
+   "corpus": "skillret",
+   "arm": "int4/g16-asym",
+   "n_queries": 4392,
+   "delta_pp": 0.05,
+   "ci95": [
+    -0.296,
+    0.4
+   ],
+   "paired_se": 0.179,
+   "covers_zero": true
   },
   {
    "model": "e5",
@@ -154,10 +171,8 @@
     -0.169,
     0.436
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.3828,
    "paired_se": 0.154,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "e5",
@@ -169,10 +184,8 @@
     -0.244,
     0.565
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.4452,
    "paired_se": 0.207,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "e5",
@@ -184,10 +197,21 @@
     -0.637,
     0.226
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.3832,
    "paired_se": 0.218,
-   "bh_significant": false
+   "covers_zero": true
+  },
+  {
+   "model": "e5",
+   "corpus": "nfcorpus",
+   "arm": "int4/g16-asym",
+   "n_queries": 323,
+   "delta_pp": 0.103,
+   "ci95": [
+    -0.427,
+    0.632
+   ],
+   "paired_se": 0.268,
+   "covers_zero": true
   },
   {
    "model": "e5",
@@ -199,10 +223,8 @@
     -1.11,
     0.114
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.1256,
    "paired_se": 0.311,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "e5",
@@ -214,10 +236,8 @@
     -1.051,
     0.432
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.437,
    "paired_se": 0.381,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "e5",
@@ -229,10 +249,21 @@
     -0.383,
     0.901
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.4262,
    "paired_se": 0.33,
-   "bh_significant": false
+   "covers_zero": true
+  },
+  {
+   "model": "e5",
+   "corpus": "scifact",
+   "arm": "int4/g16-asym",
+   "n_queries": 300,
+   "delta_pp": -0.039,
+   "ci95": [
+    -1.041,
+    0.937
+   ],
+   "paired_se": 0.496,
+   "covers_zero": true
   },
   {
    "model": "e5",
@@ -244,10 +275,8 @@
     -0.502,
     -0.204
    ],
-   "ci_excludes_zero": true,
-   "p_two_sided": 0.0001,
    "paired_se": 0.075,
-   "bh_significant": true
+   "covers_zero": false
   },
   {
    "model": "e5",
@@ -259,10 +288,8 @@
     -0.84,
     -0.396
    ],
-   "ci_excludes_zero": true,
-   "p_two_sided": 0.0001,
    "paired_se": 0.114,
-   "bh_significant": true
+   "covers_zero": false
   },
   {
    "model": "e5",
@@ -274,10 +301,21 @@
     -0.315,
     0.111
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.3422,
    "paired_se": 0.108,
-   "bh_significant": false
+   "covers_zero": true
+  },
+  {
+   "model": "e5",
+   "corpus": "skillret",
+   "arm": "int4/g16-asym",
+   "n_queries": 4392,
+   "delta_pp": -1.031,
+   "ci95": [
+    -1.307,
+    -0.759
+   ],
+   "paired_se": 0.14,
+   "covers_zero": false
   },
   {
    "model": "gemma",
@@ -289,10 +327,8 @@
     -0.055,
     0.36
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.1638,
    "paired_se": 0.105,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "gemma",
@@ -304,10 +340,8 @@
     -0.384,
     0.271
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.7414,
    "paired_se": 0.167,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "gemma",
@@ -319,10 +353,21 @@
     -0.253,
     0.45
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.5976,
    "paired_se": 0.178,
-   "bh_significant": false
+   "covers_zero": true
+  },
+  {
+   "model": "gemma",
+   "corpus": "nfcorpus",
+   "arm": "int4/g16-asym",
+   "n_queries": 323,
+   "delta_pp": -0.022,
+   "ci95": [
+    -0.463,
+    0.424
+   ],
+   "paired_se": 0.228,
+   "covers_zero": true
   },
   {
    "model": "gemma",
@@ -334,10 +379,8 @@
     -0.711,
     0.14
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.2222,
    "paired_se": 0.218,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "gemma",
@@ -349,10 +392,8 @@
     -0.423,
     0.954
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.4642,
    "paired_se": 0.353,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "gemma",
@@ -364,10 +405,21 @@
     -0.103,
     0.834
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.1286,
    "paired_se": 0.241,
-   "bh_significant": false
+   "covers_zero": true
+  },
+  {
+   "model": "gemma",
+   "corpus": "scifact",
+   "arm": "int4/g16-asym",
+   "n_queries": 300,
+   "delta_pp": 0.323,
+   "ci95": [
+    -0.409,
+    1.082
+   ],
+   "paired_se": 0.376,
+   "covers_zero": true
   },
   {
    "model": "gemma",
@@ -379,10 +431,8 @@
     -0.128,
     0.121
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.9354,
    "paired_se": 0.063,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "gemma",
@@ -394,10 +444,8 @@
     0.264,
     0.644
    ],
-   "ci_excludes_zero": true,
-   "p_two_sided": 0.0001,
    "paired_se": 0.097,
-   "bh_significant": true
+   "covers_zero": false
   },
   {
    "model": "gemma",
@@ -409,10 +457,21 @@
     -0.518,
     -0.125
    ],
-   "ci_excludes_zero": true,
-   "p_two_sided": 0.0008,
    "paired_se": 0.1,
-   "bh_significant": true
+   "covers_zero": false
+  },
+  {
+   "model": "gemma",
+   "corpus": "skillret",
+   "arm": "int4/g16-asym",
+   "n_queries": 4392,
+   "delta_pp": -0.036,
+   "ci95": [
+    -0.276,
+    0.204
+   ],
+   "paired_se": 0.121,
+   "covers_zero": true
   },
   {
    "model": "qwen",
@@ -424,10 +483,8 @@
     -0.375,
     0.151
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.4316,
    "paired_se": 0.136,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "qwen",
@@ -439,10 +496,8 @@
     -0.185,
     0.847
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.2212,
    "paired_se": 0.263,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "qwen",
@@ -454,10 +509,21 @@
     -0.418,
     0.654
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.6422,
    "paired_se": 0.273,
-   "bh_significant": false
+   "covers_zero": true
+  },
+  {
+   "model": "qwen",
+   "corpus": "nfcorpus",
+   "arm": "int4/g16-asym",
+   "n_queries": 323,
+   "delta_pp": 0.058,
+   "ci95": [
+    -0.658,
+    0.755
+   ],
+   "paired_se": 0.364,
+   "covers_zero": true
   },
   {
    "model": "qwen",
@@ -469,10 +535,8 @@
     -0.486,
     0.358
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.713,
    "paired_se": 0.216,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "qwen",
@@ -484,10 +548,8 @@
     -1.514,
     0.176
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.1246,
    "paired_se": 0.435,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "qwen",
@@ -499,10 +561,21 @@
     -0.745,
     1.124
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.7092,
    "paired_se": 0.479,
-   "bh_significant": false
+   "covers_zero": true
+  },
+  {
+   "model": "qwen",
+   "corpus": "scifact",
+   "arm": "int4/g16-asym",
+   "n_queries": 300,
+   "delta_pp": -0.284,
+   "ci95": [
+    -1.392,
+    0.857
+   ],
+   "paired_se": 0.575,
+   "covers_zero": true
   },
   {
    "model": "qwen",
@@ -514,10 +587,8 @@
     0.064,
     0.346
    ],
-   "ci_excludes_zero": true,
-   "p_two_sided": 0.0046,
    "paired_se": 0.073,
-   "bh_significant": true
+   "covers_zero": false
   },
   {
    "model": "qwen",
@@ -529,10 +600,8 @@
     0.483,
     1.117
    ],
-   "ci_excludes_zero": true,
-   "p_two_sided": 0.0001,
    "paired_se": 0.162,
-   "bh_significant": true
+   "covers_zero": false
   },
   {
    "model": "qwen",
@@ -544,10 +613,21 @@
     -0.181,
     0.503
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.3446,
    "paired_se": 0.174,
-   "bh_significant": false
+   "covers_zero": true
+  },
+  {
+   "model": "qwen",
+   "corpus": "skillret",
+   "arm": "int4/g16-asym",
+   "n_queries": 4392,
+   "delta_pp": 0.882,
+   "ci95": [
+    0.464,
+    1.298
+   ],
+   "paired_se": 0.214,
+   "covers_zero": false
   },
   {
    "model": "skillret06",
@@ -559,10 +639,8 @@
     -0.138,
     0.288
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.494,
    "paired_se": 0.109,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "skillret06",
@@ -574,10 +652,8 @@
     -0.669,
     0.274
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.4204,
    "paired_se": 0.237,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "skillret06",
@@ -589,10 +665,21 @@
     -0.423,
     0.774
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.4868,
    "paired_se": 0.304,
-   "bh_significant": false
+   "covers_zero": true
+  },
+  {
+   "model": "skillret06",
+   "corpus": "nfcorpus",
+   "arm": "int4/g16-asym",
+   "n_queries": 323,
+   "delta_pp": 0.075,
+   "ci95": [
+    -0.655,
+    0.784
+   ],
+   "paired_se": 0.363,
+   "covers_zero": true
   },
   {
    "model": "skillret06",
@@ -604,10 +691,8 @@
     -0.701,
     0.453
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.6942,
    "paired_se": 0.296,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "skillret06",
@@ -619,10 +704,8 @@
     -1.102,
     0.467
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.4444,
    "paired_se": 0.401,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "skillret06",
@@ -634,10 +717,21 @@
     -0.151,
     1.52
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.1068,
    "paired_se": 0.42,
-   "bh_significant": false
+   "covers_zero": true
+  },
+  {
+   "model": "skillret06",
+   "corpus": "scifact",
+   "arm": "int4/g16-asym",
+   "n_queries": 300,
+   "delta_pp": -0.267,
+   "ci95": [
+    -1.378,
+    0.844
+   ],
+   "paired_se": 0.565,
+   "covers_zero": true
   },
   {
    "model": "skillret06",
@@ -649,10 +743,8 @@
     -0.064,
     0.173
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.3666,
    "paired_se": 0.06,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "skillret06",
@@ -664,10 +756,8 @@
     -0.413,
     0.062
    ],
-   "ci_excludes_zero": false,
-   "p_two_sided": 0.1442,
    "paired_se": 0.123,
-   "bh_significant": false
+   "covers_zero": true
   },
   {
    "model": "skillret06",
@@ -679,10 +769,21 @@
     -0.613,
     -0.078
    ],
-   "ci_excludes_zero": true,
-   "p_two_sided": 0.0108,
    "paired_se": 0.137,
-   "bh_significant": false
+   "covers_zero": false
+  },
+  {
+   "model": "skillret06",
+   "corpus": "skillret",
+   "arm": "int4/g16-asym",
+   "n_queries": 4392,
+   "delta_pp": -0.394,
+   "ci95": [
+    -0.704,
+    -0.088
+   ],
+   "paired_se": 0.159,
+   "covers_zero": false
   }
  ]
 }

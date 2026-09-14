@@ -274,9 +274,11 @@ def resolve_prompts(base, model_arg, q_override=None, d_override=None):
     if q_override is not None or d_override is not None:
         return q_override, d_override, "cli"
     prompts = getattr(base, "prompts", {}) or {}
-    if prompts:
-        q = prompts.get("query") or prompts.get("s2p_query") or None
-        d = prompts.get("document") or prompts.get("passage") or None
+    q = prompts.get("query") or prompts.get("s2p_query") or None
+    d = prompts.get("document") or prompts.get("passage") or None
+    # ⛔ ST 5.x 는 설정 파일이 없어도 빈 prompts dict 를 채운다 — 스모크(2026-09-14)에서 E5 가
+    #    이 분기로 빠져 None/None 을 '설정에서 읽은 값'으로 보고했다. 실제 접두어가 있을 때만 설정을 믿는다.
+    if q is not None or d is not None:
         return q, d, "sentence-transformers config"
     key = model_arg.lower()
     for sub, (q, d) in PROMPT_CONTRACT.items():
