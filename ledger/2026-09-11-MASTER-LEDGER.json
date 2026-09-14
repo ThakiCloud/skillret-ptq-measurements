@@ -252,5 +252,11 @@
   ],
   "gate_verdict": "계획서 표13 기준: RankPTQ Embed 의 전제 2개(모듈별 정책 차이·재구성 지표의 무력함) 중 전자는 성립(순위 뒤집힘), 후자는 축을 나눠야 성립(부위 축만). 다만 INT4 에 배분 여지가 없고 NDCG 가 경계 churn 을 벌하지 않으므로, 방법 논문보다 **PTQ 한계·정책 비전이 분석 논문**이 정직하다.",
   "paper": "paper/main.tex — Where Post-Training Quantization Breaks Text Embedders"
- }
+ },
+ "corrections_log": [
+  {
+   "date": "2026-09-14",
+   "what": "kd07-ep9 접두어 불일치 항목이 75.26-71.03=4.23pp 를 '+8.84pp' 로 잘못 라벨했다. 8.84 는 epoch6 체크포인트(63.10→71.94, RETRACTION-quantization.json 구조화 필드)의 값이고, 4.23 은 kd07-ep9(cross-env-repro.json prefix_mismatch_kd07_ep9). 이 파일은 superseded 이므로 값은 고치지 않고 정정만 남긴다."
+  }
+ ]
 }

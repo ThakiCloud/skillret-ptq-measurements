@@ -1,0 +1,71 @@
+{
+ "date": "2026-09-14",
+ "subject": "산술 예측(size_mb 식, shape 는 Hub safetensors 메타) vs 패킹 실측 바이트",
+ "n_artifacts": 7,
+ "gap_pct_min": 0.035,
+ "gap_pct_max": 0.447,
+ "rows": [
+  {
+   "model": "ThakiCloud/SKILLRET-Edge-22M",
+   "arm": "int4/g16-asym",
+   "n_tensors": 103,
+   "predicted_bytes": 17073792,
+   "measured_bytes": 17011584,
+   "gap_pct": 0.366
+  },
+  {
+   "model": "ThakiCloud/SKILLRET-Edge-22M",
+   "arm": "int3/g16",
+   "n_tensors": 103,
+   "predicted_bytes": 14238528,
+   "measured_bytes": 14176320,
+   "gap_pct": 0.439
+  },
+  {
+   "model": "ThakiCloud/SKILLRET-Edge-109M",
+   "arm": "int4/g16-asym",
+   "n_tensors": 199,
+   "predicted_bytes": 82264320,
+   "measured_bytes": 82020096,
+   "gap_pct": 0.298
+  },
+  {
+   "model": "ThakiCloud/SKILLRET-Edge-109M",
+   "arm": "int3/g16",
+   "n_tensors": 199,
+   "predicted_bytes": 68594304,
+   "measured_bytes": 68350080,
+   "gap_pct": 0.357
+  },
+  {
+   "model": "ThakiCloud/SKILLRET-Edge-109M",
+   "arm": "int3/g32",
+   "n_tensors": 199,
+   "predicted_bytes": 54924288,
+   "measured_bytes": 54680064,
+   "gap_pct": 0.447
+  },
+  {
+   "model": "ThakiCloud/SKILLRET-Embedding-0.6B",
+   "arm": "int3/g16",
+   "n_tensors": 310,
+   "predicted_bytes": 372450432,
+   "measured_bytes": 372319360,
+   "gap_pct": 0.035
+  },
+  {
+   "model": "ThakiCloud/SKILLRET-Embedding-0.6B",
+   "arm": "int3/g32",
+   "n_tensors": 310,
+   "predicted_bytes": 297986560,
+   "measured_bytes": 297855488,
+   "gap_pct": 0.044
+  }
+ ],
+ "note": "예측은 모든 2-D 텐서를 그룹 양자화한다고 가정한다. 패커가 남기는 헤더/정렬 차이가 양의 갭으로 나타난다.",
+ "paper_statement": {
+  "main.tex_arxiv_v1": "0.04 to 0.44% above the packed file across the seven quantized artifacts",
+  "recomputed": "0.035%..0.447% → rounds to 0.04..0.45%",
+  "verdict": "상한이 0.44 가 아니라 0.45 다(109M int3/g32, 0.447%). 결론에 영향 없음 — v2 정오표 항목."
+ }
+}

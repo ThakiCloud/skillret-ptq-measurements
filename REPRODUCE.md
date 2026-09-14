@@ -74,10 +74,72 @@ will not match.
 
 ## Ledger status
 
-Not every file under `ledger/` is citable. `ledger/STATUS.yaml` marks each one
-`canonical`, `superseded`, `retracted` or `exploratory`, and `paper_numbers.py` drops
-anything that is not canonical, so a withdrawn or outdated arm cannot reach a table. The
-records stay in place — see `RETRACTIONS.md` for why each one was withdrawn.
+Not every file under `ledger/` is citable. Two mechanisms keep the withdrawn ones out of
+the tables. File-level: `ledger/STATUS.yaml` marks a whole file `canonical`, `superseded`
+or `exploratory`, and `paper_numbers.py` loads only canonical files. Row-level: an
+individual arm inside a canonical file carries `"retracted": true` (plus a reason), and the
+loader drops that row. The records stay in place — see `RETRACTIONS.md` for why each one
+was withdrawn and `grep -rl '"retracted": true' ledger/` to enumerate them.
+
+## Multiple-comparison check (INT4 module cells)
+
+The sentence "ten of forty-five cells exclude zero, six survive Benjamini--Hochberg at q=0.05,
+and the largest effect is unchanged at 1.01" is recomputed from the raw per-query scores:
+
+```bash
+python scripts/bh_fdr.py     # prints cells=45 ci_excludes_zero=10 bh_significant=6 largest=-1.01
+```
+
+It writes `ledger/control/2026-09-14-bh-fdr-int4.json` with per-cell two-sided bootstrap p-values.
+
+## Arithmetic size prediction vs packed bytes
+
+```bash
+python scripts/size_gap.py --artifacts artifacts.csv   # shapes from Hub safetensors metadata, no weight download
+```
+
+Recomputed on 2026-09-14: the prediction runs +0.04% to +0.45% above the packed file over the
+seven quantized artifacts (the arXiv v1 text says 0.44%; the 109M int3/g32 cell is 0.447%).
+Output: `ledger/control/2026-09-14-size-prediction-gap.json`.
+
+## Reconstruction-error denominator (audit 2026-09-14)
+
+`scripts/recon_vs_rank.py` averages the per-tensor relative error over the **quantized tensors
+only** (`den` accumulates touched parameters). For a module arm that is the module's own
+error, not a whole-model figure; the arXiv v1 text describes whole-model parameter weighting.
+`scripts/recon_analysis.py` recomputes every correlation under both definitions
+(whole-model = touched-only x touched fraction, from `quantized_params` in the sweep rows):
+
+```bash
+python scripts/recon_analysis.py   # writes ledger/control/2026-09-14-recon-definition-robustness.json
+```
+
+Both definitions leave the module axis weak (within-bit Pearson r: touched-only
+-0.008 / 0.367 / 0.408 / 0.415; whole-model -0.346 / -0.088 / -0.089 / -0.078 at
+INT4/g16, INT3/g16, INT3/g32, INT2/g16) and the uniform axis strong (0.856 either way). The
+v1 anecdote comparing BGE-M3 `int3/g32` (0.159) with `int3g32-ffn-only` (0.174) compares two
+denominators; whole-model the FFN-only arm reads 0.062 and the ordering is unremarkable. That
+sentence is withdrawn in the errata.
+
+Also from the same audit: `quantize()` walks only the transformer; EmbeddingGemma's two
+sentence-transformers `Dense` layers (4.72M parameters) stayed FP32 in every v1 arm. The
+uniform arm quantizes `position_embeddings` (BGE-M3 1.48%, E5 0.36% of parameters) that no
+module arm touches, so the interaction residual for those two models includes that leftover.
+E5-base-v2 ran with no query/document prefix and EmbeddingGemma without its document prefix
+(`quant_sweep.py` now resolves both and refuses unknown prompt contracts). NFCorpus qrels were
+binarized (576 of 12,334 judgments are graded 2). None of these change which module is
+costliest within a model or the INT2 retention ordering; they are disclosed here and in the
+errata, and the prompt/Dense cases are queued for re-measurement.
+
+## Manuscript claims gate
+
+`paper/claims_manifest.json` lists every number or phrasing the manuscript withdrew during
+review, each with a regex. `paper/claims_gate.py` fails if any of them reappears:
+
+```bash
+python paper/claims_gate.py --manifest paper/claims_manifest.json paper/main.tex   # exit 1 = withdrawn claim is back
+python paper/claims_gate.py --manifest paper/claims_manifest.json --self-test        # the gate's own negative controls
+```
 
 ## Dataset and model revisions
 

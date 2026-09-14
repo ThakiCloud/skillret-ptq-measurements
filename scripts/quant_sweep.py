@@ -25,8 +25,12 @@ def part_of(name):
     return "other"
 
 
-def quantize(st_model, bits, group, parts=None, sym=False):
-    """parts=None 이면 전체. sym=True 면 대칭(영점 없음)."""
+def quantize(st_model, bits, group, parts=None, sym=False, include_dense=False):
+    """parts=None 이면 전체. sym=True 면 대칭(영점 없음).
+    ⛔ 감사(2026-09-14): 이 함수는 st_model[0].auto_model 만 걷는다. EmbeddingGemma 는 그 뒤에
+       Dense(768→3072→768, 4.72M) 두 층이 더 있고 v1 측정에서는 그 층이 FP32 로 남았다 — 다섯
+       체크포인트 중 유일하게 미양자화 출력 경로를 가진 모델이 INT2 최대 생존자(65.7%)다.
+       include_dense=True 면 Dense 모듈의 2-D 가중치도 같은 규칙으로 양자화한다(부위 'other')."""
     tf = st_model[0].auto_model
     n = 0
     for name, p in tf.named_parameters():
@@ -39,6 +43,18 @@ def quantize(st_model, bits, group, parts=None, sym=False):
         else:
             fake_quant_(p.data, bits, group)
         n += p.numel()
+    if include_dense and (not parts or "other" in parts):
+        for mod in list(st_model)[1:]:
+            if type(mod).__name__ != "Dense":
+                continue
+            for name, p in mod.named_parameters():
+                if p.dim() < 2:
+                    continue
+                if sym:
+                    _sym_quant_(p.data, bits, group)
+                else:
+                    fake_quant_(p.data, bits, group)
+                n += p.numel()
     return n
 
 
@@ -237,6 +253,39 @@ ARMS = [
 ]
 
 
+# ⛔ 프롬프트 계약(2026-09-14 감사에서 발견). 이전 코드는 sentence-transformers 설정의 query
+#    프롬프트만 질의에 붙이고 문서에는 아무것도 안 붙였다. 그 결과 (1) E5-base-v2 는 Hub 에
+#    config_sentence_transformers.json 이 없어 질의·문서 접두어가 **둘 다 0** 으로 돌았고,
+#    (2) EmbeddingGemma 는 문서 접두어("title: none | text: ")가 빠졌다. 논문 arXiv v1 의
+#    E5·Gemma 수치는 그 상태의 값이다(정오표). 이제 계약을 못 찾으면 실행을 거부한다.
+PROMPT_CONTRACT = {
+    # 키: 모델 경로/ID 의 부분 문자열(소문자) → (query, document). None 은 "접두어 없음이 규약".
+    "e5-base-v2":       ("query: ", "passage: "),
+    "/e5":              ("query: ", "passage: "),
+    "embeddinggemma":   ("task: search result | query: ", "title: none | text: "),
+    "/gemma":           ("task: search result | query: ", "title: none | text: "),
+    "bge-m3":           (None, None),
+    "/bgem3":           (None, None),
+}
+
+
+def resolve_prompts(base, model_arg, q_override=None, d_override=None):
+    """(질의 프롬프트, 문서 프롬프트, 출처). 우선순위: CLI 명시 > ST 설정 > 계약표 > 거부."""
+    if q_override is not None or d_override is not None:
+        return q_override, d_override, "cli"
+    prompts = getattr(base, "prompts", {}) or {}
+    if prompts:
+        q = prompts.get("query") or prompts.get("s2p_query") or None
+        d = prompts.get("document") or prompts.get("passage") or None
+        return q, d, "sentence-transformers config"
+    key = model_arg.lower()
+    for sub, (q, d) in PROMPT_CONTRACT.items():
+        if sub in key:
+            return q, d, f"PROMPT_CONTRACT[{sub!r}]"
+    raise SystemExit(f"⛔ 프롬프트 계약을 모른다: {model_arg} — ST 설정에 prompts 가 없고 PROMPT_CONTRACT 에도 "
+                     "없다. --query-prompt/--doc-prompt 로 명시하라(접두어 없음이 규약이면 빈 문자열).")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True)
@@ -247,6 +296,10 @@ def main():
     ap.add_argument("--arms", default="")
     ap.add_argument("--pooling", choices=["mean", "cls", "lasttoken"], default=None,
                     help="풀링을 강제로 바꾼다 — 풀링이 INT2 생존의 원인인지 조작 검증")
+    ap.add_argument("--query-prompt", default=None, help="질의 접두어 명시(계약표·ST 설정보다 우선)")
+    ap.add_argument("--doc-prompt", default=None, help="문서 접두어 명시")
+    ap.add_argument("--include-dense", action="store_true",
+                    help="sentence-transformers Dense 헤드(예: EmbeddingGemma 768→3072→768)도 양자화")
     ap.add_argument("--rank-metrics", action="store_true",
                     help="top-k 겹침·Kendall tau·경계 마진 십분위별 뒤집힘률")
     a = ap.parse_args()
@@ -268,9 +321,9 @@ def main():
     ref = None
     rows = []
     base = SentenceTransformer(a.model, trust_remote_code=True)
-    prompts = getattr(base, "prompts", {}) or {}
-    qprompt = prompts.get("query") or prompts.get("s2p_query") or None
-    print(f"풀링={type(base[1]).__name__ if len(base)>1 else '?'} 질의프롬프트={qprompt!r}", flush=True)
+    qprompt, dprompt, psrc = resolve_prompts(base, a.model, a.query_prompt, a.doc_prompt)
+    print(f"풀링={type(base[1]).__name__ if len(base)>1 else '?'} 질의프롬프트={qprompt!r} "
+          f"문서프롬프트={dprompt!r} (출처 {psrc})", flush=True)
 
     if a.pooling:
         # ⛔ 관찰(mean 풀링 모델만 INT2 생존)은 백본 계열과 교란돼 있다.
@@ -298,14 +351,18 @@ def main():
         print(f"풀링 강제 변경 → {getattr(pool, 'pooling_mode', a.pooling)}", flush=True)
 
     sd = copy.deepcopy(base[0].auto_model.state_dict())
+    dense_sd = [(mod, copy.deepcopy(mod.state_dict())) for mod in list(base)[1:] if type(mod).__name__ == "Dense"]
     for tag, kw in ARMS:
         if want and tag not in want:
             continue
         base[0].auto_model.load_state_dict(sd)     # ⛔ 팔마다 원본에서 다시 시작
+        for mod, st in dense_sd:
+            mod.load_state_dict(st)
         nq = 0 if kw["bits"] >= 16 else quantize(
-            base, kw["bits"], kw.get("group", 16), kw.get("parts"), kw.get("sym", False))
+            base, kw["bits"], kw.get("group", 16), kw.get("parts"), kw.get("sym", False),
+            include_dense=a.include_dense)
         D = base.encode(docs, batch_size=a.batch, normalize_embeddings=True,
-                        show_progress_bar=False)
+                        show_progress_bar=False, prompt=dprompt)
         Q = base.encode(qs, batch_size=a.batch, normalize_embeddings=True,
                         show_progress_bar=False, prompt=qprompt)
         n, se, per = ndcg10(np.asarray(D), np.asarray(Q), ids, qrels)
@@ -321,7 +378,8 @@ def main():
 
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     json.dump({"model": a.model, "corpus": a.corpus, "n_docs": len(docs),
-               "n_queries": len(qs), "query_prompt": qprompt, "rows": rows},
+               "n_queries": len(qs), "query_prompt": qprompt, "doc_prompt": dprompt,
+               "prompt_source": psrc, "include_dense": a.include_dense, "rows": rows},
               open(a.out, "w"), ensure_ascii=False, indent=1)
     print("→", a.out)
 
